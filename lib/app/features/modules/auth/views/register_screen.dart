@@ -99,133 +99,151 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Create Account'),
-        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          onPressed: () => Get.back(),
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 20),
-              CustomTextField(
-                controller: _fullNameController,
-                labelText: 'Full Name',
-                hintText: 'Enter your full name',
-                validator: Validators.validateFullName,
-                prefixIcon: const Icon(Icons.person),
-              ),
-              const SizedBox(height: 20),
-              CustomTextField(
-                controller: _emailController,
-                labelText: 'Email',
-                hintText: 'Enter your email',
-                keyboardType: TextInputType.emailAddress,
-                validator: Validators.validateEmail,
-                prefixIcon: const Icon(Icons.email),
-              ),
-              const SizedBox(height: 20),
-              CustomTextField(
-                controller: _phoneController,
-                labelText: 'Phone Number',
-                hintText: 'Enter phone number (e.g., +263771234567)',
-                keyboardType: TextInputType.phone,
-                validator: Validators.validatePhone,
-                prefixIcon: const Icon(Icons.phone),
-                maxLength: 15,
-              ),
-              const SizedBox(height: 20),
-              CustomTextField(
-                controller: _passwordController,
-                labelText: 'Password',
-                hintText: 'Enter your password',
-                obscureText: true,
-                validator: Validators.validatePassword,
-                prefixIcon: const Icon(Icons.lock),
-              ),
-              const SizedBox(height: 20),
-              CustomTextField(
-                controller: _confirmPasswordController,
-                labelText: 'Confirm Password',
-                hintText: 'Re-enter your password',
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your password';
-                  }
-                  return null;
-                },
-                prefixIcon: const Icon(Icons.lock_outline),
-              ),
-
-              // ADD THIS ERROR DISPLAY WIDGET
-              Obx(() {
-                if (_localError.value.isNotEmpty) {
-                  return Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red.shade200),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.error_outline, color: Colors.red),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            _localError.value,
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return SizedBox.shrink();
-              }),
-
-              // ADD THIS DEBUG INFO WIDGET (optional)
-              Obx(() {
-                if (_authController.errorMessage.value.isNotEmpty) {
-                  return Container(
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.orange.shade200),
-                    ),
-                    child: Text(
-                      'Controller Error: ${_authController.errorMessage.value}',
-                      style: TextStyle(
-                          color: Colors.orange.shade800, fontSize: 12),
-                    ),
-                  );
-                }
-                return SizedBox.shrink();
-              }),
-
-              const SizedBox(height: 30),
-              Obx(() => CustomElevatedButton(
-                    text: 'Register',
-                    onPressed: _register,
-                    isLoading: _authController.isLoading.value,
-                  )),
-              const SizedBox(height: 20),
-              TextButton(
-                onPressed: () => Get.back(),
-                child: const Text(
-                  'Already have an account? Sign In',
-                  style: TextStyle(fontSize: 16),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 28),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: 20),
+                Text(
+                  'Join MoRental',
+                  style: theme.textTheme.displaySmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  'Start your premium journey today',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white38,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                
+                CustomTextField(
+                  controller: _fullNameController,
+                  labelText: 'Full Name',
+                  hintText: 'Enter your full name',
+                  validator: Validators.validateFullName,
+                  prefixIcon: const Icon(Icons.person_outline_rounded),
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
+                  controller: _emailController,
+                  labelText: 'Email Address',
+                  hintText: 'Enter your email',
+                  keyboardType: TextInputType.emailAddress,
+                  validator: Validators.validateEmail,
+                  prefixIcon: const Icon(Icons.email_outlined),
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
+                  controller: _phoneController,
+                  labelText: 'Phone Number',
+                  hintText: 'e.g., +263 771 234 567',
+                  keyboardType: TextInputType.phone,
+                  validator: Validators.validatePhone,
+                  prefixIcon: const Icon(Icons.phone_outlined),
+                  maxLength: 15,
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
+                  controller: _passwordController,
+                  labelText: 'Password',
+                  hintText: 'Enter your password',
+                  obscureText: true,
+                  validator: Validators.validatePassword,
+                  prefixIcon: const Icon(Icons.lock_outlined),
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
+                  controller: _confirmPasswordController,
+                  labelText: 'Confirm Password',
+                  hintText: 'Re-enter your password',
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    return null;
+                  },
+                  prefixIcon: const Icon(Icons.lock_reset_rounded),
+                ),
+
+                const SizedBox(height: 24),
+
+                // Error Display (Premium Dark Mode Alert)
+                Obx(() {
+                  final error = _localError.value.isNotEmpty 
+                      ? _localError.value 
+                      : (_authController.errorMessage.value.isNotEmpty ? _authController.errorMessage.value : '');
+                  
+                  if (error.isNotEmpty) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 24),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.redAccent.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.redAccent.withOpacity(0.2)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 20),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              error,
+                              style: const TextStyle(color: Colors.redAccent, fontSize: 13, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                }),
+
+                Obx(() => CustomElevatedButton(
+                  text: 'Register',
+                  onPressed: _register,
+                  isLoading: _authController.isLoading.value,
+                )),
+                
+                const SizedBox(height: 32),
+                
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Already have an account?", style: TextStyle(color: Colors.white54)),
+                    TextButton(
+                      onPressed: () => Get.back(),
+                      style: TextButton.styleFrom(foregroundColor: theme.primaryColor),
+                      child: const Text(
+                        'Sign In',
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),

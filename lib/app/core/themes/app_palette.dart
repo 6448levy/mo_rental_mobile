@@ -5,6 +5,9 @@ class AppPalette {
   // Primary Colors from your image
   static const Color primaryBlue = Color(0xFF047BC1);
   static const Color darkBlue = Color(0xFF3C425E);
+  static const Color premiumDark = Color(0xFF1A1A2E);
+  static const Color premiumYellow = Color(0xFFFFC107);
+  static const Color premiumCard = Color(0xFF16213E);
   static const Color pureWhite = Color(0xFFF9FAFB);
   static const Color softGrey = Color(0xFFA3ABB5);
   

@@ -5,9 +5,12 @@ import 'package:get_storage/get_storage.dart';
 import '../../modules/agent/views/agent_home_screen.dart';
 import '../../modules/auth/controllers/auth_controller.dart';
 import '../../modules/bindings/rate_plan_binding.dart';
+import '../../modules/driver/views/driver_view.dart';
+import '../../modules/driver/bindings/driver_binding.dart'; // Added
 import '../../modules/car_listing/views/car_listing_screen.dart';
 import '../../modules/profile/views/profile_screen.dart';
 import '../../modules/rate_plans/views/rate_plans_screen.dart';
+
 
 
 class MainNavigation extends StatefulWidget {
@@ -22,34 +25,21 @@ class _MainNavigationState extends State<MainNavigation> {
   final GetStorage _storage = GetStorage();
   final AuthController _authController = Get.find<AuthController>();
   
-  // Create instance of RatePlanBinding
+  // Create instances of Bindings
   final RatePlanBinding _ratePlanBinding = RatePlanBinding();
-
-  final List<Widget> _screens = [
-    HomeScreen(),
-    CarListingScreen(),
-    RatePlansScreen(),
-    ProfileScreen(),
-  ];
-
-  // AppBar titles for each tab
-  final List<String> _appBarTitles = [
-    'Home',
-    'Cars',
-    'Rate Plans',
-    'Profile',
-  ];
+  final DriverBinding _driverBinding = DriverBinding(); // Added
 
   @override
   void initState() {
     super.initState();
-    _checkAuth();
     
-    // Initialize rate plan dependencies when MainNavigation starts
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      print('🔄 Initializing RatePlan dependencies in MainNavigation');
-      _ratePlanBinding.dependencies();
-    });
+    // Initialize dependencies immediately so they are available for the first build
+    print('🔄 Initializing RatePlan dependencies in MainNavigation');
+    _ratePlanBinding.dependencies();
+    print('🔄 Initializing Driver dependencies in MainNavigation');
+    _driverBinding.dependencies(); 
+    
+    _checkAuth();
   }
 
   void _checkAuth() {
@@ -69,24 +59,51 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     final userData = _storage.read('user_data') ?? {};
+    const dark = Color(0xFF1A1A2E);
+    const yellow = Color(0xFFFFC107);
+    const card = Color(0xFF16213E);
+
+    // Define screens and titles inside build to support Hot Reload
+    final List<Widget> screens = [
+      HomeScreen(),
+      CarListingScreen(),
+      const DriverView(),
+      RatePlansScreen(),
+      ProfileScreen(),
+    ];
+
+    final List<String> appBarTitles = [
+      'Home',
+      'Cars',
+      'Driver',
+      'Rate Plans',
+      'Profile',
+    ];
 
     return Scaffold(
+      backgroundColor: dark,
       appBar: AppBar(
+        backgroundColor: dark,
+        elevation: 0,
+        centerTitle: false,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(_appBarTitles[_currentIndex]),
+            Text(
+              appBarTitles[_currentIndex],
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
             if (_currentIndex == 0 && userData['full_name'] != null)
               Text(
                 "Welcome, ${userData['full_name']}!",
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white54),
               ),
           ],
         ),
         actions: [
-          if (_currentIndex != 3) // Don't show logout on Profile tab (it has its own)
+          if (_currentIndex != 4) // Adjust index if needed, Profile is 4
             IconButton(
-              icon: const Icon(Icons.logout),
+              icon: const Icon(Icons.logout, color: Colors.white70),
               onPressed: () {
                 _authController.logout();
               },
@@ -94,28 +111,54 @@ class _MainNavigationState extends State<MainNavigation> {
             ),
         ],
       ),
-      body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.directions_car),
-            label: "Cars",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.monetization_on),
-            label: "Rates",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
-          ),
-        ],
+      body: screens[_currentIndex],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, -2),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) => setState(() => _currentIndex = index),
+          backgroundColor: card,
+          selectedItemColor: yellow,
+          unselectedItemColor: Colors.white30,
+          type: BottomNavigationBarType.fixed,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          unselectedLabelStyle: const TextStyle(fontSize: 12),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home_rounded),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.directions_car_outlined),
+              activeIcon: Icon(Icons.directions_car_rounded),
+              label: "Cars",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_search_outlined),
+              activeIcon: Icon(Icons.person_search_rounded),
+              label: "Driver",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.monetization_on_outlined),
+              activeIcon: Icon(Icons.monetization_on_rounded),
+              label: "Rates",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline_rounded),
+              activeIcon: Icon(Icons.person_rounded),
+              label: "Profile",
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import '../../../../app/core/constants/api_constants.dart';
 import '../models/auth_models/api_response.dart';
 
 class ApiService extends GetxService {
   static ApiService get to => Get.find();
   
-  final String baseUrl = 'http://13.61.185.238:5050';
+  final String baseUrl = ApiConstants.baseUrl;
   final Duration timeout = Duration(seconds: 15);
 
   // POST method
@@ -20,11 +21,12 @@ class ApiService extends GetxService {
     
     try {
       print('\n🌐 API CALL STARTED');
-      print('📡 URL: $baseUrl$endpoint');
+      final String fullUrl = ApiConstants.join(endpoint);
+      print('📡 URL: $fullUrl');
       print('📦 REQUEST BODY: $body');
       print('⏰ Timeout: ${timeout.inSeconds} seconds');
       
-      final url = Uri.parse('$baseUrl$endpoint');
+      final url = Uri.parse(fullUrl);
       final defaultHeaders = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -46,6 +48,15 @@ class ApiService extends GetxService {
       print('📄 Response Headers: ${response.headers}');
       print('📝 Response Body: ${response.body}');
       
+      final contentType = response.headers['content-type'] ?? '';
+      if (!contentType.contains('application/json')) {
+        print('❌ INVALID CONTENT TYPE: $contentType');
+        return ApiResponse<T>(
+          success: false,
+          message: 'Server returned an invalid response (HTML instead of JSON). Status: ${response.statusCode}',
+        );
+      }
+
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       if (response.statusCode == 201 || response.statusCode == 200) {
@@ -80,9 +91,17 @@ class ApiService extends GetxService {
       stopwatch.stop();
       print('❌ HTTP CLIENT ERROR: $e');
       print('⏱️  Failed after: ${stopwatch.elapsedMilliseconds}ms');
+      
+      String msg = 'Network error: ${e.message}';
+      if (GetPlatform.isWeb && e.message.contains('Failed to fetch')) {
+        msg = 'Network error: Failed to fetch (Possible CORS issue, server is down, or wrong URL).';
+        print('💡 PRO-TIP: If you are running locally, ensure your backend is on port 8000 with CORS enabled.');
+        print('💡 PRO-TIP: You can also try switching to the Render URL in api_constants.dart if the local server is not intended.');
+      }
+      
       return ApiResponse<T>(
         success: false,
-        message: 'Network error: ${e.message}',
+        message: msg,
         error: e,
       );
     } on FormatException catch (e) {
@@ -116,24 +135,19 @@ class ApiService extends GetxService {
     
     try {
       print('\n🌐 API CALL STARTED');
-      print('📡 URL: $baseUrl$endpoint');
-      if (queryParams != null && queryParams.isNotEmpty) {
-        print('🔍 Query Params: $queryParams');
-      }
-      if (headers != null && headers.containsKey('Authorization')) {
-        print('🔑 Token: ${headers['Authorization']?.substring(0, 30)}...');
-      }
-      
-      String url = '$baseUrl$endpoint';
+      final String fullUrl = ApiConstants.join(endpoint);
+      String finalUrl = fullUrl;
       
       // Add query parameters if any
       if (queryParams != null && queryParams.isNotEmpty) {
         final queryString = Uri(queryParameters: queryParams).query;
-        url += '?$queryString';
+        finalUrl += '?$queryString';
       }
+
+      print('📡 URL: $finalUrl');
       
       final response = await http.get(
-        Uri.parse(url),
+        Uri.parse(finalUrl),
         headers: headers,
       ).timeout(timeout);
 
@@ -145,6 +159,15 @@ class ApiService extends GetxService {
       print('📄 Response Headers: ${response.headers}');
       print('📝 Response Body: ${response.body}');
       
+      final contentType = response.headers['content-type'] ?? '';
+      if (!contentType.contains('application/json')) {
+        print('❌ INVALID CONTENT TYPE: $contentType');
+        return ApiResponse<T>(
+          success: false,
+          message: 'Server returned an invalid response (HTML instead of JSON). Status: ${response.statusCode}',
+        );
+      }
+
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {
@@ -197,10 +220,11 @@ class ApiService extends GetxService {
     
     try {
       print('\n🌐 PUT API CALL STARTED');
-      print('📡 URL: $baseUrl$endpoint');
+      final String fullUrl = ApiConstants.join(endpoint);
+      final url = Uri.parse(fullUrl);
+      print('📡 URL: $fullUrl');
       print('📦 REQUEST BODY: $body');
       
-      final url = Uri.parse('$baseUrl$endpoint');
       final defaultHeaders = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -219,6 +243,15 @@ class ApiService extends GetxService {
       print('📊 Status Code: ${response.statusCode}');
       print('📝 Response Body: ${response.body}');
       
+      final contentType = response.headers['content-type'] ?? '';
+      if (!contentType.contains('application/json')) {
+        print('❌ INVALID CONTENT TYPE: $contentType');
+        return ApiResponse<T>(
+          success: false,
+          message: 'Server returned an invalid response (HTML instead of JSON). Status: ${response.statusCode}',
+        );
+      }
+
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {
@@ -260,9 +293,10 @@ class ApiService extends GetxService {
     
     try {
       print('\n🌐 DELETE API CALL STARTED');
-      print('📡 URL: $baseUrl$endpoint');
+      final String fullUrl = ApiConstants.join(endpoint);
+      final url = Uri.parse(fullUrl);
+      print('📡 URL: $fullUrl');
       
-      final url = Uri.parse('$baseUrl$endpoint');
       final defaultHeaders = {
         'Accept': 'application/json',
       };
@@ -279,6 +313,15 @@ class ApiService extends GetxService {
       print('📊 Status Code: ${response.statusCode}');
       print('📝 Response Body: ${response.body}');
       
+      final contentType = response.headers['content-type'] ?? '';
+      if (!contentType.contains('application/json')) {
+        print('❌ INVALID CONTENT TYPE: $contentType');
+        return ApiResponse<T>(
+          success: false,
+          message: 'Server returned an invalid response (HTML instead of JSON). Status: ${response.statusCode}',
+        );
+      }
+
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {

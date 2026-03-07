@@ -1,7 +1,10 @@
+// lib/app/features/widgets/sidebar_widget/sidebar_widget.dart
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../modules/promo_code/views/promo_code_screen.dart';
+import '../../../routes/app_routes.dart';
 
 class SidebarWidget extends StatefulWidget {
   final Widget child;
@@ -17,88 +20,96 @@ class SidebarWidget extends StatefulWidget {
   State<SidebarWidget> createState() => _SidebarWidgetState();
 }
 
-class _SidebarWidgetState extends State<SidebarWidget> {
+class _SidebarWidgetState extends State<SidebarWidget>
+    with SingleTickerProviderStateMixin {
   final GetStorage storage = GetStorage();
   bool _isSidebarOpen = false;
   int _selectedIndex = 0;
+  late AnimationController _animController;
+  late Animation<double> _slideAnim;
 
-  final List<SidebarItem> _sidebarItems = [
-    SidebarItem(
-      icon: Icons.home,
-      title: 'Home',
-      route: '/home',
-    ),
-    SidebarItem(
-      icon: Icons.local_offer,
-      title: 'Promo Codes',
-      route: '/promo-codes',
-      badgeCount: 0,
-    ),
-    SidebarItem(
-      icon: Icons.car_rental,
-      title: 'My Bookings',
-      route: '/bookings',
-    ),
-    SidebarItem(
-      icon: Icons.favorite,
-      title: 'Favorites',
-      route: '/favorites',
-    ),
-    SidebarItem(
-      icon: Icons.history,
-      title: 'History',
-      route: '/history',
-    ),
-    SidebarItem(
-      icon: Icons.payment,
-      title: 'Payments',
-      route: '/payments',
-    ),
-    SidebarItem(
-      icon: Icons.settings,
-      title: 'Settings',
-      route: '/settings',
-    ),
-    SidebarItem(
-      icon: Icons.help,
-      title: 'Help & Support',
-      route: '/support',
-    ),
+  static const _yellow = Color(0xFFFFC107);
+  static const _dark = Color(0xFF1A1A2E);
+
+  final List<_SidebarItem> _sidebarItems = [
+    _SidebarItem(icon: Icons.home_rounded, title: 'Home', route: AppRoutes.main),
+    _SidebarItem(icon: Icons.person_search_rounded, title: 'Find Drivers', route: AppRoutes.drivers),
+    _SidebarItem(icon: Icons.calendar_month_rounded, title: 'My Bookings', route: AppRoutes.myBookings),
+    _SidebarItem(icon: Icons.person_outline_rounded, title: 'Profile', route: '/profile'),
+    _SidebarItem(icon: Icons.local_offer_rounded, title: 'Promo Codes', route: AppRoutes.promoCodes),
+    _SidebarItem(icon: Icons.credit_card_rounded, title: 'Payment Methods', route: AppRoutes.addCard),
+    _SidebarItem(icon: Icons.settings_rounded, title: 'Settings', route: '/settings'),
+    _SidebarItem(icon: Icons.help_outline_rounded, title: 'Help & Support', route: '/support'),
   ];
 
   @override
   void initState() {
     super.initState();
     _isSidebarOpen = widget.initiallyOpen;
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 280),
+    );
+    _slideAnim = CurvedAnimation(parent: _animController, curve: Curves.easeInOut);
+    if (_isSidebarOpen) _animController.value = 1.0;
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
   }
 
   void _toggleSidebar() {
     setState(() {
       _isSidebarOpen = !_isSidebarOpen;
     });
+    if (_isSidebarOpen) {
+      _animController.forward();
+    } else {
+      _animController.reverse();
+    }
   }
 
   void _navigateTo(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
     final item = _sidebarItems[index];
-    
-    if (item.route == '/promo-codes') {
-      // Navigate to PromoCodeScreen
-      Get.to(() => const PromoCodeScreen());
-    } else if (item.route == '/home') {
-      // If already on home, just close sidebar
-      _toggleSidebar();
-    } else {
-      // Handle other routes
-      Get.snackbar(
-        'Coming Soon',
-        '${item.title} feature is under development',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      _toggleSidebar();
+    setState(() => _selectedIndex = index);
+    _toggleSidebar();
+
+    // Small delay to let sidebar close before pushing
+    Future.delayed(const Duration(milliseconds: 180), () {
+      _handleNavigation(item);
+    });
+  }
+
+  void _handleNavigation(_SidebarItem item) {
+    switch (item.route) {
+      case AppRoutes.main:
+      case '/home':
+        // Already home, do nothing
+        break;
+      case AppRoutes.drivers:
+        Get.toNamed(AppRoutes.drivers);
+        break;
+      case AppRoutes.myBookings:
+        Get.toNamed(AppRoutes.myBookings);
+        break;
+      case AppRoutes.promoCodes:
+        Get.to(() => const PromoCodeScreen());
+        break;
+      case AppRoutes.addCard:
+        Get.toNamed(AppRoutes.addCard);
+        break;
+      default:
+        Get.snackbar(
+          'Coming Soon',
+          '${item.title} feature is under development',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.black87,
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
+        );
     }
   }
 
@@ -107,271 +118,230 @@ class _SidebarWidgetState extends State<SidebarWidget> {
     final userData = storage.read('user_data') ?? {};
     final userName = userData['full_name'] ?? 'Guest';
     final userEmail = userData['email'] ?? 'guest@example.com';
+    final initials = userName.isNotEmpty ? userName[0].toUpperCase() : 'G';
 
     return Scaffold(
       body: Stack(
         children: [
-          // Main Content
-          Positioned.fill(
-            child: widget.child,
+          // ── Main content page ───────────────────────────────────────────
+          Positioned.fill(child: widget.child),
+
+          // ── Semi-transparent overlay ────────────────────────────────────
+          AnimatedBuilder(
+            animation: _slideAnim,
+            builder: (_, __) {
+              if (_slideAnim.value == 0) return const SizedBox.shrink();
+              return GestureDetector(
+                onTap: _toggleSidebar,
+                child: Container(
+                  color: Colors.black.withOpacity(0.6 * _slideAnim.value),
+                ),
+              );
+            },
           ),
 
-          // Sidebar Overlay
-          if (_isSidebarOpen)
-            GestureDetector(
-              onTap: _toggleSidebar,
-              child: Container(
-                color: Colors.black.withOpacity(0.5),
-              ),
-            ),
-
-          // Sidebar Drawer
-          AnimatedPositioned(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            left: _isSidebarOpen ? 0 : -280,
-            top: 0,
-            bottom: 0,
+          // ── Drawer panel ────────────────────────────────────────────────
+          AnimatedBuilder(
+            animation: _slideAnim,
+            builder: (_, child) {
+              return Transform.translate(
+                offset: Offset(-300 * (1 - _slideAnim.value), 0),
+                child: child,
+              );
+            },
             child: SizedBox(
-              width: 280,
-              child: Drawer(
-                child: Container(
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      // User Profile Section
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade50,
-                        ),
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundColor: Colors.blue,
-                              child: Text(
-                                userName[0].toUpperCase(),
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 15),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    userName,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    userEmail,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.green.shade100,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Text(
-                                      'Premium Member',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Colors.green.shade800,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+              width: 300,
+              height: double.infinity,
+              child: Material(
+                elevation: 16,
+                color: _dark,
+                child: Column(
+                  children: [
+                    // ── User Header ───────────────────────────────────────
+                    Container(
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).padding.top + 20,
+                        left: 20,
+                        right: 20,
+                        bottom: 24,
+                      ),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFF0F3460), Color(0xFF1A1A2E)],
                         ),
                       ),
-
-                      // Menu Items
-                      Expanded(
-                        child: ListView.separated(
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          itemCount: _sidebarItems.length,
-                          separatorBuilder: (context, index) =>
-                              const Divider(height: 1),
-                          itemBuilder: (context, index) {
-                            final item = _sidebarItems[index];
-                            final isSelected = _selectedIndex == index;
-
-                            return ListTile(
-                              leading: Icon(
-                                item.icon,
-                                color: isSelected
-                                    ? Colors.blue
-                                    : Colors.grey.shade700,
-                              ),
-                              title: Text(
-                                item.title,
-                                style: TextStyle(
-                                  fontWeight: isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                  color: isSelected
-                                      ? Colors.blue
-                                      : Colors.black,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              // Avatar
+                              Container(
+                                width: 56,
+                                height: 56,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _yellow,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: _yellow.withOpacity(0.4),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    initials,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              trailing: item.badgeCount != null &&
-                                      item.badgeCount! > 0
-                                  ? Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 2,
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      userName,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
                                       ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(10),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      userEmail,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 11,
+                                        color: Colors.white54,
                                       ),
-                                      child: Text(
-                                        item.badgeCount.toString(),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    )
-                                  : null,
-                              onTap: () => _navigateTo(index),
-                              tileColor: isSelected
-                                  ? Colors.blue.shade50
-                                  : Colors.transparent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            );
-                          },
-                        ),
-                      ),
-
-                      // Promo Code Special Section
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        margin: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.shade50,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Colors.orange.shade200,
-                            width: 1,
+                              IconButton(
+                                onPressed: _toggleSidebar,
+                                icon: const Icon(Icons.close, color: Colors.white54, size: 20),
+                              ),
+                            ],
                           ),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
+                          const SizedBox(height: 16),
+                          // Premium badge
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: _yellow.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: _yellow.withOpacity(0.4)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
-                                  Icons.local_offer,
-                                  color: Colors.orange.shade700,
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
+                                const Icon(Icons.star, color: _yellow, size: 14),
+                                const SizedBox(width: 4),
                                 Text(
-                                  'Active Promo Codes',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange.shade700,
+                                  'Premium Member',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 11,
+                                    color: _yellow,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 8),
-                            ElevatedButton(
-                              onPressed: () {
-                                _toggleSidebar();
-                                Get.to(() => const PromoCodeScreen());
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orange.shade600,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                minimumSize: const Size(double.infinity, 40),
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.visibility, size: 16),
-                                  SizedBox(width: 8),
-                                  Text('View All Promo Codes'),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Logout Button
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            storage.remove('user_data');
-                            storage.remove('auth_token');
-                            Get.offAllNamed('/login');
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red.shade50,
-                            foregroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            minimumSize: const Size(double.infinity, 50),
-                            side: BorderSide(color: Colors.red.shade200),
                           ),
-                          icon: const Icon(Icons.logout),
-                          label: const Text('Logout'),
+                        ],
+                      ),
+                    ),
+
+                    // ── Menu Items ────────────────────────────────────────
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                        itemCount: _sidebarItems.length,
+                        itemBuilder: (context, index) {
+                          final item = _sidebarItems[index];
+                          final isSelected = _selectedIndex == index;
+                          return _buildMenuItem(item, index, isSelected);
+                        },
+                      ),
+                    ),
+
+                    // ── Logout ────────────────────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          storage.remove('user_data');
+                          storage.remove('auth_token');
+                          Get.offAllNamed(AppRoutes.login);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent.withOpacity(0.1),
+                          foregroundColor: Colors.redAccent,
+                          elevation: 0,
+                          side: const BorderSide(color: Colors.redAccent, width: 1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                        icon: const Icon(Icons.logout_rounded, size: 18),
+                        label: Text(
+                          'Logout',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
 
-          // Sidebar Toggle Button (Hamburger Menu)
+          // ── Hamburger button ─────────────────────────────────────────────
           Positioned(
             top: MediaQuery.of(context).padding.top + 10,
-            left: 10,
-            child: IconButton(
-              onPressed: _toggleSidebar,
-              icon: Icon(
-                _isSidebarOpen ? Icons.close : Icons.menu,
-                size: 28,
-                color: Colors.blue,
-              ),
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.white,
-                elevation: 3,
-                padding: const EdgeInsets.all(8),
+            left: 12,
+            child: AnimatedBuilder(
+              animation: _slideAnim,
+              builder: (_, __) => Opacity(
+                opacity: 1.0,
+                child: GestureDetector(
+                  onTap: _toggleSidebar,
+                  child: Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      _isSidebarOpen ? Icons.close : Icons.menu_rounded,
+                      color: const Color(0xFF1A1A2E),
+                      size: 22,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -379,18 +349,63 @@ class _SidebarWidgetState extends State<SidebarWidget> {
       ),
     );
   }
+
+  Widget _buildMenuItem(_SidebarItem item, int index, bool isSelected) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 4),
+      decoration: BoxDecoration(
+        color: isSelected ? _yellow.withOpacity(0.12) : Colors.transparent,
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: ListTile(
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: isSelected ? _yellow : Colors.white.withOpacity(0.06),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            item.icon,
+            size: 20,
+            color: isSelected ? Colors.black : Colors.white60,
+          ),
+        ),
+        title: Text(
+          item.title,
+          style: GoogleFonts.poppins(
+            color: isSelected ? _yellow : Colors.white,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
+            fontSize: 14,
+          ),
+        ),
+        trailing: isSelected
+            ? Container(
+                width: 6,
+                height: 6,
+                decoration: const BoxDecoration(
+                  color: _yellow,
+                  shape: BoxShape.circle,
+                ),
+              )
+            : null,
+        onTap: () => _navigateTo(index),
+        dense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+    );
+  }
 }
 
-class SidebarItem {
+class _SidebarItem {
   final IconData icon;
   final String title;
   final String route;
-  final int? badgeCount;
 
-  SidebarItem({
+  const _SidebarItem({
     required this.icon,
     required this.title,
     required this.route,
-    this.badgeCount,
   });
 }

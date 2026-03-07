@@ -12,6 +12,8 @@ class CustomTextField extends StatelessWidget {
   final int? maxLength;
   final bool enabled;
   final void Function(String)? onChanged;
+  final Color? fillColor;
+  final Color? textColor;
 
   const CustomTextField({
     super.key,
@@ -26,10 +28,14 @@ class CustomTextField extends StatelessWidget {
     this.maxLength,
     this.enabled = true,
     this.onChanged,
+    this.fillColor,
+    this.textColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
@@ -38,19 +44,34 @@ class CustomTextField extends StatelessWidget {
       maxLength: maxLength,
       enabled: enabled,
       onChanged: onChanged,
+      style: TextStyle(color: textColor ?? (isDark ? Colors.white : Colors.black)),
       decoration: InputDecoration(
         labelText: labelText,
+        labelStyle: TextStyle(color: (isDark ? Colors.white70 : Colors.black54)),
         hintText: hintText,
+        hintStyle: TextStyle(color: (isDark ? Colors.white38 : Colors.black38)),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
         ),
-        prefixIcon: prefixIcon,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+        ),
+        prefixIcon: prefixIcon != null ? IconTheme(
+          data: IconThemeData(color: isDark ? Colors.white70 : Colors.black54),
+          child: prefixIcon!,
+        ) : null,
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: Colors.grey[50],
+        fillColor: fillColor ?? (isDark ? const Color(0xFF16213E) : Colors.grey[50]),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
-          vertical: 16,
+          vertical: 18,
         ),
       ),
     );
@@ -62,6 +83,8 @@ class CustomElevatedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isLoading;
   final double height;
+  final Color? backgroundColor;
+  final Color? textColor;
 
   const CustomElevatedButton({
     super.key,
@@ -69,6 +92,8 @@ class CustomElevatedButton extends StatelessWidget {
     required this.onPressed,
     this.isLoading = false,
     this.height = 50,
+    this.backgroundColor,
+    this.textColor,
   });
 
   @override
@@ -79,9 +104,10 @@ class CustomElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
+          foregroundColor: textColor ?? Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
           ),
           elevation: 2,
         ),
@@ -98,7 +124,7 @@ class CustomElevatedButton extends StatelessWidget {
                 text,
                 style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
       ),

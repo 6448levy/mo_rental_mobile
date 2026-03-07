@@ -91,320 +91,216 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 40),
-            // Logo/Icon
-            Icon(
-              Icons.car_rental,
-              size: 80,
-              color: Get.theme.primaryColor,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Welcome Back',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Login to your account',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 40),
-            
-            // Login Form
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  CustomTextField(
-                    controller: _emailController,
-                    labelText: 'Email',
-                    hintText: 'Enter your email',
-                    keyboardType: TextInputType.emailAddress,
-                    validator: Validators.validateEmail,
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    onChanged: (value) {
-                      _debugInfo.value = 'Email changed: $value';
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  Obx(() => CustomTextField(
-                    controller: _passwordController,
-                    labelText: 'Password',
-                    hintText: 'Enter your password',
-                    obscureText: !_showPassword.value,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password is required';
-                      }
-                      return null;
-                    },
-                    prefixIcon: const Icon(Icons.lock_outlined),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _showPassword.value 
-                            ? Icons.visibility_off 
-                            : Icons.visibility,
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 28),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 60),
+              
+              // Animated Logo Section
+              TweenAnimationBuilder<double>(
+                duration: const Duration(milliseconds: 800),
+                tween: Tween(begin: 0.0, end: 1.0),
+                builder: (context, value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(0, 20 * (1 - value)),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: theme.primaryColor.withOpacity(0.1),
+                        shape: BoxShape.circle,
                       ),
-                      onPressed: () => _showPassword.value = !_showPassword.value,
+                      child: Icon(
+                        Icons.car_rental_rounded,
+                        size: 72,
+                        color: theme.primaryColor,
+                      ),
                     ),
-                    onChanged: (value) {
-                      _debugInfo.value = 'Password changed: ${'*' * value.length}';
-                    },
-                  )),
-                  
-                  const SizedBox(height: 10),
-                  
-                  // Forgot Password
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: _forgotPassword,
-                      child: const Text('Forgot Password?'),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Welcome Back',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.displaySmall?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -0.5,
+                      ),
                     ),
-                  ),
-                  
-                  // Error Display
-                  Obx(() {
-                    if (_authController.errorMessage.value.isNotEmpty) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.red.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.red.shade200),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Login to your premium account',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.white38,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              
+              const SizedBox(height: 48),
+              
+              // Login Form
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    CustomTextField(
+                      controller: _emailController,
+                      labelText: 'Email Address',
+                      hintText: 'Enter your email',
+                      keyboardType: TextInputType.emailAddress,
+                      validator: Validators.validateEmail,
+                      prefixIcon: const Icon(Icons.email_outlined),
+                    ),
+                    const SizedBox(height: 20),
+                    Obx(() => CustomTextField(
+                      controller: _passwordController,
+                      labelText: 'Password',
+                      hintText: 'Enter your password',
+                      obscureText: !_showPassword.value,
+                      validator: (value) => value == null || value.isEmpty ? 'Password is required' : null,
+                      prefixIcon: const Icon(Icons.lock_outlined),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _showPassword.value ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.white38,
+                          size: 20,
                         ),
-                        child: Row(
-                          children: [
-                            Icon(Icons.error_outline, color: Colors.red),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Error',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    _authController.errorMessage.value,
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                        onPressed: () => _showPassword.value = !_showPassword.value,
+                      ),
+                    )),
+                    
+                    const SizedBox(height: 8),
+                    
+                    // Forgot Password
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _forgotPassword,
+                        style: TextButton.styleFrom(
+                          foregroundColor: theme.primaryColor,
                         ),
-                      );
-                    }
-                    return SizedBox.shrink();
-                  }),
-                  
-                  // Debug Info Display (Collapsible)
-                  Obx(() {
-                    if (_debugInfo.value.isNotEmpty) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.blue.shade200),
-                        ),
-                        child: ExpansionTile(
-                          title: Row(
+                        child: const Text('Forgot Password?', style: TextStyle(fontWeight: FontWeight.w600)),
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 16),
+
+                    // Error Display (Premium Dark Mode Alert)
+                    Obx(() {
+                      if (_authController.errorMessage.value.isNotEmpty) {
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 24),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.redAccent.withOpacity(0.2)),
+                          ),
+                          child: Row(
                             children: [
-                              Icon(Icons.bug_report, color: Colors.blue, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'Debug Information',
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
+                              const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 20),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  _authController.errorMessage.value,
+                                  style: const TextStyle(color: Colors.redAccent, fontSize: 13, fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ],
                           ),
-                          children: [
-                            Divider(color: Colors.blue.shade200),
-                            SizedBox(height: 8),
-                            SelectableText(
-                              _debugInfo.value,
-                              style: TextStyle(
-                                color: Colors.blue.shade800,
-                                fontSize: 12,
-                                fontFamily: 'monospace',
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    return SizedBox.shrink();
-                  }),
-                  
-                  // Controller Loading State
-                  Obx(() {
-                    if (_authController.isLoading.value) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.orange.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.orange.shade200),
-                        ),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.orange,
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Processing...',
-                              style: TextStyle(
-                                color: Colors.orange.shade800,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                    return SizedBox.shrink();
-                  }),
-                  
-                  const SizedBox(height: 20),
-                  
-                  // Login Button
-                  Obx(() => SizedBox(
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: _authController.isLoading.value ? null : _login,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Get.theme.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: _authController.isLoading.value
-                          ? SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Text(
-                              'Login',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                    ),
-                  )),
-                ],
-              ),
-            ),
-            
-            const SizedBox(height: 30),
-            
-            // Register Link
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Don't have an account?"),
-                TextButton(
-                  onPressed: () {
-                    print('🔗 Navigating to Register screen');
-                    Get.toNamed('/register');
-                  },
-                  child: const Text(
-                    'Register',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    }),
+                    
+                    // Controller Loading Stage
+                    Obx(() => CustomElevatedButton(
+                      text: 'Login',
+                      onPressed: _login,
+                      isLoading: _authController.isLoading.value,
+                    )),
+                  ],
                 ),
-              ],
-            ),
-            
-            // App Info
-            const SizedBox(height: 40),
-            Container(
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              
+              const SizedBox(height: 32),
+              
+              // Register Link
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'App Information',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Base URL: http://13.61.185.238:5050',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Obx(() => Text(
-                    'Authenticated: ${_authController.isAuthenticated}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
-                    ),
-                  )),
-                  SizedBox(height: 4),
-                                   Text(
-                    'Platform: ${GetPlatform.isMobile ? 'Mobile' : GetPlatform.isWeb ? 'Web' : 'Desktop'}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey.shade600,
+                  const Text("Don't have an account?", style: TextStyle(color: Colors.white54)),
+                  TextButton(
+                    onPressed: () => Get.toNamed('/register'),
+                    style: TextButton.styleFrom(foregroundColor: theme.primaryColor),
+                    child: const Text(
+                      'Register',
+                      style: TextStyle(fontWeight: FontWeight.w700),
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
+              
+              // Debug Info (Collapsible & Subtle)
+              Obx(() {
+                if (_debugInfo.value.isNotEmpty) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 24),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.03),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                    ),
+                    child: ExpansionTile(
+                      shape: const RoundedRectangleBorder(side: BorderSide.none),
+                      collapsedShape: const RoundedRectangleBorder(side: BorderSide.none),
+                      title: const Text(
+                        'Debug Information',
+                        style: TextStyle(color: Colors.white38, fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                      leading: const Icon(Icons.bug_report_outlined, color: Colors.white38, size: 18),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                          child: SelectableText(
+                            _debugInfo.value,
+                            style: const TextStyle(color: Colors.white24, fontSize: 11, fontFamily: 'monospace'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
+
+              // Footer Info
+              const SizedBox(height: 20),
+              Center(
+                child: Text(
+                  'Connected to MoRental Cloud v1.0',
+                  style: TextStyle(color: Colors.white10, fontSize: 10, letterSpacing: 0.5),
+                ),
+              ),
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );

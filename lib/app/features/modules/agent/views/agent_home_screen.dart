@@ -11,6 +11,10 @@ import '../../rate_plans/controllers/rate_plan_controller.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  static const _yellow = Color(0xFFFFC107);
+  static const _dark = Color(0xFF1A1A2E);
+  static const _card = Color(0xFF16213E);
+
   @override
   Widget build(BuildContext context) {
     // Ensure services are initialized
@@ -34,38 +38,46 @@ class _HomeContent extends StatelessWidget {
   _HomeContent();
 
   final GetStorage storage = GetStorage();
+  static const _yellow = Color(0xFFFFC107);
+  static const _dark = Color(0xFF1A1A2E);
+  static const _card = Color(0xFF16213E);
 
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> userData = storage.read('user_data') ?? {};
 
     return Scaffold(
+      backgroundColor: _dark,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Top padding to avoid overlap with sidebar toggle button
-            const SizedBox(height: 60),
+            const SizedBox(height: 70),
 
             // User Info Card
-            Card(
-              elevation: 2,
+            Container(
+              decoration: BoxDecoration(
+                color: _card,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white10),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   children: [
                     CircleAvatar(
-                      radius: 25,
-                      backgroundColor: Colors.blue,
+                      radius: 28,
+                      backgroundColor: _yellow,
                       child: Text(
                         userData['full_name'] != null
                             ? userData['full_name'][0].toUpperCase()
                             : 'G',
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -79,22 +91,34 @@ class _HomeContent extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             userData['email'] ?? 'Not logged in',
-                            style:
-                                const TextStyle(fontSize: 14, color: Colors.grey),
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.white54,
+                            ),
                           ),
                           if (userData['status'] != null)
-                            Text(
-                              'Status: ${userData['status']}',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: userData['status'] == 'active'
-                                    ? Colors.green
-                                    : Colors.orange,
+                            Container(
+                              margin: const EdgeInsets.only(top: 6),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: (userData['status'] == 'active' ? Colors.green : Colors.orange).withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                'Status: ${userData['status']}',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: userData['status'] == 'active'
+                                      ? Colors.greenAccent
+                                      : Colors.orangeAccent,
+                                ),
                               ),
                             ),
                         ],
@@ -105,7 +129,7 @@ class _HomeContent extends StatelessWidget {
                       onPressed: () {
                         Get.to(() => const PromoCodeScreen());
                       },
-                      icon: const Icon(Icons.local_offer, color: Colors.orange),
+                      icon: const Icon(Icons.local_offer, color: _yellow),
                       tooltip: 'View Promo Codes',
                     ),
                   ],
@@ -113,18 +137,23 @@ class _HomeContent extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
 
             const Text(
               "Find your perfect ride",
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 26, 
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 20),
 
             SizedBox(
-              height: 200,
+              height: 220,
               child: ListView(
                 scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
                 children: [
                   carCard(context,
                       "assets/images/campbell-3ZUsNJhi_Ik-unsplash.jpg", "BMW M4"),
@@ -139,55 +168,61 @@ class _HomeContent extends StatelessWidget {
             ),
 
             // Quick Stats
-            const SizedBox(height: 30),
+            const SizedBox(height: 35),
             const Text(
               "Quick Stats",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20, 
+                fontWeight: FontWeight.bold,
+                color: Colors.white70,
+              ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
 
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 15,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1.1, // Adjusted to give more vertical space
               children: [
                 _buildStatCard(
                   icon: Icons.calendar_today,
                   title: "Bookings",
                   value: "0",
-                  color: Colors.blue,
+                  color: Colors.blueAccent,
                 ),
                 _buildStatCard(
                   icon: Icons.local_offer,
                   title: "Active Promos",
                   value: "0",
-                  color: Colors.orange,
+                  color: _yellow,
                   onTap: () => Get.to(() => const PromoCodeScreen()),
                 ),
                 _buildStatCard(
                   icon: Icons.favorite,
                   title: "Favorites",
                   value: "0",
-                  color: Colors.red,
+                  color: Colors.redAccent,
                 ),
                 _buildStatCard(
                   icon: Icons.history,
                   title: "History",
                   value: "0",
-                  color: Colors.green,
+                  color: Colors.greenAccent,
                 ),
               ],
             ),
 
             // Promo Code Banner
-            const SizedBox(height: 30),
+            const SizedBox(height: 35),
             _buildPromoBanner(),
 
             // Recent Activity
-            const SizedBox(height: 30),
+            const SizedBox(height: 35),
             _buildRecentActivity(),
+            const SizedBox(height: 80), // Space for FAB
           ],
         ),
       ),
@@ -199,8 +234,9 @@ class _HomeContent extends StatelessWidget {
         },
         icon: const Icon(Icons.local_offer),
         label: const Text('Promo Codes'),
-        backgroundColor: Colors.orange,
-        foregroundColor: Colors.white,
+        backgroundColor: _yellow,
+        foregroundColor: Colors.black,
+        elevation: 8,
         tooltip: 'View all promo codes',
       ),
     );
@@ -215,26 +251,58 @@ class _HomeContent extends StatelessWidget {
       },
       child: Container(
         width: 250,
-        margin: const EdgeInsets.only(right: 15),
+        margin: const EdgeInsets.only(right: 18),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: Colors.white10),
           image: DecorationImage(image: AssetImage(img), fit: BoxFit.cover),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Container(
           alignment: Alignment.bottomLeft,
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(24),
             gradient: LinearGradient(
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
-              colors: [Colors.black.withOpacity(0.7), Colors.transparent],
+              colors: [
+                Colors.black.withOpacity(0.9), 
+                Colors.black.withOpacity(0.4),
+                Colors.transparent
+              ],
             ),
           ),
-          child: Text(
-            name,
-            style: const TextStyle(
-                fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 22, 
+                  fontWeight: FontWeight.bold, 
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  const Icon(Icons.star, color: _yellow, size: 14),
+                  const SizedBox(width: 4),
+                  const Text(
+                    "4.8 (120 reviews)",
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -250,25 +318,62 @@ class _HomeContent extends StatelessWidget {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Card(
-        elevation: 3,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 30, color: color),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ],
+      child: Container(
+        decoration: BoxDecoration(
+          color: _card,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withOpacity(0.05)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              offset: const Offset(0, 4),
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, size: 24, color: color),
+                ),
+                const SizedBox(height: 8),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    value,
+                    style: const TextStyle(
+                      fontSize: 22, 
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    maxLines: 1,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 11, 
+                      color: Colors.white54,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -279,20 +384,31 @@ class _HomeContent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
+        color: _card,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: _yellow.withOpacity(0.2)),
         gradient: LinearGradient(
-          colors: [Colors.orange.shade100, Colors.orange.shade50],
+          colors: [
+            _yellow.withOpacity(0.05),
+            Colors.transparent,
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.orange.shade200),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.local_offer_outlined,
-            size: 40,
-            color: Colors.orange,
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: _yellow.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.local_offer_outlined,
+              size: 32,
+              color: _yellow,
+            ),
           ),
           const SizedBox(width: 15),
           Expanded(
@@ -300,37 +416,39 @@ class _HomeContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Special Offers Available!',
+                  'Special Offers!',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.orange,
+                    color: _yellow,
                   ),
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  'Check out our active promo codes for exclusive discounts on your next rental.',
+                const SizedBox(height: 4),
+                const Text(
+                  'Check active codes for exclusive discounts.',
                   style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade700,
+                    fontSize: 13,
+                    color: Colors.white60,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
           ElevatedButton(
             onPressed: () {
               Get.to(() => const PromoCodeScreen());
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              foregroundColor: Colors.white,
+              backgroundColor: _yellow,
+              foregroundColor: Colors.black,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 14),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: const Text('View Offers'),
+            child: const Text('View', style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -343,48 +461,82 @@ class _HomeContent extends StatelessWidget {
       children: [
         const Text(
           "Recent Activity",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 20, 
+            fontWeight: FontWeight.bold,
+            color: Colors.white70,
+          ),
         ),
-        const SizedBox(height: 15),
-        Card(
+        const SizedBox(height: 18),
+        Container(
+          decoration: BoxDecoration(
+            color: _card,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withOpacity(0.05)),
+          ),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Column(
               children: [
-                ListTile(
-                  leading: const Icon(Icons.local_offer, color: Colors.green),
-                  title: const Text('Promo Code Applied'),
-                  subtitle: const Text('SUMMER25 - 25% off'),
-                  trailing: Text(
-                    'Just now',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
+                _activityTile(
+                  icon: Icons.local_offer,
+                  color: Colors.greenAccent,
+                  title: 'Promo Code Applied',
+                  subtitle: 'SUMMER25 - 25% off',
+                  time: 'Just now',
                 ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.car_rental, color: Colors.blue),
-                  title: const Text('Car Booking'),
-                  subtitle: const Text('BMW M4 - 2 days'),
-                  trailing: Text(
-                    '2 hours ago',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
+                const Divider(color: Colors.white12, indent: 64, endIndent: 16),
+                _activityTile(
+                  icon: Icons.car_rental,
+                  color: Colors.blueAccent,
+                  title: 'Car Booking',
+                  subtitle: 'BMW M4 - 2 days',
+                  time: '2 hours ago',
                 ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.payment, color: Colors.purple),
-                  title: const Text('Payment Received'),
-                  subtitle: const Text('Booking #ORD-12345'),
-                  trailing: Text(
-                    '1 day ago',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
+                const Divider(color: Colors.white12, indent: 64, endIndent: 16),
+                _activityTile(
+                  icon: Icons.payment,
+                  color: Colors.purpleAccent,
+                  title: 'Payment Received',
+                  subtitle: 'Booking #ORD-12345',
+                  time: '1 day ago',
                 ),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _activityTile({
+    required IconData icon,
+    required Color color,
+    required String title,
+    required String subtitle,
+    required String time,
+  }) {
+    return ListTile(
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(icon, color: color, size: 20),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: const TextStyle(color: Colors.white54, fontSize: 12),
+      ),
+      trailing: Text(
+        time,
+        style: const TextStyle(color: Colors.white38, fontSize: 10),
+      ),
     );
   }
 }
