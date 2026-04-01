@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/themes/app_palette.dart';
 import 'package:get/get.dart';
 import '../controllers/promo_code_controller.dart';
 
@@ -15,10 +16,12 @@ class PromoCodeScreen extends StatelessWidget {
     final PromoCodeController controller = Get.find<PromoCodeController>();
 
     return Scaffold(
+      backgroundColor: AppPalette.pureWhite,
       appBar: AppBar(
         title: const Text('Active Promo Codes'),
-        backgroundColor: Colors.orange,
-        foregroundColor: Colors.white,
+        backgroundColor: AppPalette.brandBlue,
+        foregroundColor: AppPalette.pureWhite,
+        elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -28,6 +31,8 @@ class PromoCodeScreen extends StatelessWidget {
                 'Refreshing',
                 'Fetching latest promo codes...',
                 snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: AppPalette.brandBlue,
+                colorText: AppPalette.pureWhite,
               );
             },
           ),
@@ -36,7 +41,7 @@ class PromoCodeScreen extends StatelessWidget {
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(
-            child: CircularProgressIndicator(color: Colors.orange),
+            child: CircularProgressIndicator(color: AppPalette.brandBlue),
           );
         }
 
@@ -45,20 +50,21 @@ class PromoCodeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                const Icon(Icons.error_outline, size: 64, color: AppPalette.error),
                 const SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: Text(
                     controller.error.value,
-                    style: const TextStyle(color: Colors.red),
+                    style: const TextStyle(color: AppPalette.error),
                     textAlign: TextAlign.center,
                   ),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: controller.refreshPromoCodes,
-                  child: const Text('Try Again'),
+                  style: ElevatedButton.styleFrom(backgroundColor: AppPalette.brandBlue),
+                  child: const Text('Try Again', style: TextStyle(color: AppPalette.pureWhite)),
                 ),
               ],
             ),
@@ -67,24 +73,52 @@ class PromoCodeScreen extends StatelessWidget {
 
         if (controller.activePromoCodes.isEmpty) {
           return const Center(
-            child: Text('No active promo codes found'),
+            child: Text('No active promo codes found', style: TextStyle(color: AppPalette.textSecondary)),
           );
         }
 
         return ListView.builder(
           itemCount: controller.activePromoCodes.length,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           itemBuilder: (context, index) {
             final promo = controller.activePromoCodes[index];
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundColor: promo.isValid ? Colors.green : Colors.grey,
-                child: Text(promo.code[0]),
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: AppPalette.pureWhite,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppPalette.outline),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppPalette.cardShadow.withOpacity(0.04),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              title: Text(promo.code),
-              subtitle: Text('${promo.type} - ${promo.value}'),
-              trailing: promo.isValid 
-                  ? const Icon(Icons.check, color: Colors.green)
-                  : const Icon(Icons.close, color: Colors.red),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: promo.isValid ? Colors.green.shade50 : AppPalette.outline,
+                  child: Text(
+                    promo.code[0].toUpperCase(),
+                    style: TextStyle(
+                      color: promo.isValid ? Colors.green.shade700 : AppPalette.textSecondary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                title: Text(
+                  promo.code,
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
+                ),
+                subtitle: Text(
+                  '${promo.type} - ${promo.value}',
+                  style: const TextStyle(color: AppPalette.textSecondary, fontSize: 13),
+                ),
+                trailing: promo.isValid 
+                    ? Icon(Icons.check_circle_rounded, color: Colors.green.shade600)
+                    : const Icon(Icons.close_rounded, color: AppPalette.error),
+              ),
             );
           },
         );

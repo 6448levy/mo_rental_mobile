@@ -10,6 +10,8 @@ import '../../modules/driver/bindings/driver_binding.dart'; // Added
 import '../../modules/car_listing/views/car_listing_screen.dart';
 import '../../modules/profile/views/profile_screen.dart';
 import '../../modules/rate_plans/views/rate_plans_screen.dart';
+import '../../modules/chat/pages/chat_screen.dart';
+import 'package:carrental/app/core/themes/app_palette.dart';
 
 
 
@@ -59,9 +61,6 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     final userData = _storage.read('user_data') ?? {};
-    const dark = Color(0xFF1A1A2E);
-    const yellow = Color(0xFFFFC107);
-    const card = Color(0xFF16213E);
 
     // Define screens and titles inside build to support Hot Reload
     final List<Widget> screens = [
@@ -69,6 +68,7 @@ class _MainNavigationState extends State<MainNavigation> {
       CarListingScreen(),
       const DriverView(),
       RatePlansScreen(),
+      const ChatScreen(driverName: 'Driver Match', vehicleInfo: 'Available Models',), // NEW: Replaces profile for now or added alongside
       ProfileScreen(),
     ];
 
@@ -77,13 +77,14 @@ class _MainNavigationState extends State<MainNavigation> {
       'Cars',
       'Driver',
       'Rate Plans',
+      'Chat',
       'Profile',
     ];
 
     return Scaffold(
-      backgroundColor: dark,
+      backgroundColor: AppPalette.pureWhite,
       appBar: AppBar(
-        backgroundColor: dark,
+        backgroundColor: AppPalette.pureWhite,
         elevation: 0,
         centerTitle: false,
         title: Column(
@@ -91,19 +92,19 @@ class _MainNavigationState extends State<MainNavigation> {
           children: [
             Text(
               appBarTitles[_currentIndex],
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: const TextStyle(color: AppPalette.textPrimary, fontWeight: FontWeight.bold),
             ),
             if (_currentIndex == 0 && userData['full_name'] != null)
               Text(
                 "Welcome, ${userData['full_name']}!",
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white54),
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: AppPalette.textSecondary),
               ),
           ],
         ),
         actions: [
-          if (_currentIndex != 4) // Adjust index if needed, Profile is 4
+          if (_currentIndex != 5) // Profile is now 5
             IconButton(
-              icon: const Icon(Icons.logout, color: Colors.white70),
+              icon: const Icon(Icons.logout, color: AppPalette.textPrimary),
               onPressed: () {
                 _authController.logout();
               },
@@ -116,7 +117,7 @@ class _MainNavigationState extends State<MainNavigation> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withOpacity(0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
@@ -125,9 +126,9 @@ class _MainNavigationState extends State<MainNavigation> {
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
-          backgroundColor: card,
-          selectedItemColor: yellow,
-          unselectedItemColor: Colors.white30,
+          backgroundColor: AppPalette.pureWhite,
+          selectedItemColor: AppPalette.brandBlue,
+          unselectedItemColor: AppPalette.textDisabled,
           type: BottomNavigationBarType.fixed,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
           unselectedLabelStyle: const TextStyle(fontSize: 12),
@@ -153,6 +154,11 @@ class _MainNavigationState extends State<MainNavigation> {
               label: "Rates",
             ),
             BottomNavigationBarItem(
+              icon: Icon(Icons.chat_bubble_outline),
+              activeIcon: Icon(Icons.chat_bubble_rounded),
+              label: "Chat",
+            ),
+            BottomNavigationBarItem(
               icon: Icon(Icons.person_outline_rounded),
               activeIcon: Icon(Icons.person_rounded),
               label: "Profile",
@@ -163,3 +169,4 @@ class _MainNavigationState extends State<MainNavigation> {
     );
   }
 }
+

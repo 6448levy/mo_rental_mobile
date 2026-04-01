@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../../../widgets/onboardpage_widget/onboardpage_widget.dart';
 import 'final_onboarding_screen.dart';
+import 'package:carrental/app/core/themes/app_palette.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -61,7 +63,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   height: 10,
                   width: currentPage == i ? 25 : 10,
                   decoration: BoxDecoration(
-                    color: currentPage == i ? Colors.white : Colors.grey,
+                    color: currentPage == i ? AppPalette.brandBlue : AppPalette.textDisabled,
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
@@ -76,8 +78,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             right: 30,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
+                  backgroundColor: AppPalette.brandBlue,
+                  foregroundColor: AppPalette.pureWhite,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14))),

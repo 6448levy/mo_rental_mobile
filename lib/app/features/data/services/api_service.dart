@@ -57,7 +57,10 @@ class ApiService extends GetxService {
         );
       }
 
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      final dynamic _decoded = json.decode(response.body);
+      final Map<String, dynamic> responseData = _decoded is Map<String, dynamic>
+          ? _decoded
+          : {'data': _decoded, 'message': 'Success'};
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         print('🎉 API SUCCESS');
@@ -168,7 +171,10 @@ class ApiService extends GetxService {
         );
       }
 
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      final dynamic _decoded = json.decode(response.body);
+      final Map<String, dynamic> responseData = _decoded is Map<String, dynamic>
+          ? _decoded
+          : {'data': _decoded, 'message': 'Success'};
 
       if (response.statusCode == 200) {
         print('🎉 API SUCCESS');
@@ -252,7 +258,10 @@ class ApiService extends GetxService {
         );
       }
 
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      final dynamic _decoded = json.decode(response.body);
+      final Map<String, dynamic> responseData = _decoded is Map<String, dynamic>
+          ? _decoded
+          : {'data': _decoded, 'message': 'Success'};
 
       if (response.statusCode == 200) {
         print('🎉 PUT API SUCCESS');
@@ -322,7 +331,10 @@ class ApiService extends GetxService {
         );
       }
 
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      final dynamic _decoded = json.decode(response.body);
+      final Map<String, dynamic> responseData = _decoded is Map<String, dynamic>
+          ? _decoded
+          : {'data': _decoded, 'message': 'Success'};
 
       if (response.statusCode == 200) {
         print('🎉 DELETE API SUCCESS');

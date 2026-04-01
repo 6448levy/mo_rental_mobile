@@ -7,7 +7,7 @@ import '../models/booking_model.dart';
 class BookingService {
   /// Fetch bookings from the API with HTML response prevention
   Future<List<BookingModel>> fetchBookings() async {
-    final urlStr = ApiConstants.join('bookings');
+    final urlStr = ApiConstants.join('api/v1/bookings');
     final url = Uri.parse(urlStr);
     
     try {
@@ -41,7 +41,7 @@ class BookingService {
 
   /// Single booking info
   Future<BookingModel> fetchBookingById(String id) async {
-    final urlStr = ApiConstants.join('bookings/$id');
+    final urlStr = ApiConstants.join('api/v1/bookings/$id');
     final url = Uri.parse(urlStr);
     try {
       final response = await http.get(url, headers: {

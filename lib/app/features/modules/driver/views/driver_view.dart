@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:carrental/app/core/themes/app_palette.dart';
 import '../controllers/driver_controller.dart';
 
 import '../widgets/driver_profile_header.dart';
@@ -14,7 +15,7 @@ class DriverView extends GetView<DriverController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[50],
+      color: AppPalette.pureWhite,
       child: SafeArea(
         child: Obx(() {
           // Show loading spinner while profile is loading
@@ -24,9 +25,9 @@ class DriverView extends GetView<DriverController> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
+                   CircularProgressIndicator(color: AppPalette.brandBlue),
                   SizedBox(height: 16),
-                  Text('Loading driver profile...'),
+                  Text('Loading driver profile...', style: TextStyle(color: AppPalette.textSecondary)),
                 ],
               ),
             );
@@ -42,18 +43,19 @@ class DriverView extends GetView<DriverController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.error_outline,
-                        color: Colors.red, size: 48),
+                        color: AppPalette.error, size: 48),
                     const SizedBox(height: 16),
                     Text(
                       controller.profileError.value,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.red),
+                      style: const TextStyle(color: AppPalette.error),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: controller.refreshProfile,
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Retry'),
+                      style: ElevatedButton.styleFrom(backgroundColor: AppPalette.brandBlue),
+                      icon: const Icon(Icons.refresh, color: AppPalette.pureWhite),
+                      label: const Text('Retry', style: TextStyle(color: AppPalette.pureWhite)),
                     ),
                   ],
                 ),
@@ -92,7 +94,7 @@ class DriverView extends GetView<DriverController> {
                   Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
+                      color: AppPalette.brandBlue.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Obx(() => Row(
@@ -166,12 +168,12 @@ class DriverView extends GetView<DriverController> {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.white : Colors.transparent,
+            color: isSelected ? AppPalette.pureWhite : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: AppPalette.brandBlue.withOpacity(0.1),
                       blurRadius: 5,
                       offset: const Offset(0, 2),
                     ),
@@ -183,14 +185,14 @@ class DriverView extends GetView<DriverController> {
             children: [
               Icon(
                 icon,
-                color: isSelected ? Colors.black : Colors.grey[600],
+                color: isSelected ? AppPalette.brandBlue : AppPalette.textSecondary,
                 size: 20,
               ),
               const SizedBox(width: 8),
               Text(
                 title,
                 style: TextStyle(
-                  color: isSelected ? Colors.black : Colors.grey[600],
+                  color: isSelected ? AppPalette.brandBlue : AppPalette.textSecondary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -206,13 +208,13 @@ class DriverView extends GetView<DriverController> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: controller.isOnline.value
-                ? Colors.green[50]
-                : Colors.grey[100],
+                ? Colors.green.shade50
+                : AppPalette.pureWhite,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: controller.isOnline.value
                   ? Colors.green.withOpacity(0.3)
-                  : Colors.transparent,
+                  : AppPalette.outline,
             ),
           ),
           child: Row(
@@ -224,7 +226,7 @@ class DriverView extends GetView<DriverController> {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color:
-                          controller.isOnline.value ? Colors.green : Colors.grey,
+                          controller.isOnline.value ? Colors.green.shade600 : AppPalette.textDisabled,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.power_settings_new,
@@ -241,6 +243,7 @@ class DriverView extends GetView<DriverController> {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
+                          color: AppPalette.textPrimary,
                         ),
                       ),
                       Text(
@@ -248,7 +251,7 @@ class DriverView extends GetView<DriverController> {
                             ? "Receiving requests"
                             : "Go online to start",
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: AppPalette.textSecondary,
                           fontSize: 13,
                         ),
                       ),
@@ -259,7 +262,7 @@ class DriverView extends GetView<DriverController> {
               Switch(
                 value: controller.isOnline.value,
                 onChanged: controller.toggleOnlineStatus,
-                activeColor: Colors.green,
+                activeColor: Colors.green.shade600,
               ),
             ],
           ),

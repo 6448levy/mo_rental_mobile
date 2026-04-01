@@ -2,19 +2,18 @@
 import 'package:flutter/material.dart';
 
 class AppPalette {
-  // Primary Colors from your image
-  static const Color primaryBlue = Color(0xFF047BC1);
-  static const Color darkBlue = Color(0xFF3C425E);
-  static const Color premiumDark = Color(0xFF1A1A2E);
-  static const Color premiumYellow = Color(0xFFFFC107);
-  static const Color premiumCard = Color(0xFF16213E);
-  static const Color pureWhite = Color(0xFFF9FAFB);
-  static const Color softGrey = Color(0xFFA3ABB5);
-  
-  // Additional Indigo shades for depth
-  static const Color indigo = Color(0xFF4F46E5);
-  static const Color deepIndigo = Color(0xFF3730A3);
-  static const Color lightIndigo = Color(0xFF818CF8);
+  // Brand Primary Colors (MoRental Brand Identity)
+  static const Color brandBlue = Color(0xFF0078D4); // Microsoft Azure Blue
+  static const Color brandLightBlue = Color(0xFF50A8E8); // Azure Light Blue accent
+  static const Color pureWhite = Color(0xFFFFFFFF); // Pure White (#FFFFFF)
+  static const Color background = Color(0xFFFFFFFF); // Main background
+
+  // Additional brand neutral shades for text and UI
+  static const Color textPrimary = Color(0xFF1E293B); // Dark grey / black for readability
+  static const Color textSecondary = Color(0xFF64748B); // Lighter text
+  static const Color textDisabled = Color(0xFF94A3B8);
+  static const Color outline = Color(0xFFE2E8F0); // For borders
+  static const Color cardShadow = Color(0x1A000000); // Light shadow for cards
   
   // Semantic colors
   static const Color success = Color(0xFF10B981);
@@ -22,67 +21,13 @@ class AppPalette {
   static const Color error = Color(0xFFEF4444);
   static const Color info = Color(0xFF3B82F6);
   
-  // Neutral shades
-  static const Color background = Color(0xFFF8FAFC);
-  static const Color surface = Color(0xFFFFFFFF);
-  static const Color outline = Color(0xFFE2E8F0);
-  static const Color textPrimary = Color(0xFF1E293B);
-  static const Color textSecondary = Color(0xFF64748B);
-  static const Color textDisabled = Color(0xFF94A3B8);
-  
   // Gradient definitions
-  static const LinearGradient primaryGradient = LinearGradient(
+  static const LinearGradient brandGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [primaryBlue, indigo],
+    colors: [brandBlue, brandLightBlue],
   );
-  
-  static const LinearGradient glassGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      Color(0xFFFFFFFF),
-      Color(0xFFF1F5F9),
-    ],
-  );
-  
-  // Glassmorphism backgrounds
-  static BoxDecoration glassDecoration = BoxDecoration(
-    gradient: const LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [
-        Color.fromRGBO(255, 255, 255, 0.1),
-        Color.fromRGBO(255, 255, 255, 0.05),
-      ],
-    ),
-    borderRadius: BorderRadius.circular(16),
-    border: Border.all(
-      color: Colors.white.withOpacity(0.2),
-      width: 1,
-    ),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.1),
-        blurRadius: 20,
-        offset: const Offset(0, 4),
-      ),
-    ],
-  );
-  
-  static BoxDecoration glassCardDecoration = BoxDecoration(
-    color: Colors.white.withOpacity(0.7),
-    borderRadius: BorderRadius.circular(20),
-    border: Border.all(
-      color: Colors.white.withOpacity(0.3),
-      width: 1,
-    ),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.black.withOpacity(0.1),
-        blurRadius: 30,
-        offset: const Offset(0, 10),
-      ),
-    ],
-  );
-}     
+
+  // Legacy deep blue kept for reference if needed
+  static const Color deepBlue = Color(0xFF0A3D7C);
+}

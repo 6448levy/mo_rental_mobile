@@ -1,7 +1,7 @@
-// lib/presentation/widgets/booking_card.dart
 import 'package:flutter/material.dart';
 import '../../data/models/booking_model.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../app/core/themes/app_palette.dart';
 
 class BookingCard extends StatelessWidget {
   final BookingModel booking;
@@ -13,21 +13,19 @@ class BookingCard extends StatelessWidget {
     required this.onViewDetails
   });
 
-  // Dark/Yellow Theme constants
-  static const _yellow = Color(0xFFFFC107);
-  static const _card = Color(0xFF16213E);
+  // Theme constants - replaced by AppPalette
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: _card,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: AppPalette.outline),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -41,8 +39,8 @@ class BookingCard extends StatelessWidget {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: _yellow.withOpacity(0.1),
-                  child: const Icon(Icons.person, color: _yellow),
+                  backgroundColor: AppPalette.brandBlue.withOpacity(0.1),
+                  child: const Icon(Icons.person, color: AppPalette.brandBlue),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -52,7 +50,7 @@ class BookingCard extends StatelessWidget {
                       Text(
                         booking.driverName,
                         style: GoogleFonts.poppins(
-                          color: Colors.white,
+                          color: AppPalette.textPrimary,
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),
@@ -60,7 +58,7 @@ class BookingCard extends StatelessWidget {
                       Text(
                         booking.carModel,
                         style: GoogleFonts.poppins(
-                          color: Colors.white60,
+                          color: AppPalette.textSecondary,
                           fontSize: 12,
                         ),
                       ),
@@ -86,16 +84,16 @@ class BookingCard extends StatelessWidget {
             ),
           ),
 
-          const Divider(color: Colors.white12, height: 1),
+          const Divider(color: AppPalette.outline, height: 1),
 
           // ── Route Info ──────────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                _buildRouteItem(Icons.radio_button_checked, Colors.greenAccent, "Pickup", booking.pickupLocation),
+                _buildRouteItem(Icons.radio_button_checked, Colors.green.shade600, "Pickup", booking.pickupLocation),
                 const SizedBox(height: 12),
-                _buildRouteItem(Icons.location_on, _yellow, "Destination", booking.destination),
+                _buildRouteItem(Icons.location_on, AppPalette.brandBlue, "Destination", booking.destination),
               ],
             ),
           ),
@@ -111,12 +109,12 @@ class BookingCard extends StatelessWidget {
                   children: [
                     Text(
                       "Price",
-                      style: GoogleFonts.poppins(color: Colors.white38, fontSize: 11),
+                      style: GoogleFonts.poppins(color: AppPalette.textDisabled, fontSize: 11),
                     ),
                     Text(
                       "\$${booking.price.toStringAsFixed(2)}",
                       style: GoogleFonts.poppins(
-                        color: _yellow,
+                        color: AppPalette.brandBlue,
                         fontSize: 17,
                         fontWeight: FontWeight.w800,
                       ),
@@ -128,11 +126,11 @@ class BookingCard extends StatelessWidget {
                   children: [
                     Text(
                       "Date",
-                      style: GoogleFonts.poppins(color: Colors.white38, fontSize: 11),
+                      style: GoogleFonts.poppins(color: AppPalette.textDisabled, fontSize: 11),
                     ),
                     Text(
                       _formatDate(booking.createdAt),
-                      style: GoogleFonts.poppins(color: Colors.white70, fontSize: 12),
+                      style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 12),
                     ),
                   ],
                 ),
@@ -150,13 +148,13 @@ class BookingCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 14),
               decoration: const BoxDecoration(
-                border: Border(top: BorderSide(color: Colors.white12)),
+                border: Border(top: BorderSide(color: AppPalette.outline)),
               ),
               child: Center(
                 child: Text(
                   "View Details",
                   style: GoogleFonts.poppins(
-                    color: _yellow,
+                    color: AppPalette.brandBlue,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
@@ -178,7 +176,7 @@ class BookingCard extends StatelessWidget {
           child: Text(
             value,
             style: GoogleFonts.poppins(
-              color: Colors.white.withOpacity(0.85),
+              color: AppPalette.textPrimary,
               fontSize: 13,
             ),
             overflow: TextOverflow.ellipsis,
@@ -190,11 +188,11 @@ class BookingCard extends StatelessWidget {
 
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
-      case 'active': return Colors.greenAccent;
-      case 'pending': return _yellow;
-      case 'completed': return Colors.blueAccent;
-      case 'cancelled': return Colors.redAccent;
-      default: return Colors.white54;
+      case 'active': return Colors.green.shade600;
+      case 'pending': return Colors.orange.shade600;
+      case 'completed': return AppPalette.brandBlue;
+      case 'cancelled': return Colors.red.shade600;
+      default: return AppPalette.textDisabled;
     }
   }
 

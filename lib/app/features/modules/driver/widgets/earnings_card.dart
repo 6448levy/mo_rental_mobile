@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/themes/app_palette.dart';
 import 'package:get/get.dart';
 import '../controllers/driver_controller.dart';
 
@@ -10,15 +11,11 @@ class EarningsCard extends GetView<DriverController> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.black87, Colors.grey[800]!],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        gradient: AppPalette.brandGradient,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: AppPalette.brandBlue.withOpacity(0.3),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -32,7 +29,7 @@ class EarningsCard extends GetView<DriverController> {
             children: [
               const Text(
                 "Earnings",
-                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(color: AppPalette.pureWhite, fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -42,7 +39,7 @@ class EarningsCard extends GetView<DriverController> {
                 ),
                 child: const Text(
                   "This Week",
-                  style: TextStyle(color: Colors.white, fontSize: 12),
+                  style: TextStyle(color: AppPalette.pureWhite, fontSize: 12, fontWeight: FontWeight.w500),
                 ),
               ),
             ],
@@ -52,20 +49,20 @@ class EarningsCard extends GetView<DriverController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildEarningItem("Today", controller.dailyEarnings),
-              Container(height: 40, width: 1, color: Colors.white.withOpacity(0.2)),
+              Container(height: 40, width: 1, color: AppPalette.pureWhite.withOpacity(0.3)),
               _buildEarningItem("Weekly", controller.weeklyEarnings),
             ],
           ),
           const SizedBox(height: 16),
-          SizedBox(
+           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
               onPressed: () {},
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.white54),
+                side: const BorderSide(color: AppPalette.pureWhite),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
-              child: const Text("View History", style: TextStyle(color: Colors.white)),
+              child: const Text("View History", style: TextStyle(color: AppPalette.pureWhite, fontWeight: FontWeight.bold)),
             ),
           ),
         ],
@@ -80,13 +77,13 @@ class EarningsCard extends GetView<DriverController> {
         children: [
           Text(
             label,
-            style: TextStyle(color: Colors.grey[400], fontSize: 13),
+            style: TextStyle(color: AppPalette.pureWhite.withOpacity(0.7), fontSize: 13),
           ),
           const SizedBox(height: 4),
           Obx(() => Text(
                 "\$${amount.value.toStringAsFixed(2)}",
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppPalette.pureWhite,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),

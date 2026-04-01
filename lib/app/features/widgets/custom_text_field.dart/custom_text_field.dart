@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:carrental/app/core/themes/app_palette.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -34,8 +35,6 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
@@ -44,31 +43,31 @@ class CustomTextField extends StatelessWidget {
       maxLength: maxLength,
       enabled: enabled,
       onChanged: onChanged,
-      style: TextStyle(color: textColor ?? (isDark ? Colors.white : Colors.black)),
+      style: TextStyle(color: textColor ?? AppPalette.textPrimary),
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle: TextStyle(color: (isDark ? Colors.white70 : Colors.black54)),
+        labelStyle: TextStyle(color: AppPalette.textSecondary),
         hintText: hintText,
-        hintStyle: TextStyle(color: (isDark ? Colors.white38 : Colors.black38)),
+        hintStyle: TextStyle(color: AppPalette.textDisabled),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
+          borderSide: BorderSide(color: AppPalette.outline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: isDark ? Colors.white10 : Colors.grey.shade300),
+          borderSide: BorderSide(color: AppPalette.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2),
+          borderSide: BorderSide(color: AppPalette.brandBlue, width: 2),
         ),
         prefixIcon: prefixIcon != null ? IconTheme(
-          data: IconThemeData(color: isDark ? Colors.white70 : Colors.black54),
+          data: IconThemeData(color: AppPalette.textSecondary),
           child: prefixIcon!,
         ) : null,
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: fillColor ?? (isDark ? const Color(0xFF16213E) : Colors.grey[50]),
+        fillColor: fillColor ?? AppPalette.pureWhite,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 18,
@@ -104,20 +103,20 @@ class CustomElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
-          foregroundColor: textColor ?? Colors.white,
+          backgroundColor: backgroundColor ?? AppPalette.brandBlue,
+          foregroundColor: textColor ?? AppPalette.pureWhite,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          elevation: 2,
+          elevation: 0,
         ),
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                  valueColor: AlwaysStoppedAnimation(AppPalette.pureWhite),
                 ),
               )
             : Text(

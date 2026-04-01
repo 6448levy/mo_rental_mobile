@@ -49,7 +49,20 @@ class BookingService extends GetxService {
       print('📊 Status: ${response.statusCode}');
       print('📝 Body: ${response.body}');
 
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      // ✅ Guard: ensure server returned JSON, not an HTML error page
+      final contentType = response.headers['content-type'] ?? '';
+      if (!contentType.contains('application/json')) {
+        print('❌ Expected JSON but got: $contentType');
+        return ApiResponse<BookingModel>(
+          success: false,
+          message: 'Server returned an unexpected response (not JSON). Status: ${response.statusCode}. The booking endpoint may not exist on this server.',
+        );
+      }
+
+      final dynamic _decoded = json.decode(response.body);
+      final Map<String, dynamic> responseData = _decoded is Map<String, dynamic>
+          ? _decoded
+          : {'data': _decoded, 'message': 'Success'};
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = responseData['data'];
@@ -97,7 +110,31 @@ class BookingService extends GetxService {
       print('📊 Status: ${response.statusCode}');
       print('📝 Body: ${response.body}');
 
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      // ✅ Guard: ensure server returned JSON, not an HTML error page
+      final contentType = response.headers['content-type'] ?? '';
+      if (!contentType.contains('application/json')) {
+        print('❌ Expected JSON but got: $contentType');
+        return ApiResponse<List<BookingModel>>(
+          success: false,
+          message: 'Server returned an unexpected response (not JSON). Status: ${response.statusCode}. The booking endpoint may not exist on this server.',
+          data: [],
+        );
+      }
+
+      final dynamic _decoded = json.decode(response.body);
+
+      // If the server returned the list directly (not wrapped in { data: [] })
+      if (_decoded is List) {
+        final bookings = _decoded.map((e) => BookingModel.fromJson(e)).toList();
+        print('✅ Fetched ${bookings.length} bookings (direct list)');
+        return ApiResponse<List<BookingModel>>(
+          success: true,
+          message: 'Bookings fetched successfully',
+          data: bookings,
+        );
+      }
+
+      final Map<String, dynamic> responseData = _decoded as Map<String, dynamic>;
 
       if (response.statusCode == 200) {
         final List<dynamic> rawList = responseData['data'] ?? [];
@@ -136,7 +173,20 @@ class BookingService extends GetxService {
           .get(url, headers: _authHeaders)
           .timeout(_apiService.timeout);
 
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      // ✅ Guard: ensure server returned JSON, not an HTML error page
+      final contentType = response.headers['content-type'] ?? '';
+      if (!contentType.contains('application/json')) {
+        print('❌ Expected JSON but got: $contentType');
+        return ApiResponse<BookingModel>(
+          success: false,
+          message: 'Server returned an unexpected response (not JSON). Status: ${response.statusCode}.',
+        );
+      }
+
+      final dynamic _decoded = json.decode(response.body);
+      final Map<String, dynamic> responseData = _decoded is Map<String, dynamic>
+          ? _decoded
+          : {'data': _decoded, 'message': 'Success'};
 
       if (response.statusCode == 200) {
         return ApiResponse<BookingModel>(

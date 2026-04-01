@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/themes/app_palette.dart';
 import 'package:get/get.dart';
 import '../controllers/driver_controller.dart';
 
@@ -12,7 +13,7 @@ class CarRentalContent extends GetView<DriverController> {
       children: [
         const Text(
           "Active Rental",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
         ),
         const SizedBox(height: 16),
         Obx(() {
@@ -25,7 +26,7 @@ class CarRentalContent extends GetView<DriverController> {
         const SizedBox(height: 24),
         const Text(
           "Upcoming Rentals",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
         ),
         const SizedBox(height: 16),
         // Placeholder list
@@ -39,11 +40,12 @@ class CarRentalContent extends GetView<DriverController> {
   Widget _buildActiveRentalCard(Map<String, dynamic> rental) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppPalette.outline),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppPalette.cardShadow.withOpacity(0.04),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -56,12 +58,12 @@ class CarRentalContent extends GetView<DriverController> {
           Container(
             height: 150,
             width: double.infinity,
-            decoration: const BoxDecoration(
-              color: Colors.grey, // Placeholder color
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            decoration: BoxDecoration(
+              color: AppPalette.brandBlue.withOpacity(0.1),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             ),
             child: const Center(
-              child: Icon(Icons.directions_car, size: 60, color: Colors.white),
+              child: Icon(Icons.directions_car_rounded, size: 60, color: AppPalette.brandBlue),
             ),
           ),
           
@@ -75,17 +77,17 @@ class CarRentalContent extends GetView<DriverController> {
                   children: [
                     Text(
                       rental['carModel'] ?? 'Unknown Vehicle',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.blue[50],
+                        color: AppPalette.brandBlue.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         rental['status'] ?? 'Unknown',
-                        style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12),
+                        style: const TextStyle(color: AppPalette.brandBlue, fontWeight: FontWeight.bold, fontSize: 12),
                       ),
                     ),
                   ],
@@ -93,16 +95,16 @@ class CarRentalContent extends GetView<DriverController> {
                 const SizedBox(height: 4),
                 Text(
                   rental['plateNumber'] ?? '---',
-                  style: TextStyle(color: Colors.grey[600]),
+                  style: TextStyle(color: AppPalette.textSecondary),
                 ),
                 const SizedBox(height: 16),
-                const Divider(),
+                const Divider(color: AppPalette.outline),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildDateColumn("Start Date", rental['startDate']),
-                    const Icon(Icons.arrow_forward, color: Colors.grey, size: 16),
+                    const Icon(Icons.arrow_forward_rounded, color: AppPalette.textDisabled, size: 16),
                     _buildDateColumn("End Date", rental['endDate']),
                   ],
                 ),
@@ -112,15 +114,22 @@ class CarRentalContent extends GetView<DriverController> {
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () {}, // Extend logic
-                        child: const Text("Extend Rental"),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: AppPalette.brandBlue),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                        child: const Text("Extend Rental", style: TextStyle(color: AppPalette.brandBlue)),
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {}, // End trip logic
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                        child: const Text("End Rental", style: TextStyle(color: Colors.white)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppPalette.error,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                        child: const Text("End Rental", style: TextStyle(color: AppPalette.pureWhite, fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ],
@@ -138,17 +147,17 @@ class CarRentalContent extends GetView<DriverController> {
       padding: const EdgeInsets.all(24),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey[300]!),
+        border: Border.all(color: AppPalette.outline),
       ),
       child: Column(
         children: [
-          Icon(Icons.car_rental, size: 40, color: Colors.grey[400]),
+          Icon(Icons.car_rental_rounded, size: 40, color: AppPalette.textDisabled),
           const SizedBox(height: 12),
-          const Text("No active rentals", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+          const Text("No active rentals", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppPalette.textPrimary)),
           const SizedBox(height: 4),
-          const Text("Browse cars to start driving", style: TextStyle(color: Colors.grey)),
+          const Text("Browse cars to start driving", style: TextStyle(color: AppPalette.textSecondary)),
         ],
       ),
     );
@@ -158,9 +167,9 @@ class CarRentalContent extends GetView<DriverController> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: AppPalette.outline),
       ),
       child: Row(
         children: [
@@ -168,34 +177,34 @@ class CarRentalContent extends GetView<DriverController> {
             width: 60,
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.grey[200],
+              color: AppPalette.brandBlue.withOpacity(0.05),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.directions_car, color: Colors.grey),
+            child: const Icon(Icons.directions_car_rounded, color: AppPalette.brandBlue, size: 20),
           ),
           const SizedBox(width: 16),
           const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Toyota Corolla", style: TextStyle(fontWeight: FontWeight.bold)),
-                Text("Mar 20 - Mar 25", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Text("Toyota Corolla", style: TextStyle(fontWeight: FontWeight.bold, color: AppPalette.textPrimary)),
+                Text("Mar 20 - Mar 25", style: TextStyle(color: AppPalette.textSecondary, fontSize: 12)),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right, color: Colors.grey),
+          const Icon(Icons.chevron_right_rounded, color: AppPalette.textDisabled),
         ],
       ),
     );
   }
 
-  Widget _buildDateColumn(String label, String date) {
+   Widget _buildDateColumn(String label, String date) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+        Text(label, style: TextStyle(color: AppPalette.textSecondary, fontSize: 12)),
         const SizedBox(height: 4),
-        Text(date, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(date, style: const TextStyle(fontWeight: FontWeight.bold, color: AppPalette.textPrimary)),
       ],
     );
   }

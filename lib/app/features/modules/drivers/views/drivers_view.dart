@@ -1,33 +1,31 @@
-// lib/app/features/modules/drivers/views/drivers_view.dart
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import '../controllers/drivers_controller.dart';
 import '../../../data/models/driver/driver_profile_model.dart';
+import 'package:carrental/app/core/themes/app_palette.dart';
 
 class DriversView extends GetView<DriversController> {
   const DriversView({super.key});
 
-  static const _yellow = Color(0xFFFFC107);
-  static const _dark = Color(0xFF1A1A2E);
-  static const _card = Color(0xFF16213E);
+  // Theme constants - replaced by AppPalette
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _dark,
+      backgroundColor: AppPalette.pureWhite,
       body: CustomScrollView(
         slivers: [
           // ── Sticky header ──────────────────────────────────────────────────
           SliverAppBar(
             pinned: true,
-            backgroundColor: _dark,
-            foregroundColor: Colors.white,
+            backgroundColor: AppPalette.brandBlue,
+            foregroundColor: AppPalette.pureWhite,
             elevation: 0,
             expandedHeight: 130,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+              icon: const Icon(Icons.arrow_back_ios_new, color: AppPalette.pureWhite),
               onPressed: () => Get.back(),
             ),
             actions: [
@@ -38,10 +36,10 @@ class DriversView extends GetView<DriversController> {
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: _yellow,
+                              color: AppPalette.pureWhite,
                             ),
                           )
-                        : const Icon(Icons.refresh_rounded, color: _yellow),
+                        : const Icon(Icons.refresh_rounded, color: AppPalette.pureWhite),
                     onPressed: () => controller.fetchDrivers(),
                   )),
             ],
@@ -54,7 +52,7 @@ class DriversView extends GetView<DriversController> {
                   Text(
                     'Find a Driver',
                     style: GoogleFonts.poppins(
-                      color: Colors.white,
+                      color: AppPalette.pureWhite,
                       fontWeight: FontWeight.w800,
                       fontSize: 20,
                     ),
@@ -64,7 +62,7 @@ class DriversView extends GetView<DriversController> {
                             ? 'No drivers found'
                             : '${controller.drivers.length} drivers available',
                         style: GoogleFonts.poppins(
-                          color: _yellow,
+                          color: AppPalette.brandLightBlue,
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
                         ),
@@ -73,11 +71,7 @@ class DriversView extends GetView<DriversController> {
               ),
               background: Container(
                 decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF0F3460), Color(0xFF1A1A2E)],
-                  ),
+                  gradient: AppPalette.brandGradient,
                 ),
               ),
             ),
@@ -149,16 +143,16 @@ class DriversView extends GetView<DriversController> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? _yellow : _card,
+          color: selected ? AppPalette.brandBlue : AppPalette.pureWhite,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: selected ? _yellow : Colors.white12,
+            color: selected ? AppPalette.brandBlue : AppPalette.outline,
           ),
         ),
         child: Text(
           label,
           style: GoogleFonts.poppins(
-            color: selected ? Colors.black : Colors.white70,
+            color: selected ? AppPalette.pureWhite : AppPalette.textSecondary,
             fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
             fontSize: 13,
           ),
@@ -169,13 +163,13 @@ class DriversView extends GetView<DriversController> {
 
   Widget _buildShimmerCard() {
     return Shimmer.fromColors(
-      baseColor: _card,
-      highlightColor: const Color(0xFF1E2D4A),
+      baseColor: const Color(0xFFF1F5F9),
+      highlightColor: AppPalette.pureWhite,
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         height: 200,
         decoration: BoxDecoration(
-          color: Colors.white12,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(20),
         ),
       ),
@@ -193,15 +187,15 @@ class DriversView extends GetView<DriversController> {
             height: 90,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: _yellow.withOpacity(0.1),
+              color: AppPalette.brandBlue.withOpacity(0.1),
             ),
-            child: const Icon(Icons.person_search, size: 44, color: _yellow),
+            child: const Icon(Icons.person_search, size: 44, color: AppPalette.brandBlue),
           ),
           const SizedBox(height: 20),
           Text(
             'No Drivers Available',
             style: GoogleFonts.poppins(
-              color: Colors.white,
+              color: AppPalette.textPrimary,
               fontSize: 18,
               fontWeight: FontWeight.w700,
             ),
@@ -209,14 +203,14 @@ class DriversView extends GetView<DriversController> {
           const SizedBox(height: 8),
           Text(
             'Try refreshing or change the filter',
-            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
+            style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 13),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () => controller.fetchDrivers(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: _yellow,
-              foregroundColor: Colors.black,
+              backgroundColor: AppPalette.brandBlue,
+              foregroundColor: AppPalette.pureWhite,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               elevation: 0,
@@ -242,7 +236,7 @@ class DriversView extends GetView<DriversController> {
             Text(
               'Connection Failed',
               style: GoogleFonts.poppins(
-                color: Colors.white,
+                color: AppPalette.textPrimary, // Changed from Colors.white
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
@@ -250,15 +244,15 @@ class DriversView extends GetView<DriversController> {
             const SizedBox(height: 8),
             Text(
               controller.errorMessage.value,
-              style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
+              style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 13),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () => controller.fetchDrivers(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: _yellow,
-                foregroundColor: Colors.black,
+                backgroundColor: AppPalette.brandBlue,
+                foregroundColor: AppPalette.pureWhite,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 elevation: 0,
@@ -281,24 +275,23 @@ class _DriverCard extends StatelessWidget {
 
   const _DriverCard({required this.driver, required this.onBook});
 
-  static const _yellow = Color(0xFFFFC107);
-  static const _card = Color(0xFF16213E);
+  // No changes needed here, handled in card internal build
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: _card,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: driver.isAvailable
-              ? _yellow.withOpacity(0.2)
-              : Colors.white12,
+              ? AppPalette.brandBlue.withOpacity(0.2)
+              : AppPalette.outline,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -322,13 +315,13 @@ class _DriverCard extends StatelessWidget {
                         shape: BoxShape.circle,
                         gradient: LinearGradient(
                           colors: driver.isAvailable
-                              ? [_yellow.withOpacity(0.4), _yellow.withOpacity(0.1)]
-                              : [Colors.white12, Colors.white.withOpacity(0.05)],
+                              ? [AppPalette.brandBlue.withOpacity(0.4), AppPalette.brandBlue.withOpacity(0.1)]
+                              : [const Color(0xFFF1F5F9), Colors.white],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         border: Border.all(
-                          color: driver.isAvailable ? _yellow : Colors.white24,
+                          color: driver.isAvailable ? AppPalette.brandBlue : AppPalette.outline,
                           width: 2,
                         ),
                       ),
@@ -350,9 +343,9 @@ class _DriverCard extends StatelessWidget {
                         width: 16,
                         height: 16,
                         decoration: BoxDecoration(
-                          color: driver.isAvailable ? Colors.greenAccent : Colors.grey,
+                           color: driver.isAvailable ? Colors.green.shade600 : Colors.grey,
                           shape: BoxShape.circle,
-                          border: Border.all(color: _card, width: 2),
+                          border: Border.all(color: AppPalette.pureWhite, width: 2),
                         ),
                       ),
                     ),
@@ -371,10 +364,10 @@ class _DriverCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               driver.displayName,
-                              style: GoogleFonts.poppins(
+                                style: GoogleFonts.poppins(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                                color: AppPalette.textPrimary,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -386,13 +379,13 @@ class _DriverCard extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: _yellow,
+                              color: AppPalette.brandBlue,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
                               '\$${driver.hourlyRate.toStringAsFixed(0)}/hr',
                               style: GoogleFonts.poppins(
-                                color: Colors.black,
+                                color: AppPalette.pureWhite,
                                 fontWeight: FontWeight.w800,
                                 fontSize: 12,
                               ),
@@ -405,22 +398,22 @@ class _DriverCard extends StatelessWidget {
                       // Rating
                       Row(
                         children: [
-                          const Icon(Icons.star_rounded, color: _yellow, size: 16),
+                           const Icon(Icons.star_rounded, color: Colors.orange, size: 16),
                           const SizedBox(width: 3),
                           Text(
                             driver.ratingAverage.toStringAsFixed(1),
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                            ),
+                             style: GoogleFonts.poppins(
+                                color: AppPalette.textPrimary,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
                           ),
                           Text(
                             '  (${driver.ratingCount} reviews)',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white54,
-                              fontSize: 11,
-                            ),
+                             style: GoogleFonts.poppins(
+                                color: AppPalette.textSecondary,
+                                fontSize: 11,
+                              ),
                           ),
                         ],
                       ),
@@ -449,7 +442,7 @@ class _DriverCard extends StatelessWidget {
             ),
 
             const SizedBox(height: 14),
-            const Divider(color: Colors.white12, height: 1),
+            const Divider(color: AppPalette.outline, height: 1),
             const SizedBox(height: 14),
 
             // ── Bottom row: Status + Book Now ─────────────────────────────
@@ -465,8 +458,8 @@ class _DriverCard extends StatelessWidget {
                       height: 8,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: driver.isAvailable
-                            ? Colors.greenAccent
+                         color: driver.isAvailable
+                            ? Colors.green.shade600
                             : Colors.grey,
                       ),
                     ),
@@ -474,9 +467,9 @@ class _DriverCard extends StatelessWidget {
                     Text(
                       driver.isAvailable ? 'Online' : 'Offline',
                       style: GoogleFonts.poppins(
-                        color: driver.isAvailable
-                            ? Colors.greenAccent
-                            : Colors.white54,
+                         color: driver.isAvailable
+                            ? Colors.green.shade600
+                            : AppPalette.textDisabled,
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
                       ),
@@ -488,10 +481,10 @@ class _DriverCard extends StatelessWidget {
                 ElevatedButton(
                   onPressed: driver.isAvailable ? onBook : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: driver.isAvailable ? _yellow : Colors.white12,
-                    disabledBackgroundColor: Colors.white10,
+                    backgroundColor: driver.isAvailable ? AppPalette.brandBlue : const Color(0xFFF1F5F9),
+                    disabledBackgroundColor: const Color(0xFFF1F5F9),
                     foregroundColor:
-                        driver.isAvailable ? Colors.black : Colors.white38,
+                        driver.isAvailable ? AppPalette.pureWhite : AppPalette.textDisabled,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -524,7 +517,7 @@ class _DriverCard extends StatelessWidget {
         style: GoogleFonts.poppins(
           fontSize: 26,
           fontWeight: FontWeight.w800,
-          color: _yellow,
+           color: AppPalette.brandBlue,
         ),
       ),
     );
@@ -534,18 +527,18 @@ class _DriverCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.06),
+        color: const Color(0xFFF1F5F9),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 11, color: Colors.white54),
+           Icon(icon, size: 11, color: AppPalette.textSecondary),
           const SizedBox(width: 4),
           Text(
             label,
-            style: GoogleFonts.poppins(
-              color: Colors.white60,
+             style: GoogleFonts.poppins(
+              color: AppPalette.textSecondary,
               fontSize: 11,
             ),
           ),

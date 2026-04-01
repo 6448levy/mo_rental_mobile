@@ -1,6 +1,5 @@
-import 'dart:convert'; // ADD THIS
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http; // ADD THIS
 import '../models/auth_models/api_response.dart';
 import '../models/rate_plan/rate_plan_request.dart';
 import '../models/rate_plan/rate_plan_response.dart';
@@ -13,9 +12,9 @@ class RatePlanService extends GetxService {
     required String token,
     RatePlanRequest? request,
   }) async {
-    print('📊 RATE PLANS REQUEST');
-    print('🔑 Token: ${token.substring(0, 20)}...');
-    print('📋 Query Params: ${request?.toQueryParams()}');
+    debugPrint('📊 RATE PLANS REQUEST');
+    debugPrint('🔑 Token: ${token.substring(0, 20)}...');
+    debugPrint('📋 Query Params: ${request?.toQueryParams()}');
 
     final headers = {
       'Authorization': 'Bearer $token',
@@ -38,8 +37,8 @@ class RatePlanService extends GetxService {
     required String token,
     required Map<String, dynamic> data,
   }) async {
-    print('➕ CREATE RATE PLAN');
-    print('📊 Data: $data');
+    debugPrint('➕ CREATE RATE PLAN');
+    debugPrint('📊 Data: $data');
 
     final headers = {
       'Authorization': 'Bearer $token',
@@ -59,8 +58,8 @@ class RatePlanService extends GetxService {
     required String planId,
     required Map<String, dynamic> data,
   }) async {
-    print('✏️ UPDATE RATE PLAN: $planId');
-    print('📊 Data: $data');
+    debugPrint('✏️ UPDATE RATE PLAN: $planId');
+    debugPrint('📊 Data: $data');
 
     final headers = {
       'Authorization': 'Bearer $token',
@@ -79,7 +78,7 @@ class RatePlanService extends GetxService {
     required String token,
     required String planId,
   }) async {
-    print('🗑️ DELETE RATE PLAN: $planId');
+    debugPrint('🗑️ DELETE RATE PLAN: $planId');
 
     final headers = {
       'Authorization': 'Bearer $token',

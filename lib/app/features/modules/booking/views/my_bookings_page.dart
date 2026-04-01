@@ -1,34 +1,32 @@
-// lib/app/features/modules/booking/views/my_bookings_page.dart
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import '../controllers/booking_controller.dart';
 import '../../../data/models/booking/booking_model.dart';
+import '../../../../core/themes/app_palette.dart';
 
 class MyBookingsPage extends GetView<BookingController> {
   const MyBookingsPage({super.key});
 
-  static const _yellow = Color(0xFFFFC107);
-  static const _dark = Color(0xFF1A1A2E);
-  static const _card = Color(0xFF16213E);
+  // Theme constants - replaced by AppPalette
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _dark,
+      backgroundColor: AppPalette.pureWhite,
       appBar: AppBar(
-        backgroundColor: _dark,
-        foregroundColor: Colors.white,
+        backgroundColor: AppPalette.brandBlue,
+        foregroundColor: AppPalette.pureWhite,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios_new, color: AppPalette.pureWhite),
           onPressed: () => Get.back(),
         ),
         title: Text(
           'My Bookings',
           style: GoogleFonts.poppins(
-            color: Colors.white,
+            color: AppPalette.pureWhite,
             fontWeight: FontWeight.w700,
             fontSize: 18,
           ),
@@ -36,7 +34,7 @@ class MyBookingsPage extends GetView<BookingController> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh_rounded, color: _yellow),
+            icon: const Icon(Icons.refresh_rounded, color: AppPalette.pureWhite),
             onPressed: () => controller.fetchBookings(),
             tooltip: 'Refresh',
           ),
@@ -61,8 +59,8 @@ class MyBookingsPage extends GetView<BookingController> {
         // Booking list
         return RefreshIndicator(
           onRefresh: () => controller.fetchBookings(),
-          color: _yellow,
-          backgroundColor: _card,
+          color: AppPalette.brandBlue,
+          backgroundColor: AppPalette.pureWhite,
           child: ListView.builder(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
             itemCount: controller.bookings.length,
@@ -84,7 +82,7 @@ class MyBookingsPage extends GetView<BookingController> {
       duration: Duration(milliseconds: 200 + index * 50),
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: _card,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: statusColor.withOpacity(0.25),
@@ -92,7 +90,7 @@ class MyBookingsPage extends GetView<BookingController> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -119,7 +117,7 @@ class MyBookingsPage extends GetView<BookingController> {
                           ? '#${booking.id.substring(booking.id.length - 8).toUpperCase()}'
                           : '#${booking.id.toUpperCase()}',
                       style: GoogleFonts.sourceCodePro(
-                        color: Colors.white60,
+                        color: AppPalette.textSecondary,
                         fontSize: 12,
                       ),
                     ),
@@ -143,7 +141,7 @@ class MyBookingsPage extends GetView<BookingController> {
                       height: 50,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: _yellow.withOpacity(0.15),
+                        color: AppPalette.brandBlue.withOpacity(0.15),
                       ),
                       child: booking.driverImage != null
                           ? ClipOval(
@@ -160,8 +158,8 @@ class MyBookingsPage extends GetView<BookingController> {
                                 style: GoogleFonts.poppins(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w700,
-                                  color: _yellow,
-                                ),
+                                   color: AppPalette.brandBlue,
+                                 ),
                               ),
                             ),
                     ),
@@ -175,7 +173,7 @@ class MyBookingsPage extends GetView<BookingController> {
                                 ? booking.driverName!
                                 : 'Driver',
                             style: GoogleFonts.poppins(
-                              color: Colors.white,
+                              color: AppPalette.textPrimary,
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
                             ),
@@ -183,8 +181,8 @@ class MyBookingsPage extends GetView<BookingController> {
                           if (booking.carModel?.isNotEmpty == true)
                             Text(
                               booking.carModel!,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white60,
+                               style: GoogleFonts.poppins(
+                                color: AppPalette.textSecondary,
                                 fontSize: 12,
                               ),
                             ),
@@ -198,7 +196,7 @@ class MyBookingsPage extends GetView<BookingController> {
                         Text(
                           '\$${booking.price.toStringAsFixed(2)}',
                           style: GoogleFonts.poppins(
-                            color: _yellow,
+                            color: AppPalette.brandBlue,
                             fontSize: 18,
                             fontWeight: FontWeight.w800,
                           ),
@@ -206,7 +204,7 @@ class MyBookingsPage extends GetView<BookingController> {
                         Text(
                           'Total',
                           style: GoogleFonts.poppins(
-                            color: Colors.white38,
+                            color: AppPalette.textDisabled,
                             fontSize: 10,
                           ),
                         ),
@@ -216,7 +214,7 @@ class MyBookingsPage extends GetView<BookingController> {
                 ),
 
                 const SizedBox(height: 14),
-                const Divider(color: Colors.white12, height: 1),
+                const Divider(color: AppPalette.outline, height: 1),
                 const SizedBox(height: 14),
 
                 // ── Route ─────────────────────────────────────────────────
@@ -225,14 +223,13 @@ class MyBookingsPage extends GetView<BookingController> {
                     // Left: icons
                     Column(
                       children: [
-                        const Icon(Icons.radio_button_checked, color: Colors.greenAccent, size: 14),
+                        Icon(Icons.radio_button_checked, color: Colors.green.shade600, size: 14),
                         Container(
                           width: 1,
                           height: 20,
-                          margin: const EdgeInsets.symmetric(vertical: 3),
-                          color: Colors.white24,
+                          color: AppPalette.outline,
                         ),
-                        const Icon(Icons.location_on, color: _yellow, size: 14),
+                        const Icon(Icons.location_on, color: AppPalette.brandBlue, size: 14),
                       ],
                     ),
                     const SizedBox(width: 10),
@@ -243,8 +240,8 @@ class MyBookingsPage extends GetView<BookingController> {
                         children: [
                           Text(
                             booking.pickupLocation,
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
+                           style: GoogleFonts.poppins(
+                              color: AppPalette.textPrimary,
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),
@@ -253,7 +250,7 @@ class MyBookingsPage extends GetView<BookingController> {
                           Text(
                             booking.destination,
                             style: GoogleFonts.poppins(
-                              color: Colors.white,
+                              color: AppPalette.textPrimary,
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),
@@ -268,12 +265,12 @@ class MyBookingsPage extends GetView<BookingController> {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Icon(Icons.calendar_today, color: Colors.white38, size: 12),
+                      const Icon(Icons.calendar_today, color: AppPalette.textDisabled, size: 12),
                       const SizedBox(width: 6),
                       Text(
                         _formatDate(booking.createdAt),
                         style: GoogleFonts.poppins(
-                          color: Colors.white38,
+                          color: AppPalette.textDisabled,
                           fontSize: 11,
                         ),
                       ),
@@ -287,7 +284,7 @@ class MyBookingsPage extends GetView<BookingController> {
           // ── View Details Button ────────────────────────────────────────
           Container(
             decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.white12)),
+              border: Border(top: BorderSide(color: AppPalette.outline)),
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
             ),
             child: TextButton(
@@ -304,13 +301,13 @@ class MyBookingsPage extends GetView<BookingController> {
                   Text(
                     'View Details',
                     style: GoogleFonts.poppins(
-                      color: _yellow,
+                      color: AppPalette.brandBlue,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const Icon(Icons.arrow_forward_ios, size: 12, color: _yellow),
+                  const Icon(Icons.arrow_forward_ios, size: 12, color: AppPalette.brandBlue),
                 ],
               ),
             ),
@@ -342,11 +339,11 @@ class MyBookingsPage extends GetView<BookingController> {
   }
 
   Color _statusColor(BookingModel booking) {
-    if (booking.isActive) return Colors.greenAccent;
-    if (booking.isPending) return _yellow;
-    if (booking.isCompleted) return Colors.blueAccent;
-    if (booking.isCancelled) return Colors.redAccent;
-    return Colors.white54;
+    if (booking.isActive) return Colors.green.shade600;
+    if (booking.isPending) return Colors.orange.shade600;
+    if (booking.isCompleted) return AppPalette.brandBlue;
+    if (booking.isCancelled) return Colors.red.shade600;
+    return AppPalette.textDisabled;
   }
 
   // ── Bottom sheet with full booking details ──────────────────────────────────
@@ -355,7 +352,7 @@ class MyBookingsPage extends GetView<BookingController> {
     Get.bottomSheet(
       Container(
         decoration: const BoxDecoration(
-          color: Color(0xFF16213E),
+          color: AppPalette.pureWhite,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         padding: const EdgeInsets.all(24),
@@ -368,7 +365,7 @@ class MyBookingsPage extends GetView<BookingController> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: AppPalette.outline,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -411,7 +408,7 @@ class MyBookingsPage extends GetView<BookingController> {
             width: 110,
             child: Text(
               label,
-              style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
+              style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 13),
             ),
           ),
           const SizedBox(width: 8),
@@ -419,7 +416,7 @@ class MyBookingsPage extends GetView<BookingController> {
             child: Text(
               value,
               style: GoogleFonts.poppins(
-                color: Colors.white,
+                color: AppPalette.textPrimary,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -434,8 +431,8 @@ class MyBookingsPage extends GetView<BookingController> {
 
   Widget _buildShimmerList() {
     return Shimmer.fromColors(
-      baseColor: _card,
-      highlightColor: const Color(0xFF1E2D4A),
+      baseColor: const Color(0xFFF1F5F9),
+      highlightColor: AppPalette.pureWhite,
       child: ListView.builder(
         padding: const EdgeInsets.all(20),
         itemCount: 5,
@@ -461,15 +458,15 @@ class MyBookingsPage extends GetView<BookingController> {
             height: 100,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: _yellow.withOpacity(0.1),
+              color: AppPalette.brandBlue.withOpacity(0.1),
             ),
-            child: const Icon(Icons.calendar_today_outlined, size: 48, color: _yellow),
+            child: const Icon(Icons.calendar_today_outlined, size: 48, color: AppPalette.brandBlue),
           ),
           const SizedBox(height: 24),
           Text(
             'No Bookings Yet',
             style: GoogleFonts.poppins(
-              color: Colors.white,
+              color: AppPalette.textPrimary,
               fontSize: 20,
               fontWeight: FontWeight.w700,
             ),
@@ -477,15 +474,15 @@ class MyBookingsPage extends GetView<BookingController> {
           const SizedBox(height: 8),
           Text(
             'Your booking history will appear here\nafter you make your first booking.',
-            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 14, height: 1.6),
+            style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 14, height: 1.6),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 28),
           ElevatedButton.icon(
             onPressed: () => Get.back(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: _yellow,
-              foregroundColor: Colors.black,
+              backgroundColor: AppPalette.brandBlue,
+              foregroundColor: AppPalette.pureWhite,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
               elevation: 0,
@@ -521,15 +518,15 @@ class MyBookingsPage extends GetView<BookingController> {
             const SizedBox(height: 8),
             Text(
               controller.errorMessage.value,
-              style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
+              style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 13),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: () => controller.fetchBookings(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: _yellow,
-                foregroundColor: Colors.black,
+                backgroundColor: AppPalette.brandBlue,
+                foregroundColor: AppPalette.pureWhite,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                 elevation: 0,

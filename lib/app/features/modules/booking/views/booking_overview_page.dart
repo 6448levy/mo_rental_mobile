@@ -1,27 +1,24 @@
-// lib/app/features/modules/booking/views/booking_overview_page.dart
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/booking_controller.dart';
-import '../../../../../../app/routes/app_routes.dart';
+import 'package:carrental/app/routes/app_routes.dart';
+import 'package:carrental/app/core/themes/app_palette.dart';
 
 class BookingOverviewPage extends GetView<BookingController> {
   const BookingOverviewPage({super.key});
 
-  // Brand accent colour
-  static const _yellow = Color(0xFFFFC107);
-  static const _dark = Color(0xFF1A1A2E);
-  static const _card = Color(0xFF16213E);
+  // Theme constants - replaced by AppPalette
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _dark,
+      backgroundColor: AppPalette.pureWhite,
       body: Obx(() {
         final driver = controller.selectedDriver.value;
         if (driver == null) {
           return const Center(
-            child: Text('No driver selected', style: TextStyle(color: Colors.white)),
+            child: Text('No driver selected', style: TextStyle(color: AppPalette.textPrimary)),
           );
         }
 
@@ -31,16 +28,16 @@ class BookingOverviewPage extends GetView<BookingController> {
             SliverAppBar(
               expandedHeight: 60,
               floating: true,
-              backgroundColor: _dark,
-              foregroundColor: Colors.white,
+              backgroundColor: AppPalette.brandBlue,
+              foregroundColor: AppPalette.pureWhite,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                icon: Icon(Icons.arrow_back_ios_new, color: AppPalette.pureWhite),
                 onPressed: () => Get.back(),
               ),
               title: Text(
                 'Booking Overview',
                 style: GoogleFonts.poppins(
-                  color: Colors.white,
+                  color: AppPalette.pureWhite,
                   fontWeight: FontWeight.w700,
                   fontSize: 18,
                 ),
@@ -62,12 +59,12 @@ class BookingOverviewPage extends GetView<BookingController> {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.access_time, color: _yellow, size: 18),
+                            const Icon(Icons.access_time, color: AppPalette.brandBlue, size: 18),
                             const SizedBox(width: 6),
                             Text(
                               'Pickup: ${_currentTime()}',
                               style: GoogleFonts.poppins(
-                                color: Colors.white70,
+                                color: AppPalette.textSecondary,
                                 fontSize: 13,
                               ),
                             ),
@@ -75,11 +72,11 @@ class BookingOverviewPage extends GetView<BookingController> {
                         ),
                         TextButton.icon(
                           onPressed: () {},
-                          icon: const Icon(Icons.my_location, size: 14, color: _yellow),
+                          icon: const Icon(Icons.my_location, size: 14, color: AppPalette.brandBlue),
                           label: Text(
                             'Track driver',
                             style: GoogleFonts.poppins(
-                              color: _yellow,
+                              color: AppPalette.brandBlue,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                             ),
@@ -94,9 +91,16 @@ class BookingOverviewPage extends GetView<BookingController> {
                     Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: _card,
+                        color: AppPalette.pureWhite,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: _yellow.withValues(alpha: 0.3), width: 1),
+                        border: Border.all(color: AppPalette.outline, width: 1),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Column(
                         children: [
@@ -106,15 +110,15 @@ class BookingOverviewPage extends GetView<BookingController> {
                             child: Container(
                               height: 180,
                               width: double.infinity,
-                              color: const Color(0xFF0F3460),
+                              color: AppPalette.brandBlue.withOpacity(0.05),
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
                                   // Animated car icon
-                                  const Icon(
+                                  Icon(
                                     Icons.directions_car,
                                     size: 90,
-                                    color: Color(0xFF1A6FA8),
+                                    color: AppPalette.brandBlue.withOpacity(0.35),
                                   ),
                                   // Yellow glow
                                   Positioned.fill(
@@ -122,7 +126,7 @@ class BookingOverviewPage extends GetView<BookingController> {
                                       decoration: BoxDecoration(
                                         gradient: RadialGradient(
                                           colors: [
-                                            _yellow.withValues(alpha: 0.12),
+                                            AppPalette.brandBlue.withValues(alpha: 0.1),
                                             Colors.transparent,
                                           ],
                                           radius: 0.8,
@@ -139,7 +143,7 @@ class BookingOverviewPage extends GetView<BookingController> {
                                         vertical: 6,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: _yellow,
+                                        color: AppPalette.brandBlue,
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                       child: Text(
@@ -147,7 +151,7 @@ class BookingOverviewPage extends GetView<BookingController> {
                                         style: GoogleFonts.poppins(
                                           fontWeight: FontWeight.w700,
                                           fontSize: 13,
-                                          color: Colors.black,
+                                          color: AppPalette.pureWhite,
                                         ),
                                       ),
                                     ),
@@ -165,7 +169,7 @@ class BookingOverviewPage extends GetView<BookingController> {
                                 // Avatar
                                 CircleAvatar(
                                   radius: 24,
-                                  backgroundColor: _yellow.withValues(alpha: 0.2),
+                                  backgroundColor: AppPalette.brandBlue.withValues(alpha: 0.2),
                                   backgroundImage: driver.profileImage != null
                                       ? NetworkImage(driver.profileImage!)
                                       : null,
@@ -177,7 +181,7 @@ class BookingOverviewPage extends GetView<BookingController> {
                                           style: GoogleFonts.poppins(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
-                                            color: _yellow,
+                                            color: AppPalette.brandBlue,
                                           ),
                                         )
                                       : null,
@@ -190,19 +194,19 @@ class BookingOverviewPage extends GetView<BookingController> {
                                       Text(
                                         driver.displayName,
                                         style: GoogleFonts.poppins(
-                                          color: Colors.white,
+                                          color: AppPalette.textPrimary,
                                           fontWeight: FontWeight.w700,
                                           fontSize: 15,
                                         ),
                                       ),
                                       Row(
                                         children: [
-                                          const Icon(Icons.star, color: _yellow, size: 14),
+                                          const Icon(Icons.star, color: Colors.orange, size: 14),
                                           const SizedBox(width: 4),
                                           Text(
                                             '${driver.ratingAverage.toStringAsFixed(1)} · ${driver.yearsExperience} yrs exp',
                                             style: GoogleFonts.poppins(
-                                              color: Colors.white60,
+                                              color: AppPalette.textSecondary,
                                               fontSize: 12,
                                             ),
                                           ),
@@ -217,7 +221,7 @@ class BookingOverviewPage extends GetView<BookingController> {
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: _yellow,
+                                    color: AppPalette.brandBlue,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Text(
@@ -225,7 +229,7 @@ class BookingOverviewPage extends GetView<BookingController> {
                                     style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.w800,
                                       fontSize: 14,
-                                      color: Colors.black,
+                                      color: AppPalette.pureWhite,
                                     ),
                                   ),
                                 ),
@@ -243,21 +247,29 @@ class BookingOverviewPage extends GetView<BookingController> {
                     const SizedBox(height: 10),
                     Container(
                       decoration: BoxDecoration(
-                        color: _card,
+                        color: AppPalette.pureWhite,
                         borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppPalette.outline),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Column(
                         children: [
                           _locationTile(
                             icon: Icons.radio_button_checked,
-                            color: Colors.greenAccent,
+                            color: Colors.green.shade600,
                             label: 'Pickup',
                             controller: controller.pickupController,
                           ),
-                          Divider(color: Colors.white12, height: 1, indent: 56),
+                          Divider(color: AppPalette.outline, height: 1, indent: 56),
                           _locationTile(
                             icon: Icons.location_on,
-                            color: _yellow,
+                            color: AppPalette.brandBlue,
                             label: 'Destination',
                             controller: controller.destinationController,
                           ),
@@ -277,11 +289,18 @@ class BookingOverviewPage extends GetView<BookingController> {
                         child: Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: _card,
+                            color: AppPalette.pureWhite,
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: Colors.white12,
+                              color: AppPalette.outline,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
                           ),
                           child: Row(
                             children: [
@@ -292,7 +311,7 @@ class BookingOverviewPage extends GetView<BookingController> {
                                   color: const Color(0xFF1565C0),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.credit_card,
                                   color: Colors.white,
                                   size: 20,
@@ -303,13 +322,13 @@ class BookingOverviewPage extends GetView<BookingController> {
                                 child: Text(
                                   controller.selectedPaymentMethod.value,
                                   style: GoogleFonts.poppins(
-                                    color: Colors.white,
+                                    color: AppPalette.textPrimary,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
-                              const Icon(Icons.chevron_right, color: Colors.white54),
+                              const Icon(Icons.chevron_right, color: AppPalette.textSecondary),
                             ],
                           ),
                         ),
@@ -324,15 +343,23 @@ class BookingOverviewPage extends GetView<BookingController> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: _card,
+                        color: AppPalette.pureWhite,
                         borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppPalette.outline),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Column(
                         children: [
                           _costRow('Hourly Rate', '\$${driver.hourlyRate.toStringAsFixed(0)}/hr'),
                           const SizedBox(height: 8),
                           _costRow('Service Fee', '\$2.00'),
-                          const Divider(color: Colors.white12, height: 24),
+                          const Divider(color: AppPalette.outline, height: 24),
                           _costRow(
                             'Estimated Total',
                             '\$${(driver.hourlyRate + 2).toStringAsFixed(2)}',
@@ -350,16 +377,24 @@ class BookingOverviewPage extends GetView<BookingController> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
-                        color: _card,
+                        color: AppPalette.pureWhite,
                         borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: AppPalette.outline),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Row(
                         children: [
                           Container(
                             width: 10,
                             height: 10,
-                            decoration: const BoxDecoration(
-                              color: Colors.greenAccent,
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade600,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -367,7 +402,7 @@ class BookingOverviewPage extends GetView<BookingController> {
                           Text(
                             driver.isAvailable ? 'Driver Available — Ready to go' : 'Driver Offline',
                             style: GoogleFonts.poppins(
-                              color: driver.isAvailable ? Colors.greenAccent : Colors.white54,
+                              color: driver.isAvailable ? Colors.green.shade600 : AppPalette.textDisabled,
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
                             ),
@@ -410,8 +445,8 @@ class BookingOverviewPage extends GetView<BookingController> {
                               ? null
                               : () => controller.confirmBooking(),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: _yellow,
-                            disabledBackgroundColor: _yellow.withValues(alpha: 0.5),
+                            backgroundColor: AppPalette.brandBlue,
+                            disabledBackgroundColor: AppPalette.brandBlue.withValues(alpha: 0.5),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -423,13 +458,13 @@ class BookingOverviewPage extends GetView<BookingController> {
                                   height: 22,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2.5,
-                                    color: Colors.black,
+                                    color: AppPalette.pureWhite,
                                   ),
                                 )
                               : Text(
                                   'Confirm & Pay',
                                   style: GoogleFonts.poppins(
-                                    color: Colors.black,
+                                    color: AppPalette.pureWhite,
                                     fontWeight: FontWeight.w800,
                                     fontSize: 16,
                                   ),
@@ -454,7 +489,7 @@ class BookingOverviewPage extends GetView<BookingController> {
   Widget _sectionLabel(String text) => Text(
         text,
         style: GoogleFonts.poppins(
-          color: Colors.white70,
+          color: AppPalette.textSecondary,
           fontSize: 12,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.8,
@@ -476,10 +511,10 @@ class BookingOverviewPage extends GetView<BookingController> {
           Expanded(
             child: TextField(
               controller: controller,
-              style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
+              style: GoogleFonts.poppins(color: AppPalette.textPrimary, fontSize: 14),
               decoration: InputDecoration(
                 labelText: label,
-                labelStyle: GoogleFonts.poppins(color: Colors.white54, fontSize: 12),
+                labelStyle: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 12),
                 border: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
@@ -498,7 +533,7 @@ class BookingOverviewPage extends GetView<BookingController> {
         Text(
           label,
           style: GoogleFonts.poppins(
-            color: isTotal ? Colors.white : Colors.white60,
+            color: isTotal ? AppPalette.textPrimary : AppPalette.textSecondary,
             fontSize: isTotal ? 15 : 13,
             fontWeight: isTotal ? FontWeight.w700 : FontWeight.w400,
           ),
@@ -506,7 +541,7 @@ class BookingOverviewPage extends GetView<BookingController> {
         Text(
           value,
           style: GoogleFonts.poppins(
-            color: isTotal ? _yellow : Colors.white,
+            color: isTotal ? AppPalette.brandBlue : AppPalette.textPrimary,
             fontSize: isTotal ? 16 : 13,
             fontWeight: isTotal ? FontWeight.w800 : FontWeight.w500,
           ),
@@ -518,20 +553,20 @@ class BookingOverviewPage extends GetView<BookingController> {
   void _showCancelDialog() {
     Get.dialog(
       AlertDialog(
-        backgroundColor: const Color(0xFF16213E),
+        backgroundColor: AppPalette.pureWhite,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           'Cancel Ride?',
-          style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w700),
+          style: GoogleFonts.poppins(color: AppPalette.textPrimary, fontWeight: FontWeight.w700),
         ),
         content: Text(
           'Are you sure you want to cancel this ride?',
-          style: GoogleFonts.poppins(color: Colors.white70),
+          style: GoogleFonts.poppins(color: AppPalette.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text('Keep Ride', style: GoogleFonts.poppins(color: Colors.white70)),
+            child: Text('Keep Ride', style: GoogleFonts.poppins(color: AppPalette.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -544,7 +579,7 @@ class BookingOverviewPage extends GetView<BookingController> {
             ),
             child: Text(
               'Cancel Ride',
-              style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w600),
+              style: GoogleFonts.poppins(color: AppPalette.pureWhite, fontWeight: FontWeight.w600),
             ),
           ),
         ],

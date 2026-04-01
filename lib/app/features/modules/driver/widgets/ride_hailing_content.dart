@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/themes/app_palette.dart';
 import 'package:get/get.dart';
 import '../controllers/driver_controller.dart';
 
@@ -40,17 +41,18 @@ class RideHailingContent extends GetView<DriverController> {
       height: 200,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: AppPalette.brandBlue.withOpacity(0.04),
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppPalette.outline),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.cloud_off, size: 50, color: Colors.grey[400]),
+          Icon(Icons.cloud_off_rounded, size: 50, color: AppPalette.textDisabled),
           const SizedBox(height: 10),
           Text(
             "You are offline",
-            style: TextStyle(color: Colors.grey[600], fontSize: 16),
+            style: TextStyle(color: AppPalette.textSecondary, fontSize: 16),
           ),
         ],
       ),
@@ -63,14 +65,14 @@ class RideHailingContent extends GetView<DriverController> {
       height: 300,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.blue[50],
+        color: AppPalette.brandBlue.withOpacity(0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blue.withOpacity(0.2)),
+        border: Border.all(color: AppPalette.brandBlue.withOpacity(0.1)),
       ),
       child: Stack(
         children: [
           Center(
-            child: Icon(Icons.map, size: 50, color: Colors.blue[200]),
+            child: Icon(Icons.map_rounded, size: 50, color: AppPalette.brandBlue.withOpacity(0.2)),
           ),
           Positioned(
             bottom: 16,
@@ -78,6 +80,8 @@ class RideHailingContent extends GetView<DriverController> {
             child: FloatingActionButton(
               onPressed: () {},
               mini: true,
+              backgroundColor: AppPalette.brandBlue,
+              foregroundColor: AppPalette.pureWhite,
               child: const Icon(Icons.my_location),
             ),
           ),
@@ -90,11 +94,12 @@ class RideHailingContent extends GetView<DriverController> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppPalette.outline),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppPalette.cardShadow.withOpacity(0.04),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -105,10 +110,10 @@ class RideHailingContent extends GetView<DriverController> {
           const SizedBox(
             height: 20,
             width: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
+            child: CircularProgressIndicator(strokeWidth: 2, color: AppPalette.brandBlue),
           ),
           const SizedBox(width: 16),
-          const Text("Searching for rides..."),
+          const Text("Searching for rides...", style: TextStyle(color: AppPalette.textPrimary, fontWeight: FontWeight.w500)),
         ],
       ),
     );
@@ -118,11 +123,12 @@ class RideHailingContent extends GetView<DriverController> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppPalette.brandBlue.withOpacity(0.3)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: AppPalette.brandBlue.withOpacity(0.1),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -136,15 +142,15 @@ class RideHailingContent extends GetView<DriverController> {
             children: [
               const Text(
                 "New Ride Request!",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
               ),
               Text(
                 "\$${request['fare']}",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green.shade700),
               ),
             ],
           ),
-          const Divider(height: 30),
+          const Divider(height: 30, color: AppPalette.outline),
           _buildLocationRow(Icons.my_location, request['pickup']),
           const SizedBox(height: 12),
           _buildLocationRow(Icons.location_on, request['dropoff']),
@@ -156,10 +162,10 @@ class RideHailingContent extends GetView<DriverController> {
                   onPressed: () => controller.rejectRequest(),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: const BorderSide(color: Colors.red),
+                    side: const BorderSide(color: AppPalette.error),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text("Reject", style: TextStyle(color: Colors.red)),
+                  child: const Text("Reject", style: TextStyle(color: AppPalette.error, fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(width: 16),
@@ -167,11 +173,11 @@ class RideHailingContent extends GetView<DriverController> {
                 child: ElevatedButton(
                   onPressed: () => controller.acceptRequest(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.green.shade600,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text("Accept", style: TextStyle(color: Colors.white)),
+                  child: const Text("Accept", style: TextStyle(color: AppPalette.pureWhite, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -185,7 +191,7 @@ class RideHailingContent extends GetView<DriverController> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -194,7 +200,7 @@ class RideHailingContent extends GetView<DriverController> {
             offset: const Offset(0, 5),
           ),
         ],
-        border: Border.all(color: Colors.green.withOpacity(0.3)),
+        border: Border.all(color: Colors.green.shade300),
       ),
       child: Column(
         children: [
@@ -203,13 +209,13 @@ class RideHailingContent extends GetView<DriverController> {
             children: [
               Text(
                 trip['status'] ?? 'Unknown',
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade700),
               ),
               Row(
                 children: [
-                  const Icon(Icons.person, size: 16, color: Colors.grey),
+                  const Icon(Icons.person_rounded, size: 16, color: AppPalette.textDisabled),
                   const SizedBox(width: 4),
-                  Text(trip['passenger'] ?? 'Unknown'),
+                  Text(trip['passenger'] ?? 'Unknown', style: const TextStyle(color: AppPalette.textPrimary, fontWeight: FontWeight.w500)),
                 ],
               ),
             ],
@@ -221,19 +227,19 @@ class RideHailingContent extends GetView<DriverController> {
               if (trip['status'] == 'Picking Up')
                 ElevatedButton(
                   onPressed: () => controller.startTrip(),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  child: const Text("Start Trip", style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(backgroundColor: AppPalette.brandBlue),
+                  child: const Text("Start Trip", style: TextStyle(color: AppPalette.pureWhite, fontWeight: FontWeight.bold)),
                 )
               else
                 ElevatedButton(
                   onPressed: () => controller.endTrip(),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  child: const Text("End Trip", style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(backgroundColor: AppPalette.error),
+                  child: const Text("End Trip", style: TextStyle(color: AppPalette.pureWhite, fontWeight: FontWeight.bold)),
                 ),
               FloatingActionButton.small(
                 onPressed: () {}, // Navigate
-                backgroundColor: Colors.blue[50],
-                child: const Icon(Icons.navigation, color: Colors.blue),
+                backgroundColor: AppPalette.brandBlue.withOpacity(0.1),
+                child: const Icon(Icons.navigation_rounded, color: AppPalette.brandBlue),
               ),
             ],
           ),
@@ -245,12 +251,12 @@ class RideHailingContent extends GetView<DriverController> {
   Widget _buildLocationRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: Colors.grey[600]),
+        Icon(icon, size: 20, color: AppPalette.textSecondary),
         const SizedBox(width: 12),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(fontWeight: FontWeight.w500),
+            style: const TextStyle(fontWeight: FontWeight.w500, color: AppPalette.textPrimary),
           ),
         ),
       ],

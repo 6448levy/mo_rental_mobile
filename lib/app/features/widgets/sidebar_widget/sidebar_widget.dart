@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../modules/promo_code/views/promo_code_screen.dart';
 import '../../../routes/app_routes.dart';
+import '../../../core/themes/app_palette.dart';
 
 class SidebarWidget extends StatefulWidget {
   final Widget child;
@@ -28,8 +29,8 @@ class _SidebarWidgetState extends State<SidebarWidget>
   late AnimationController _animController;
   late Animation<double> _slideAnim;
 
-  static const _yellow = Color(0xFFFFC107);
-  static const _dark = Color(0xFF1A1A2E);
+  static const _active = AppPalette.brandBlue;
+  static const _bg = AppPalette.pureWhite;
 
   final List<_SidebarItem> _sidebarItems = [
     _SidebarItem(icon: Icons.home_rounded, title: 'Home', route: AppRoutes.main),
@@ -154,7 +155,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
               height: double.infinity,
               child: Material(
                 elevation: 16,
-                color: _dark,
+                color: _bg,
                 child: Column(
                   children: [
                     // ── User Header ───────────────────────────────────────
@@ -166,11 +167,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
                         bottom: 24,
                       ),
                       decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [Color(0xFF0F3460), Color(0xFF1A1A2E)],
-                        ),
+                        gradient: AppPalette.brandGradient,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,10 +180,10 @@ class _SidebarWidgetState extends State<SidebarWidget>
                                 height: 56,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: _yellow,
+                                  color: _active,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: _yellow.withOpacity(0.4),
+                                      color: _active.withOpacity(0.4),
                                       blurRadius: 10,
                                       offset: const Offset(0, 4),
                                     ),
@@ -198,7 +195,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
                                     style: GoogleFonts.poppins(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w800,
-                                      color: Colors.black,
+                                      color: AppPalette.pureWhite,
                                     ),
                                   ),
                                 ),
@@ -242,20 +239,20 @@ class _SidebarWidgetState extends State<SidebarWidget>
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                             decoration: BoxDecoration(
-                              color: _yellow.withOpacity(0.15),
+                              color: AppPalette.pureWhite.withOpacity(0.15),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: _yellow.withOpacity(0.4)),
+                              border: Border.all(color: AppPalette.pureWhite.withOpacity(0.4)),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.star, color: _yellow, size: 14),
+                                const Icon(Icons.star, color: AppPalette.pureWhite, size: 14),
                                 const SizedBox(width: 4),
                                 Text(
                                   'Premium Member',
                                   style: GoogleFonts.poppins(
                                     fontSize: 11,
-                                    color: _yellow,
+                                    color: AppPalette.pureWhite,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -337,7 +334,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
                     ),
                     child: Icon(
                       _isSidebarOpen ? Icons.close : Icons.menu_rounded,
-                      color: const Color(0xFF1A1A2E),
+                      color: AppPalette.brandBlue,
                       size: 22,
                     ),
                   ),
@@ -354,7 +351,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
-        color: isSelected ? _yellow.withOpacity(0.12) : Colors.transparent,
+        color: isSelected ? _active.withOpacity(0.12) : Colors.transparent,
         borderRadius: BorderRadius.circular(14),
       ),
       child: ListTile(
@@ -362,19 +359,19 @@ class _SidebarWidgetState extends State<SidebarWidget>
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: isSelected ? _yellow : Colors.white.withOpacity(0.06),
+            color: isSelected ? _active : AppPalette.outline,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
             item.icon,
             size: 20,
-            color: isSelected ? Colors.black : Colors.white60,
+            color: isSelected ? AppPalette.pureWhite : AppPalette.textSecondary,
           ),
         ),
         title: Text(
           item.title,
           style: GoogleFonts.poppins(
-            color: isSelected ? _yellow : Colors.white,
+            color: isSelected ? _active : AppPalette.textPrimary,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
             fontSize: 14,
           ),
@@ -384,7 +381,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
                 width: 6,
                 height: 6,
                 decoration: const BoxDecoration(
-                  color: _yellow,
+                  color: _active,
                   shape: BoxShape.circle,
                 ),
               )

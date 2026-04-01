@@ -1,33 +1,31 @@
-// lib/app/features/modules/booking/views/add_card_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/booking_controller.dart';
+import 'package:carrental/app/core/themes/app_palette.dart';
 
 class AddCardPage extends GetView<BookingController> {
   const AddCardPage({super.key});
 
-  static const _yellow = Color(0xFFFFC107);
-  static const _dark = Color(0xFF1A1A2E);
-  static const _card = Color(0xFF16213E);
+  // Theme constants - replaced by AppPalette
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _dark,
+      backgroundColor: AppPalette.pureWhite,
       appBar: AppBar(
-        backgroundColor: _dark,
-        foregroundColor: Colors.white,
+        backgroundColor: AppPalette.brandBlue,
+        foregroundColor: AppPalette.pureWhite,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          icon: Icon(Icons.arrow_back_ios_new, color: AppPalette.pureWhite),
           onPressed: () => Get.back(),
         ),
         title: Text(
           'Add Payment Card',
           style: GoogleFonts.poppins(
-            color: Colors.white,
+            color: AppPalette.pureWhite,
             fontWeight: FontWeight.w700,
             fontSize: 18,
           ),
@@ -54,10 +52,10 @@ class AddCardPage extends GetView<BookingController> {
               return Container(
                 height: 200,
                 width: double.infinity,
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
@@ -69,7 +67,7 @@ class AddCardPage extends GetView<BookingController> {
                     BoxShadow(
                       color: Colors.blue.withValues(alpha: 0.4),
                       blurRadius: 20,
-                      offset: const Offset(0, 10),
+                      offset: Offset(0, 10),
                     ),
                   ],
                 ),
@@ -93,12 +91,12 @@ class AddCardPage extends GetView<BookingController> {
                               width: 28,
                               height: 28,
                               decoration: BoxDecoration(
-                                color: _yellow.withValues(alpha: 0.9),
+                                color: Colors.orange.withValues(alpha: 0.9),
                                 shape: BoxShape.circle,
                               ),
                             ),
                             Transform.translate(
-                              offset: const Offset(-10, 0),
+                              offset: Offset(-10, 0),
                               child: Container(
                                 width: 28,
                                 height: 28,
@@ -112,7 +110,7 @@ class AddCardPage extends GetView<BookingController> {
                         ),
                       ],
                     ),
-                    const Spacer(),
+                    Spacer(),
                     Text(
                       number,
                       style: GoogleFonts.sourceCodePro(
@@ -122,7 +120,7 @@ class AddCardPage extends GetView<BookingController> {
                         letterSpacing: 3,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -225,7 +223,7 @@ class AddCardPage extends GetView<BookingController> {
                     ],
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,7 +254,7 @@ class AddCardPage extends GetView<BookingController> {
               child: ElevatedButton(
                 onPressed: () => controller.saveCard(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _yellow,
+                  backgroundColor: AppPalette.brandBlue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -265,7 +263,7 @@ class AddCardPage extends GetView<BookingController> {
                 child: Text(
                   'Save Card',
                   style: GoogleFonts.poppins(
-                    color: Colors.black,
+                    color: AppPalette.pureWhite,
                     fontWeight: FontWeight.w800,
                     fontSize: 16,
                   ),
@@ -273,24 +271,24 @@ class AddCardPage extends GetView<BookingController> {
               ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.lock, size: 14, color: Colors.white38),
-                  const SizedBox(width: 6),
+                  Icon(Icons.lock, size: 14, color: AppPalette.textDisabled),
+                  SizedBox(width: 6),
                   Text(
                     'Your payment info is encrypted & secure',
                     style: GoogleFonts.poppins(
-                      color: Colors.white38,
+                      color: AppPalette.textDisabled,
                       fontSize: 11,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
           ],
         ),
       ),
@@ -300,7 +298,7 @@ class AddCardPage extends GetView<BookingController> {
   Widget _fieldLabel(String label) => Text(
         label,
         style: GoogleFonts.poppins(
-          color: Colors.white70,
+          color: AppPalette.textPrimary,
           fontSize: 13,
           fontWeight: FontWeight.w600,
         ),
@@ -322,27 +320,27 @@ class AddCardPage extends GetView<BookingController> {
       inputFormatters: formatters,
       maxLength: maxLength,
       onChanged: (_) {},
-      style: GoogleFonts.poppins(color: Colors.white, fontSize: 15),
+      style: GoogleFonts.poppins(color: AppPalette.textPrimary, fontSize: 15),
       decoration: InputDecoration(
         filled: true,
-        fillColor: _card,
+        fillColor: AppPalette.pureWhite,
         counterText: '',
         hintText: hint,
-        hintStyle: GoogleFonts.poppins(color: Colors.white38, fontSize: 14),
-        prefixIcon: Icon(icon, color: Colors.white38, size: 20),
+        hintStyle: GoogleFonts.poppins(color: AppPalette.textDisabled, fontSize: 14),
+        prefixIcon: Icon(icon, color: AppPalette.textDisabled, size: 20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
+          borderSide: const BorderSide(color: AppPalette.outline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: Colors.white12),
+          borderSide: const BorderSide(color: AppPalette.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: _yellow, width: 2),
+          borderSide: BorderSide(color: AppPalette.brandBlue, width: 2),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/themes/app_palette.dart';
 
 class DriverProfileHeader extends StatelessWidget {
   final String name;
@@ -33,11 +34,12 @@ class DriverProfileHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppPalette.outline),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: AppPalette.cardShadow.withOpacity(0.04),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -55,14 +57,14 @@ class DriverProfileHeader extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 34,
-                    backgroundColor: Colors.grey[200],
+                    backgroundColor: AppPalette.brandBlue.withOpacity(0.1),
                     backgroundImage: (profileImageUrl != null &&
                             profileImageUrl!.isNotEmpty)
                         ? NetworkImage(profileImageUrl!)
                         : null,
                     child: (profileImageUrl == null ||
                             profileImageUrl!.isEmpty)
-                        ? const Icon(Icons.person, size: 34, color: Colors.grey)
+                        ? const Icon(Icons.person, size: 34, color: AppPalette.brandBlue)
                         : null,
                   ),
                   if (isLoading)
@@ -73,7 +75,7 @@ class DriverProfileHeader extends StatelessWidget {
                         child: const SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: AppPalette.brandBlue),
                         ),
                       ),
                     ),
@@ -85,9 +87,9 @@ class DriverProfileHeader extends StatelessWidget {
                       width: 12,
                       height: 12,
                       decoration: BoxDecoration(
-                        color: isVerified ? Colors.green : Colors.orange,
+                        color: isVerified ? Colors.green.shade600 : Colors.orange.shade700,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(color: AppPalette.pureWhite, width: 2),
                       ),
                     ),
                   ),
@@ -109,6 +111,7 @@ class DriverProfileHeader extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
+                              color: AppPalette.textPrimary,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -116,7 +119,7 @@ class DriverProfileHeader extends StatelessWidget {
                         if (isVerified)
                           const Icon(
                             Icons.verified,
-                            color: Colors.blue,
+                            color: AppPalette.brandBlue,
                             size: 18,
                           ),
                       ],
@@ -125,7 +128,7 @@ class DriverProfileHeader extends StatelessWidget {
                     Text(
                       phoneNumber,
                       style: TextStyle(
-                        color: Colors.grey[600],
+                        color: AppPalette.textSecondary,
                         fontSize: 13,
                       ),
                     ),
@@ -140,13 +143,14 @@ class DriverProfileHeader extends StatelessWidget {
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
+                            color: AppPalette.textPrimary,
                           ),
                         ),
                         const SizedBox(width: 4),
                         Text(
                           '($ratingCount reviews)',
                           style: TextStyle(
-                              color: Colors.grey[500], fontSize: 12),
+                              color: AppPalette.textDisabled, fontSize: 12),
                         ),
                         const Spacer(),
                         // Status chip
@@ -158,11 +162,12 @@ class DriverProfileHeader extends StatelessWidget {
                                 ? Colors.green.withOpacity(0.1)
                                 : Colors.orange.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: isVerified ? Colors.green.withOpacity(0.2) : Colors.orange.withOpacity(0.2)),
                           ),
                           child: Text(
                             isVerified ? "Approved" : "Pending",
                             style: TextStyle(
-                              color: isVerified ? Colors.green : Colors.orange,
+                              color: isVerified ? Colors.green.shade700 : Colors.orange.shade800,
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
                             ),
@@ -179,7 +184,7 @@ class DriverProfileHeader extends StatelessWidget {
           // ── Divider ────────────────────────────────────────────────────
           if (bio.isNotEmpty || hourlyRate > 0 || yearsExperience > 0) ...[
             const SizedBox(height: 14),
-            Divider(color: Colors.grey[100], height: 1),
+            Divider(color: AppPalette.outline, height: 1),
             const SizedBox(height: 14),
           ],
 
@@ -188,7 +193,7 @@ class DriverProfileHeader extends StatelessWidget {
             Text(
               bio,
               style: TextStyle(
-                color: Colors.grey[700],
+                color: AppPalette.textPrimary,
                 fontSize: 13,
                 height: 1.5,
               ),
@@ -206,7 +211,7 @@ class DriverProfileHeader extends StatelessWidget {
                   _buildStatChip(
                     icon: Icons.attach_money,
                     label: '\$${hourlyRate.toStringAsFixed(0)}/hr',
-                    color: Colors.green,
+                    color: Colors.green.shade600,
                   ),
                 if (hourlyRate > 0 && yearsExperience > 0)
                   const SizedBox(width: 8),
@@ -214,7 +219,7 @@ class DriverProfileHeader extends StatelessWidget {
                   _buildStatChip(
                     icon: Icons.work_outline,
                     label: '$yearsExperience yrs exp',
-                    color: Colors.blue,
+                    color: AppPalette.brandBlue,
                   ),
               ],
             ),
@@ -231,19 +236,19 @@ class DriverProfileHeader extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.grey[100],
+                        color: AppPalette.brandBlue.withOpacity(0.05),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.grey[300]!),
+                        border: Border.all(color: AppPalette.brandBlue.withOpacity(0.1)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Icon(Icons.language,
-                              size: 12, color: Colors.grey),
+                              size: 12, color: AppPalette.brandBlue),
                           const SizedBox(width: 4),
-                          Text(
+                           Text(
                             lang,
-                            style: const TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 12, color: AppPalette.textPrimary),
                           ),
                         ],
                       ),

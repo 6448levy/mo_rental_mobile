@@ -28,7 +28,31 @@ class DriverService extends GetxService {
       print('📊 Status: ${response.statusCode}');
       print('📝 Body: ${response.body}');
 
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      // ✅ Guard: ensure server returned JSON, not HTML
+      final contentType = response.headers['content-type'] ?? '';
+      if (!contentType.contains('application/json')) {
+        print('❌ Expected JSON but got: $contentType');
+        return ApiResponse<List<DriverProfileModel>>(
+          success: false,
+          message: 'Server returned a non-JSON response. Status: ${response.statusCode}.',
+          data: [],
+        );
+      }
+
+      final dynamic _decoded = json.decode(response.body);
+
+      // If server returned the list directly as [ ] instead of { data: [] }
+      if (_decoded is List) {
+        final profiles = _decoded.map((e) => DriverProfileModel.fromJson(e)).toList();
+        print('✅ Fetched ${profiles.length} driver profiles (direct list)');
+        return ApiResponse<List<DriverProfileModel>>(
+          success: true,
+          message: 'Driver profiles fetched successfully',
+          data: profiles,
+        );
+      }
+
+      final Map<String, dynamic> responseData = _decoded as Map<String, dynamic>;
 
       if (response.statusCode == 200 && responseData['success'] == true) {
         final List<dynamic> rawList = responseData['data'] ?? [];

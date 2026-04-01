@@ -8,12 +8,10 @@ import '../../promo_code/views/promo_code_screen.dart';
 import '../../rate_plans/controllers/rate_plan_controller.dart';
 
 
+import '../../../../core/themes/app_palette.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  static const _yellow = Color(0xFFFFC107);
-  static const _dark = Color(0xFF1A1A2E);
-  static const _card = Color(0xFF16213E);
 
   @override
   Widget build(BuildContext context) {
@@ -38,16 +36,13 @@ class _HomeContent extends StatelessWidget {
   _HomeContent();
 
   final GetStorage storage = GetStorage();
-  static const _yellow = Color(0xFFFFC107);
-  static const _dark = Color(0xFF1A1A2E);
-  static const _card = Color(0xFF16213E);
 
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> userData = storage.read('user_data') ?? {};
 
     return Scaffold(
-      backgroundColor: _dark,
+      backgroundColor: AppPalette.pureWhite,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -59,9 +54,16 @@ class _HomeContent extends StatelessWidget {
             // User Info Card
             Container(
               decoration: BoxDecoration(
-                color: _card,
+                color: AppPalette.pureWhite,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white10),
+                border: Border.all(color: AppPalette.outline),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppPalette.cardShadow.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -69,7 +71,7 @@ class _HomeContent extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 28,
-                      backgroundColor: _yellow,
+                      backgroundColor: AppPalette.brandBlue.withValues(alpha: 0.1),
                       child: Text(
                         userData['full_name'] != null
                             ? userData['full_name'][0].toUpperCase()
@@ -77,7 +79,7 @@ class _HomeContent extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: AppPalette.brandBlue,
                         ),
                       ),
                     ),
@@ -91,7 +93,7 @@ class _HomeContent extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: AppPalette.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -99,7 +101,7 @@ class _HomeContent extends StatelessWidget {
                             userData['email'] ?? 'Not logged in',
                             style: const TextStyle(
                               fontSize: 13,
-                              color: Colors.white54,
+                              color: AppPalette.textSecondary,
                             ),
                           ),
                           if (userData['status'] != null)
@@ -107,7 +109,7 @@ class _HomeContent extends StatelessWidget {
                               margin: const EdgeInsets.only(top: 6),
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                               decoration: BoxDecoration(
-                                color: (userData['status'] == 'active' ? Colors.green : Colors.orange).withOpacity(0.15),
+                                color: (userData['status'] == 'active' ? Colors.green : Colors.orange).withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(
@@ -116,8 +118,8 @@ class _HomeContent extends StatelessWidget {
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                   color: userData['status'] == 'active'
-                                      ? Colors.greenAccent
-                                      : Colors.orangeAccent,
+                                      ? Colors.green.shade700
+                                      : Colors.orange.shade700,
                                 ),
                               ),
                             ),
@@ -129,7 +131,7 @@ class _HomeContent extends StatelessWidget {
                       onPressed: () {
                         Get.to(() => const PromoCodeScreen());
                       },
-                      icon: const Icon(Icons.local_offer, color: _yellow),
+                      icon: const Icon(Icons.local_offer, color: AppPalette.brandBlue),
                       tooltip: 'View Promo Codes',
                     ),
                   ],
@@ -144,7 +146,7 @@ class _HomeContent extends StatelessWidget {
               style: TextStyle(
                 fontSize: 26, 
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppPalette.textPrimary,
               ),
             ),
             const SizedBox(height: 20),
@@ -174,7 +176,7 @@ class _HomeContent extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20, 
                 fontWeight: FontWeight.bold,
-                color: Colors.white70,
+                color: AppPalette.textSecondary,
               ),
             ),
             const SizedBox(height: 20),
@@ -185,7 +187,7 @@ class _HomeContent extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
-              childAspectRatio: 1.1, // Adjusted to give more vertical space
+              childAspectRatio: 1.4, // Wider than tall — prevents overflow
               children: [
                 _buildStatCard(
                   icon: Icons.calendar_today,
@@ -197,7 +199,7 @@ class _HomeContent extends StatelessWidget {
                   icon: Icons.local_offer,
                   title: "Active Promos",
                   value: "0",
-                  color: _yellow,
+                  color: AppPalette.brandBlue,
                   onTap: () => Get.to(() => const PromoCodeScreen()),
                 ),
                 _buildStatCard(
@@ -234,8 +236,8 @@ class _HomeContent extends StatelessWidget {
         },
         icon: const Icon(Icons.local_offer),
         label: const Text('Promo Codes'),
-        backgroundColor: _yellow,
-        foregroundColor: Colors.black,
+        backgroundColor: AppPalette.brandBlue,
+        foregroundColor: AppPalette.pureWhite,
         elevation: 8,
         tooltip: 'View all promo codes',
       ),
@@ -254,11 +256,11 @@ class _HomeContent extends StatelessWidget {
         margin: const EdgeInsets.only(right: 18),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white10),
+          border: Border.all(color: AppPalette.outline),
           image: DecorationImage(image: AssetImage(img), fit: BoxFit.cover),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -273,8 +275,8 @@ class _HomeContent extends StatelessWidget {
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
               colors: [
-                Colors.black.withOpacity(0.9), 
-                Colors.black.withOpacity(0.4),
+                Colors.black.withValues(alpha: 0.9), 
+                Colors.black.withValues(alpha: 0.4),
                 Colors.transparent
               ],
             ),
@@ -288,17 +290,17 @@ class _HomeContent extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 22, 
                   fontWeight: FontWeight.bold, 
-                  color: Colors.white,
+                  color: AppPalette.pureWhite,
                 ),
               ),
               const SizedBox(height: 4),
               Row(
                 children: [
-                  const Icon(Icons.star, color: _yellow, size: 14),
+                  const Icon(Icons.star, color: Colors.orange, size: 14),
                   const SizedBox(width: 4),
-                  const Text(
+                  Text(
                     "4.8 (120 reviews)",
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                    style: TextStyle(color: AppPalette.pureWhite.withValues(alpha: 0.8), fontSize: 12),
                   ),
                 ],
               ),
@@ -320,12 +322,12 @@ class _HomeContent extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: _card,
+          color: AppPalette.pureWhite,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
+          border: Border.all(color: AppPalette.outline),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: AppPalette.cardShadow.withValues(alpha: 0.04),
               offset: const Offset(0, 4),
               blurRadius: 8,
             ),
@@ -341,7 +343,7 @@ class _HomeContent extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
+                    color: color.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(icon, size: 24, color: color),
@@ -354,7 +356,7 @@ class _HomeContent extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 22, 
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppPalette.textPrimary,
                     ),
                     maxLines: 1,
                   ),
@@ -366,7 +368,7 @@ class _HomeContent extends StatelessWidget {
                     title,
                     style: const TextStyle(
                       fontSize: 11, 
-                      color: Colors.white54,
+                      color: AppPalette.textSecondary,
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign.center,
@@ -384,12 +386,12 @@ class _HomeContent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: _card,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _yellow.withOpacity(0.2)),
+        border: Border.all(color: AppPalette.brandBlue.withValues(alpha: 0.2)),
         gradient: LinearGradient(
           colors: [
-            _yellow.withOpacity(0.05),
+            AppPalette.brandBlue.withValues(alpha: 0.05),
             Colors.transparent,
           ],
           begin: Alignment.topLeft,
@@ -401,13 +403,13 @@ class _HomeContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: _yellow.withOpacity(0.1),
+              color: AppPalette.brandBlue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
               Icons.local_offer_outlined,
               size: 32,
-              color: _yellow,
+              color: AppPalette.brandBlue,
             ),
           ),
           const SizedBox(width: 15),
@@ -420,7 +422,7 @@ class _HomeContent extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: _yellow,
+                    color: AppPalette.brandBlue,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -428,7 +430,7 @@ class _HomeContent extends StatelessWidget {
                   'Check active codes for exclusive discounts.',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.white60,
+                    color: AppPalette.textSecondary,
                   ),
                 ),
               ],
@@ -440,8 +442,8 @@ class _HomeContent extends StatelessWidget {
               Get.to(() => const PromoCodeScreen());
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: _yellow,
-              foregroundColor: Colors.black,
+              backgroundColor: AppPalette.brandBlue,
+              foregroundColor: AppPalette.pureWhite,
               elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 14),
               shape: RoundedRectangleBorder(
@@ -464,15 +466,15 @@ class _HomeContent extends StatelessWidget {
           style: TextStyle(
             fontSize: 20, 
             fontWeight: FontWeight.bold,
-            color: Colors.white70,
+            color: AppPalette.textSecondary,
           ),
         ),
         const SizedBox(height: 18),
         Container(
           decoration: BoxDecoration(
-            color: _card,
+            color: AppPalette.pureWhite,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: AppPalette.outline),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -485,7 +487,7 @@ class _HomeContent extends StatelessWidget {
                   subtitle: 'SUMMER25 - 25% off',
                   time: 'Just now',
                 ),
-                const Divider(color: Colors.white12, indent: 64, endIndent: 16),
+                const Divider(color: AppPalette.outline, indent: 64, endIndent: 16),
                 _activityTile(
                   icon: Icons.car_rental,
                   color: Colors.blueAccent,
@@ -493,7 +495,7 @@ class _HomeContent extends StatelessWidget {
                   subtitle: 'BMW M4 - 2 days',
                   time: '2 hours ago',
                 ),
-                const Divider(color: Colors.white12, indent: 64, endIndent: 16),
+                const Divider(color: AppPalette.outline, indent: 64, endIndent: 16),
                 _activityTile(
                   icon: Icons.payment,
                   color: Colors.purpleAccent,
@@ -520,22 +522,22 @@ class _HomeContent extends StatelessWidget {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, color: color, size: 20),
       ),
       title: Text(
         title,
-        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+        style: const TextStyle(color: AppPalette.textPrimary, fontSize: 14, fontWeight: FontWeight.w600),
       ),
       subtitle: Text(
         subtitle,
-        style: const TextStyle(color: Colors.white54, fontSize: 12),
+        style: const TextStyle(color: AppPalette.textSecondary, fontSize: 12),
       ),
       trailing: Text(
         time,
-        style: const TextStyle(color: Colors.white38, fontSize: 10),
+        style: const TextStyle(color: AppPalette.textDisabled, fontSize: 10),
       ),
     );
   }

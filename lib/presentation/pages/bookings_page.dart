@@ -1,10 +1,10 @@
-// lib/presentation/pages/bookings_page.dart
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../providers/booking_provider.dart';
 import '../widgets/booking_card.dart';
+import '../../app/core/themes/app_palette.dart';
 
 class MyBookingsPage extends StatefulWidget {
   const MyBookingsPage({super.key});
@@ -14,10 +14,7 @@ class MyBookingsPage extends StatefulWidget {
 }
 
 class _MyBookingsPageState extends State<MyBookingsPage> {
-  // Theme constants
-  static const _yellow = Color(0xFFFFC107);
-  static const _dark = Color(0xFF1A1A2E);
-  static const _card = Color(0xFF16213E);
+  // Theme constants - replaced by AppPalette
 
   @override
   void initState() {
@@ -31,7 +28,7 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _dark,
+      backgroundColor: AppPalette.pureWhite,
       appBar: _buildAppBar(),
       body: Consumer<BookingProvider>(
         builder: (context, provider, child) {
@@ -54,19 +51,19 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppPalette.brandBlue,
       elevation: 0,
       centerTitle: true,
       title: Text(
         "My Bookings",
         style: GoogleFonts.poppins(
-          color: Colors.white,
+          color: AppPalette.pureWhite,
           fontWeight: FontWeight.w700,
           fontSize: 18,
         ),
       ),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
+        icon: const Icon(Icons.arrow_back_ios_new, color: AppPalette.pureWhite, size: 18),
         onPressed: () => Navigator.pop(context),
       ),
     );
@@ -74,8 +71,8 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
 
   Widget _buildLoadingState() {
     return Shimmer.fromColors(
-      baseColor: _card,
-      highlightColor: const Color(0xFF1E2D4A),
+      baseColor: const Color(0xFFF1F5F9),
+      highlightColor: Colors.white,
       child: ListView.builder(
         padding: const EdgeInsets.all(20),
         itemCount: 4,
@@ -99,16 +96,16 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
           Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: _yellow.withOpacity(0.08),
+              color: AppPalette.brandBlue.withOpacity(0.08),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.calendar_today_outlined, color: _yellow, size: 48),
+            child: const Icon(Icons.calendar_today_outlined, color: AppPalette.brandBlue, size: 48),
           ),
           const SizedBox(height: 24),
           Text(
             "No Bookings Found",
             style: GoogleFonts.poppins(
-              color: Colors.white,
+              color: AppPalette.textPrimary,
               fontSize: 20,
               fontWeight: FontWeight.w700,
             ),
@@ -116,7 +113,7 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
           const SizedBox(height: 10),
           Text(
             "Your trip history will appear here once you\nbook your first ride with us.",
-            style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13, height: 1.6),
+            style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 13, height: 1.6),
             textAlign: TextAlign.center,
           ),
         ],
@@ -136,7 +133,7 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
             Text(
               "Connection Error",
               style: GoogleFonts.poppins(
-                color: Colors.white,
+                color: AppPalette.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
@@ -144,15 +141,15 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
             const SizedBox(height: 8),
             Text(
               "Something went wrong while fetching your bookings. This typically happens if the server returns HTML instead of JSON.",
-              style: GoogleFonts.poppins(color: Colors.white54, fontSize: 13),
+              style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 13),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => provider.retry(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: _yellow,
-                foregroundColor: Colors.black,
+                backgroundColor: AppPalette.brandBlue,
+                foregroundColor: AppPalette.pureWhite,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
@@ -169,8 +166,8 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
 
   Widget _buildBookingList(BookingProvider provider) {
     return RefreshIndicator(
-      color: _yellow,
-      backgroundColor: _card,
+      color: AppPalette.brandBlue,
+      backgroundColor: AppPalette.pureWhite,
       onRefresh: () => provider.loadBookings(),
       child: ListView.builder(
         padding: const EdgeInsets.all(20),

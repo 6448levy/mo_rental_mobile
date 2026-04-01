@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/utils/validators.dart';
-import '../../../widgets/custom_text_field.dart/custom_text_field.dart';
 import '../controllers/auth_controller.dart';
+import 'package:carrental/app/core/themes/app_palette.dart';
+import 'package:carrental/app/core/utils/validators.dart';
+import 'package:carrental/app/features/widgets/custom_text_field.dart/custom_text_field.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -102,11 +103,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final theme = Theme.of(context);
     
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppPalette.pureWhite,
       appBar: AppBar(
-        title: const Text('Create Account'),
+        title: Text('Create Account', style: theme.textTheme.headlineSmall?.copyWith(color: AppPalette.pureWhite)),
+        backgroundColor: AppPalette.brandBlue,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: AppPalette.pureWhite),
           onPressed: () => Get.back(),
         ),
       ),
@@ -123,6 +126,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   'Join MoRental',
                   style: theme.textTheme.displaySmall?.copyWith(
                     fontWeight: FontWeight.w800,
+                    color: AppPalette.textPrimary,
                     letterSpacing: -0.5,
                   ),
                 ),
@@ -130,7 +134,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Text(
                   'Start your premium journey today',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white38,
+                    color: AppPalette.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 40),
@@ -196,20 +200,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   if (error.isNotEmpty) {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 24),
-                      padding: const EdgeInsets.all(16),
+                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.redAccent.withOpacity(0.1),
+                        color: AppPalette.error.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.redAccent.withOpacity(0.2)),
+                        border: Border.all(color: AppPalette.error.withOpacity(0.2)),
                       ),
                       child: Row(
-                        children: [
-                          const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 20),
+                         children: [
+                          const Icon(Icons.error_outline_rounded, color: AppPalette.error, size: 20),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               error,
-                              style: const TextStyle(color: Colors.redAccent, fontSize: 13, fontWeight: FontWeight.w500),
+                              style: const TextStyle(color: AppPalette.error, fontSize: 13, fontWeight: FontWeight.w500),
                             ),
                           ),
                         ],
@@ -229,11 +233,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Already have an account?", style: TextStyle(color: Colors.white54)),
+                   children: [
+                    const Text("Already have an account?", style: TextStyle(color: AppPalette.textSecondary)),
                     TextButton(
-                      onPressed: () => Get.back(),
-                      style: TextButton.styleFrom(foregroundColor: theme.primaryColor),
+                       onPressed: () => Get.back(),
+                      style: TextButton.styleFrom(foregroundColor: AppPalette.brandBlue),
                       child: const Text(
                         'Sign In',
                         style: TextStyle(fontWeight: FontWeight.w700),

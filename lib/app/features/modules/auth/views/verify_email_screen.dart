@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../core/themes/app_palette.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../widgets/custom_text_field.dart/custom_text_field.dart';
 import '../controllers/auth_controller.dart';
@@ -62,15 +63,15 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
         Get.snackbar(
           'Success',
           'Email verified successfully!',
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
+          backgroundColor: Colors.green.shade600,
+          colorText: AppPalette.pureWhite,
         );
       } else {
         Get.snackbar(
           'Verification Failed',
           response.message,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+          backgroundColor: AppPalette.error,
+          colorText: AppPalette.pureWhite,
         );
       }
     }
@@ -88,9 +89,17 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppPalette.pureWhite,
       appBar: AppBar(
         title: const Text('Verify Email'),
         centerTitle: true,
+        backgroundColor: AppPalette.brandBlue,
+        foregroundColor: AppPalette.pureWhite,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: AppPalette.pureWhite),
+          onPressed: () => Get.back(),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
@@ -103,7 +112,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
               const Icon(
                 Icons.mark_email_read,
                 size: 80,
-                color: Colors.blue,
+                color: AppPalette.brandBlue,
               ),
               const SizedBox(height: 20),
               const Text(
@@ -112,6 +121,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
+                  color: AppPalette.textPrimary,
                 ),
               ),
               const SizedBox(height: 10),
@@ -120,7 +130,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
+                  color: AppPalette.textSecondary,
                 ),
               ),
               const SizedBox(height: 30),
@@ -151,8 +161,8 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Didn't receive OTP?"),
+                 children: [
+                  const Text("Didn't receive OTP?", style: TextStyle(color: AppPalette.textSecondary)),
                   TextButton(
                     onPressed: () {
                       Get.snackbar(
@@ -160,7 +170,10 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                         'OTP resend functionality to be implemented',
                       );
                     },
-                    child: const Text('Resend OTP'),
+                     child: const Text(
+                      'Resend OTP',
+                      style: TextStyle(color: AppPalette.brandBlue, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),

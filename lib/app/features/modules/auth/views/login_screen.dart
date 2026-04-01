@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../core/utils/validators.dart';
-import '../../../widgets/custom_text_field.dart/custom_text_field.dart';
 import '../controllers/auth_controller.dart';
+import 'package:carrental/app/core/themes/app_palette.dart';
+import 'package:carrental/app/core/utils/validators.dart';
+import 'package:carrental/app/features/widgets/custom_text_field.dart/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -118,17 +119,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 child: Column(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: theme.primaryColor.withOpacity(0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.car_rental_rounded,
-                        size: 72,
-                        color: theme.primaryColor,
-                      ),
+                    Image.asset(
+                      'assets/images/logo.png',
+                      height: 150,
+                      errorBuilder: (context, error, stackTrace) =>
+                        Icon(Icons.car_rental_rounded, size: 120, color: theme.primaryColor),
                     ),
                     const SizedBox(height: 24),
                     Text(
@@ -136,15 +131,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       textAlign: TextAlign.center,
                       style: theme.textTheme.displaySmall?.copyWith(
                         fontWeight: FontWeight.w800,
+                        color: AppPalette.textPrimary,
                         letterSpacing: -0.5,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Login to your premium account',
+                      'Login to your account',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white38,
+                        color: AppPalette.textSecondary,
                       ),
                     ),
                   ],
@@ -178,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       suffixIcon: IconButton(
                         icon: Icon(
                           _showPassword.value ? Icons.visibility_off : Icons.visibility,
-                          color: Colors.white38,
+                          color: theme.iconTheme.color?.withOpacity(0.5) ?? Colors.grey,
                           size: 20,
                         ),
                         onPressed: () => _showPassword.value = !_showPassword.value,
@@ -193,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextButton(
                         onPressed: _forgotPassword,
                         style: TextButton.styleFrom(
-                          foregroundColor: theme.primaryColor,
+                          foregroundColor: AppPalette.brandBlue,
                         ),
                         child: const Text('Forgot Password?', style: TextStyle(fontWeight: FontWeight.w600)),
                       ),
@@ -208,18 +204,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           margin: const EdgeInsets.only(bottom: 24),
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.redAccent.withOpacity(0.1),
+                            color: AppPalette.error.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.redAccent.withOpacity(0.2)),
+                            border: Border.all(color: AppPalette.error.withOpacity(0.2)),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 20),
+                               const Icon(Icons.error_outline_rounded, color: AppPalette.error, size: 20),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
                                   _authController.errorMessage.value,
-                                  style: const TextStyle(color: Colors.redAccent, fontSize: 13, fontWeight: FontWeight.w500),
+                                  style: const TextStyle(color: AppPalette.error, fontSize: 13, fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ],
@@ -245,10 +241,10 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account?", style: TextStyle(color: Colors.white54)),
+                   Text("Don't have an account?", style: theme.textTheme.bodyMedium?.copyWith(color: AppPalette.textSecondary)),
                   TextButton(
-                    onPressed: () => Get.toNamed('/register'),
-                    style: TextButton.styleFrom(foregroundColor: theme.primaryColor),
+                     onPressed: () => Get.toNamed('/register'),
+                    style: TextButton.styleFrom(foregroundColor: AppPalette.brandBlue),
                     child: const Text(
                       'Register',
                       style: TextStyle(fontWeight: FontWeight.w700),
@@ -263,24 +259,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   return Container(
                     margin: const EdgeInsets.symmetric(vertical: 24),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.03),
+                      color: AppPalette.brandBlue.withOpacity(0.04),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(color: AppPalette.outline),
                     ),
                     child: ExpansionTile(
                       shape: const RoundedRectangleBorder(side: BorderSide.none),
                       collapsedShape: const RoundedRectangleBorder(side: BorderSide.none),
                       title: const Text(
                         'Debug Information',
-                        style: TextStyle(color: Colors.white38, fontSize: 12, fontWeight: FontWeight.bold),
+                        style: TextStyle(color: AppPalette.textSecondary, fontSize: 12, fontWeight: FontWeight.bold),
                       ),
-                      leading: const Icon(Icons.bug_report_outlined, color: Colors.white38, size: 18),
+                       leading: const Icon(Icons.bug_report_outlined, color: AppPalette.textDisabled, size: 18),
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                           child: SelectableText(
                             _debugInfo.value,
-                            style: const TextStyle(color: Colors.white24, fontSize: 11, fontFamily: 'monospace'),
+                             style: const TextStyle(color: AppPalette.textDisabled, fontSize: 11, fontFamily: 'monospace'),
                           ),
                         ),
                       ],
@@ -295,7 +291,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Center(
                 child: Text(
                   'Connected to MoRental Cloud v1.0',
-                  style: TextStyle(color: Colors.white10, fontSize: 10, letterSpacing: 0.5),
+                   style: theme.textTheme.bodySmall?.copyWith(fontSize: 10, letterSpacing: 0.5, color: AppPalette.textDisabled),
                 ),
               ),
               const SizedBox(height: 40),

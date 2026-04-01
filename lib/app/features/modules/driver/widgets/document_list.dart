@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/themes/app_palette.dart';
 import 'package:get/get.dart';
 import '../controllers/driver_controller.dart';
 
@@ -12,7 +13,7 @@ class DocumentList extends GetView<DriverController> {
       children: [
         const Text(
           "Documents & Compliance",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
         ),
         const SizedBox(height: 16),
         Obx(() => Column(
@@ -28,33 +29,40 @@ class DocumentList extends GetView<DriverController> {
 
     switch (doc['status']) {
       case 'Verified':
-        statusColor = Colors.green;
-        statusIcon = Icons.check_circle;
+        statusColor = Colors.green.shade600;
+        statusIcon = Icons.check_circle_rounded;
         break;
       case 'Pending':
-        statusColor = Colors.orange;
-        statusIcon = Icons.access_time_filled;
+        statusColor = Colors.orange.shade700;
+        statusIcon = Icons.access_time_filled_rounded;
         break;
       case 'Expired':
-        statusColor = Colors.red;
-        statusIcon = Icons.error;
+        statusColor = AppPalette.error;
+        statusIcon = Icons.error_rounded;
         break;
       default:
-        statusColor = Colors.grey;
-        statusIcon = Icons.help;
+        statusColor = AppPalette.textDisabled;
+        statusIcon = Icons.help_rounded;
     }
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(color: AppPalette.outline),
+        boxShadow: [
+          BoxShadow(
+            color: AppPalette.cardShadow.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(Icons.description, color: Colors.grey[400]),
+          Icon(Icons.description_rounded, color: AppPalette.brandBlue.withOpacity(0.5)),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -62,12 +70,12 @@ class DocumentList extends GetView<DriverController> {
               children: [
                 Text(
                   doc['name'],
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
                 ),
                 if (doc['expiry'] != null)
                   Text(
                     "Exp: ${doc['expiry']}",
-                    style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                    style: TextStyle(color: AppPalette.textSecondary, fontSize: 12),
                   ),
               ],
             ),
@@ -96,7 +104,7 @@ class DocumentList extends GetView<DriverController> {
           if (doc['status'] != 'Verified') 
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Icon(Icons.chevron_right, color: Colors.grey[400]),
+              child: Icon(Icons.chevron_right_rounded, color: AppPalette.textDisabled),
             ),
         ],
       ),

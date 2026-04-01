@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/themes/app_palette.dart';
 
 import '../../car_details/views/car_detail_screen.dart';
 
@@ -8,7 +9,13 @@ class CarListingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Available Cars")),
+      backgroundColor: AppPalette.pureWhite,
+      appBar: AppBar(
+        title: const Text("Available Cars"),
+        backgroundColor: AppPalette.brandBlue,
+        foregroundColor: AppPalette.pureWhite,
+        elevation: 0,
+      ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
@@ -25,9 +32,15 @@ class CarListingScreen extends StatelessWidget {
       leading: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Image.asset(img, width: 60, fit: BoxFit.cover)),
-      title: Text(name),
-      subtitle: Text(price, style: const TextStyle(color: Colors.grey)),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+      title: Text(
+        name,
+        style: const TextStyle(fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
+      ),
+      subtitle: Text(
+        price,
+        style: const TextStyle(color: AppPalette.brandBlue, fontWeight: FontWeight.w600),
+      ),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: AppPalette.textDisabled),
       onTap: () {
         Navigator.push(
             context,

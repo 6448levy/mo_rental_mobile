@@ -1,21 +1,19 @@
-// lib/app/features/modules/booking/views/booking_success_page.dart
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../controllers/booking_controller.dart';
 import '../../../../../../app/routes/app_routes.dart';
+import '../../../../../../app/core/themes/app_palette.dart';
 
 class BookingSuccessPage extends GetView<BookingController> {
   const BookingSuccessPage({super.key});
 
-  static const _yellow = Color(0xFFFFC107);
-  static const _dark = Color(0xFF1A1A2E);
-  static const _card = Color(0xFF16213E);
+  // Theme constants - replaced by AppPalette
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _dark,
+      backgroundColor: AppPalette.pureWhite,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -29,8 +27,8 @@ class BookingSuccessPage extends GetView<BookingController> {
                 height: 130,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _yellow.withOpacity(0.15),
-                  border: Border.all(color: _yellow.withOpacity(0.4), width: 2),
+                  color: AppPalette.brandBlue.withOpacity(0.15),
+                  border: Border.all(color: AppPalette.brandBlue.withOpacity(0.4), width: 2),
                 ),
                 child: Center(
                   child: Container(
@@ -38,11 +36,11 @@ class BookingSuccessPage extends GetView<BookingController> {
                     height: 90,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _yellow,
+                      color: AppPalette.brandBlue,
                     ),
                     child: const Icon(
                       Icons.check_rounded,
-                      color: Colors.black,
+                      color: AppPalette.pureWhite,
                       size: 50,
                     ),
                   ),
@@ -53,8 +51,8 @@ class BookingSuccessPage extends GetView<BookingController> {
 
               Text(
                 'Booking Confirmed!',
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
+                 style: GoogleFonts.poppins(
+                  color: AppPalette.textPrimary,
                   fontSize: 26,
                   fontWeight: FontWeight.w800,
                 ),
@@ -63,8 +61,8 @@ class BookingSuccessPage extends GetView<BookingController> {
               const SizedBox(height: 12),
               Text(
                 'Your ride has been booked successfully.\nYour driver is on the way.',
-                style: GoogleFonts.poppins(
-                  color: Colors.white60,
+                 style: GoogleFonts.poppins(
+                  color: AppPalette.textSecondary,
                   fontSize: 15,
                   height: 1.6,
                 ),
@@ -81,10 +79,17 @@ class BookingSuccessPage extends GetView<BookingController> {
                 return Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: _card,
+                   decoration: BoxDecoration(
+                    color: AppPalette.pureWhite,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: _yellow.withOpacity(0.2)),
+                    border: Border.all(color: AppPalette.outline),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Column(
                     children: [
@@ -100,7 +105,7 @@ class BookingSuccessPage extends GetView<BookingController> {
                         value: controller.pickupController.text.isNotEmpty
                             ? controller.pickupController.text
                             : 'Harare CBD',
-                        iconColor: Colors.greenAccent,
+                        iconColor: Colors.green.shade600,
                       ),
                       const SizedBox(height: 12),
                       _summaryRow(
@@ -109,14 +114,14 @@ class BookingSuccessPage extends GetView<BookingController> {
                         value: controller.destinationController.text.isNotEmpty
                             ? controller.destinationController.text
                             : 'Borrowdale',
-                        iconColor: _yellow,
+                        iconColor: AppPalette.brandBlue,
                       ),
                       const SizedBox(height: 12),
                       _summaryRow(
                         icon: Icons.receipt_long,
                         label: 'Status',
                         value: booking?.statusLabel ?? 'Pending',
-                        valueColor: _yellow,
+                        valueColor: AppPalette.brandBlue,
                       ),
                       if (booking?.id != null && booking!.id.isNotEmpty) ...[
                         const SizedBox(height: 12),
@@ -140,8 +145,8 @@ class BookingSuccessPage extends GetView<BookingController> {
                     child: OutlinedButton.icon(
                       onPressed: () => Get.offAllNamed(AppRoutes.main),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.white24),
-                        foregroundColor: Colors.white,
+                        side: const BorderSide(color: AppPalette.outline),
+                        foregroundColor: AppPalette.textPrimary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -162,8 +167,8 @@ class BookingSuccessPage extends GetView<BookingController> {
                     child: ElevatedButton.icon(
                       onPressed: () => Get.toNamed(AppRoutes.myBookings),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _yellow,
-                        foregroundColor: Colors.black,
+                        backgroundColor: AppPalette.brandBlue,
+                        foregroundColor: AppPalette.pureWhite,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -176,7 +181,7 @@ class BookingSuccessPage extends GetView<BookingController> {
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
-                          color: Colors.black,
+                          color: AppPalette.pureWhite,
                         ),
                       ),
                     ),
@@ -200,12 +205,12 @@ class BookingSuccessPage extends GetView<BookingController> {
   }) {
     return Row(
       children: [
-        Icon(icon, color: iconColor ?? Colors.white54, size: 18),
+        Icon(icon, color: iconColor ?? AppPalette.textSecondary, size: 18),
         const SizedBox(width: 12),
         Text(
           '$label: ',
           style: GoogleFonts.poppins(
-            color: Colors.white54,
+            color: AppPalette.textSecondary,
             fontSize: 13,
           ),
         ),
@@ -213,7 +218,7 @@ class BookingSuccessPage extends GetView<BookingController> {
           child: Text(
             value,
             style: GoogleFonts.poppins(
-              color: valueColor ?? Colors.white,
+              color: valueColor ?? AppPalette.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w600,
             ),

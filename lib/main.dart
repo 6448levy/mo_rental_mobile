@@ -42,10 +42,10 @@ class MoRentalApp extends StatelessWidget {
       // Theme setup
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light, // Updated to use the new light brand theme
 
       // Navigation setup
-      initialRoute: AppRoutes.login,
+      initialRoute: AppRoutes.splash,
       getPages: AppPages.pages,
       
       // Enable GetX logging in debug mode
