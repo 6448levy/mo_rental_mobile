@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../app/features/data/models/promo_code_model/promo_code_model.dart';
 import '../../app/features/data/services/api_service.dart';
+import '../../app/core/utils/logger.dart';
 
 class PromoCodeRepository {
   final ApiService _apiService = Get.find<ApiService>();
@@ -14,7 +15,7 @@ class PromoCodeRepository {
     try {
       // Get token from storage (same way login saves it)
       final token = _storage.read('auth_token');
-      
+
       if (token == null || token.isEmpty) {
         throw Exception('No authentication token found. Please login.');
       }
@@ -24,7 +25,7 @@ class PromoCodeRepository {
         'Authorization': 'Bearer $token',
         'accept': '*/*',
       };
-      
+
       if (at != null) {
         queryParams = {'at': at.toUtc().toIso8601String()};
       }
@@ -37,9 +38,10 @@ class PromoCodeRepository {
 
       if (response.success) {
         final List<dynamic>? data = response.data;
-        
+
         if (data != null) {
-          final promoCodes = data.map((json) => PromoCode.fromJson(json)).toList();
+          final promoCodes =
+              data.map((json) => PromoCode.fromJson(json)).toList();
 
           if (printToTerminal) {
             _printPromoCodesToTerminal(promoCodes);
@@ -54,42 +56,44 @@ class PromoCodeRepository {
       }
     } catch (e) {
       if (printToTerminal) {
-        print('❌ Error fetching promo codes: $e');
+        Log.info('❌ Error fetching promo codes: $e');
       }
       rethrow;
     }
   }
 
   void _printPromoCodesToTerminal(List<PromoCode> promoCodes) {
-    print('\n${'=' * 60}');
-    print('🎟️  ACTIVE PROMO CODES');
-    print('=' * 60);
-    print('Total Active Codes: ${promoCodes.length}\n');
+    Log.info('\n${'=' * 60}');
+    Log.info('🎟️  ACTIVE PROMO CODES');
+    Log.info('=' * 60);
+    Log.info('Total Active Codes: ${promoCodes.length}\n');
 
     if (promoCodes.isEmpty) {
-      print('No active promo codes found.');
+      Log.info('No active promo codes found.');
     } else {
       for (var promo in promoCodes) {
-        print(promo.toString());
+        Log.info(promo.toString());
       }
     }
 
-    print('\n${'=' * 60}');
-    print('📊 SUMMARY');
-    print('=' * 60);
-    
-    final percentageCodes = promoCodes.where((p) => p.type == 'percentage').length;
+    Log.info('\n${'=' * 60}');
+    Log.info('📊 SUMMARY');
+    Log.info('=' * 60);
+
+    final percentageCodes =
+        promoCodes.where((p) => p.type == 'percentage').length;
     final fixedCodes = promoCodes.where((p) => p.type == 'fixed').length;
     final unlimitedCodes = promoCodes.where((p) => p.usageLimit == null).length;
-    final expiredSoon = promoCodes.where((p) => 
-      p.validUntil != null && 
-      p.validUntil!.difference(DateTime.now()).inDays <= 7
-    ).length;
+    final expiredSoon = promoCodes
+        .where((p) =>
+            p.validUntil != null &&
+            p.validUntil!.difference(DateTime.now()).inDays <= 7)
+        .length;
 
-    print('Percentage Discounts: $percentageCodes');
-    print('Fixed Amount Discounts: $fixedCodes');
-    print('Unlimited Usage: $unlimitedCodes');
-    print('Expiring in 7 days: $expiredSoon');
-    print('=' * 60 + '\n');
-  }                                                                                                                           
+    Log.info('Percentage Discounts: $percentageCodes');
+    Log.info('Fixed Amount Discounts: $fixedCodes');
+    Log.info('Unlimited Usage: $unlimitedCodes');
+    Log.info('Expiring in 7 days: $expiredSoon');
+    Log.info('=' * 60 + '\n');
+  }
 }

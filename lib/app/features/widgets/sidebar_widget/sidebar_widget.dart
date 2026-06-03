@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../modules/promo_code/views/promo_code_screen.dart';
+import '../../modules/profile/views/rental_history_view.dart';
 import '../../../routes/app_routes.dart';
 import '../../../core/themes/app_palette.dart';
 
@@ -33,14 +34,34 @@ class _SidebarWidgetState extends State<SidebarWidget>
   static const _bg = AppPalette.pureWhite;
 
   final List<_SidebarItem> _sidebarItems = [
-    _SidebarItem(icon: Icons.home_rounded, title: 'Home', route: AppRoutes.main),
-    _SidebarItem(icon: Icons.person_search_rounded, title: 'Find Drivers', route: AppRoutes.drivers),
-    _SidebarItem(icon: Icons.calendar_month_rounded, title: 'My Bookings', route: AppRoutes.myBookings),
-    _SidebarItem(icon: Icons.person_outline_rounded, title: 'Profile', route: '/profile'),
-    _SidebarItem(icon: Icons.local_offer_rounded, title: 'Promo Codes', route: AppRoutes.promoCodes),
-    _SidebarItem(icon: Icons.credit_card_rounded, title: 'Payment Methods', route: AppRoutes.addCard),
-    _SidebarItem(icon: Icons.settings_rounded, title: 'Settings', route: '/settings'),
-    _SidebarItem(icon: Icons.help_outline_rounded, title: 'Help & Support', route: '/support'),
+    _SidebarItem(
+        icon: Icons.home_rounded, title: 'Home', route: AppRoutes.main),
+    _SidebarItem(
+        icon: Icons.person_search_rounded,
+        title: 'Find Drivers',
+        route: AppRoutes.drivers),
+    _SidebarItem(
+        icon: Icons.calendar_month_rounded,
+        title: 'My Bookings',
+        route: AppRoutes.myBookings),
+    _SidebarItem(
+        icon: Icons.person_outline_rounded,
+        title: 'Profile',
+        route: AppRoutes.profile),
+    _SidebarItem(
+        icon: Icons.local_offer_rounded,
+        title: 'Promo Codes',
+        route: AppRoutes.promoCodes),
+    _SidebarItem(
+        icon: Icons.credit_card_rounded,
+        title: 'Payment Methods',
+        route: AppRoutes.addCard),
+    _SidebarItem(
+        icon: Icons.settings_rounded, title: 'Settings', route: AppRoutes.settings),
+    _SidebarItem(
+        icon: Icons.help_outline_rounded,
+        title: 'Help & Support',
+        route: '/support'),
   ];
 
   @override
@@ -51,7 +72,8 @@ class _SidebarWidgetState extends State<SidebarWidget>
       vsync: this,
       duration: const Duration(milliseconds: 280),
     );
-    _slideAnim = CurvedAnimation(parent: _animController, curve: Curves.easeInOut);
+    _slideAnim =
+        CurvedAnimation(parent: _animController, curve: Curves.easeInOut);
     if (_isSidebarOpen) _animController.value = 1.0;
   }
 
@@ -95,11 +117,17 @@ class _SidebarWidgetState extends State<SidebarWidget>
       case AppRoutes.myBookings:
         Get.toNamed(AppRoutes.myBookings);
         break;
+      case AppRoutes.profile:
+        Get.toNamed(AppRoutes.profile);
+        break;
       case AppRoutes.promoCodes:
         Get.to(() => const PromoCodeScreen());
         break;
       case AppRoutes.addCard:
         Get.toNamed(AppRoutes.addCard);
+        break;
+      case AppRoutes.settings:
+        Get.toNamed(AppRoutes.settings);
         break;
       default:
         Get.snackbar(
@@ -135,7 +163,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
               return GestureDetector(
                 onTap: _toggleSidebar,
                 child: Container(
-                  color: Colors.black.withOpacity(0.6 * _slideAnim.value),
+                  color: Colors.black.withValues(alpha: 0.6 * _slideAnim.value),
                 ),
               );
             },
@@ -183,7 +211,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
                                   color: _active,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: _active.withOpacity(0.4),
+                                      color: _active.withValues(alpha: 0.4),
                                       blurRadius: 10,
                                       offset: const Offset(0, 4),
                                     ),
@@ -230,23 +258,29 @@ class _SidebarWidgetState extends State<SidebarWidget>
                               ),
                               IconButton(
                                 onPressed: _toggleSidebar,
-                                icon: const Icon(Icons.close, color: Colors.white54, size: 20),
+                                icon: const Icon(Icons.close,
+                                    color: Colors.white54, size: 20),
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
                           // Premium badge
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 5),
                             decoration: BoxDecoration(
-                              color: AppPalette.pureWhite.withOpacity(0.15),
+                              color:
+                                  AppPalette.pureWhite.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: AppPalette.pureWhite.withOpacity(0.4)),
+                              border: Border.all(
+                                  color: AppPalette.pureWhite
+                                      .withValues(alpha: 0.4)),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.star, color: AppPalette.pureWhite, size: 14),
+                                const Icon(Icons.star,
+                                    color: AppPalette.pureWhite, size: 14),
                                 const SizedBox(width: 4),
                                 Text(
                                   'Premium Member',
@@ -266,7 +300,8 @@ class _SidebarWidgetState extends State<SidebarWidget>
                     // ── Menu Items ────────────────────────────────────────
                     Expanded(
                       child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 12),
                         itemCount: _sidebarItems.length,
                         itemBuilder: (context, index) {
                           final item = _sidebarItems[index];
@@ -286,10 +321,12 @@ class _SidebarWidgetState extends State<SidebarWidget>
                           Get.offAllNamed(AppRoutes.login);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent.withOpacity(0.1),
+                          backgroundColor:
+                              Colors.redAccent.withValues(alpha: 0.1),
                           foregroundColor: Colors.redAccent,
                           elevation: 0,
-                          side: const BorderSide(color: Colors.redAccent, width: 1),
+                          side: const BorderSide(
+                              color: Colors.redAccent, width: 1),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -298,7 +335,8 @@ class _SidebarWidgetState extends State<SidebarWidget>
                         icon: const Icon(Icons.logout_rounded, size: 18),
                         label: Text(
                           'Logout',
-                          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14),
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600, fontSize: 14),
                         ),
                       ),
                     ),
@@ -326,7 +364,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
+                          color: Colors.black.withValues(alpha: 0.15),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -348,48 +386,89 @@ class _SidebarWidgetState extends State<SidebarWidget>
   }
 
   Widget _buildMenuItem(_SidebarItem item, int index, bool isSelected) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 4),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOutCubic,
+      margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isSelected ? _active.withOpacity(0.12) : Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
+        color: isSelected ? AppPalette.pureWhite : Colors.transparent,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: isSelected
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                )
+              ]
+            : [],
       ),
-      child: ListTile(
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: isSelected ? _active : AppPalette.outline,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(
-            item.icon,
-            size: 20,
-            color: isSelected ? AppPalette.pureWhite : AppPalette.textSecondary,
-          ),
-        ),
-        title: Text(
-          item.title,
-          style: GoogleFonts.poppins(
-            color: isSelected ? _active : AppPalette.textPrimary,
-            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-            fontSize: 14,
-          ),
-        ),
-        trailing: isSelected
-            ? Container(
-                width: 6,
-                height: 6,
-                decoration: const BoxDecoration(
-                  color: _active,
-                  shape: BoxShape.circle,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => _navigateTo(index),
+          splashColor: _active.withValues(alpha: 0.05),
+          highlightColor: _active.withValues(alpha: 0.02),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            child: Row(
+              children: [
+                // Soft colored icon background
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? _active.withValues(alpha: 0.12)
+                        : AppPalette.textSecondary.withValues(alpha: 0.06),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(
+                    item.icon,
+                    size: 22,
+                    color: isSelected
+                        ? _active
+                        : AppPalette.textSecondary.withValues(alpha: 0.8),
+                  ),
                 ),
-              )
-            : null,
-        onTap: () => _navigateTo(index),
-        dense: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                const SizedBox(width: 16),
+
+                // Smooth Text Translation
+                Expanded(
+                  child: AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 250),
+                    style: GoogleFonts.poppins(
+                      color: isSelected
+                          ? AppPalette.textPrimary
+                          : AppPalette.textSecondary,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w500,
+                      fontSize: 15,
+                    ),
+                    child: Text(item.title),
+                  ),
+                ),
+
+                // Minimal Active Indicator
+                if (isSelected)
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 250),
+                    opacity: isSelected ? 1.0 : 0.0,
+                    child: Container(
+                      width: 4,
+                      height: 18,
+                      decoration: BoxDecoration(
+                        color: _active,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

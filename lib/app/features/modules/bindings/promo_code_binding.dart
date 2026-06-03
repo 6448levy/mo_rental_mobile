@@ -10,10 +10,10 @@ class PromoCodeBinding implements Bindings {
     if (!Get.isRegistered<ApiService>()) {
       Get.put(ApiService());
     }
-    
+
     // Initialize repository
     Get.lazyPut<PromoCodeRepository>(() => PromoCodeRepository());
-    
+
     // Initialize controller
     Get.lazyPut<PromoCodeController>(() => PromoCodeController());
   }

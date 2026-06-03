@@ -35,19 +35,24 @@ class BookingModel {
 
     final driverField = json['driver_id'];
     if (driverField is Map<String, dynamic>) {
-      driverName = driverField['display_name'] ?? driverField['full_name'] ?? '';
+      driverName =
+          driverField['display_name'] ?? driverField['full_name'] ?? '';
       carModel = driverField['car_model'] ?? '';
       driverImage = driverField['profile_image'];
     }
 
     return BookingModel(
       id: json['_id'] ?? json['id'] ?? '',
-      driverId: driverField is Map ? (driverField['_id'] ?? '') : (json['driver_id']?.toString() ?? ''),
+      driverId: driverField is Map
+          ? (driverField['_id'] ?? '')
+          : (json['driver_id']?.toString() ?? ''),
       pickupLocation: json['pickup_location'] ?? '',
       destination: json['destination'] ?? '',
-      price: (json['price'] ?? json['total_price'] ?? 0).toDouble(),
+      price: double.tryParse(
+              (json['price'] ?? json['total_price'] ?? 0).toString()) ??
+          0.0,
       status: json['status'] ?? 'pending',
-      createdAt: json['created_at'] ?? '',
+      createdAt: json['createdAt'] ?? json['created_at'] ?? '',
       paymentMethod: json['payment_method'],
       driverName: driverName,
       carModel: carModel,

@@ -8,7 +8,8 @@ enum BookingStatus { initial, loading, loaded, error, empty }
 class BookingProvider extends ChangeNotifier {
   final BookingRepository _repository;
 
-  BookingProvider({required BookingRepository repository}) : _repository = repository;
+  BookingProvider({required BookingRepository repository})
+      : _repository = repository;
 
   List<BookingModel> _bookings = [];
   List<BookingModel> get bookings => _bookings;
@@ -28,7 +29,7 @@ class BookingProvider extends ChangeNotifier {
     try {
       final results = await _repository.getBookings();
       _bookings = results;
-      
+
       if (_bookings.isEmpty) {
         _status = BookingStatus.empty;
       } else {
@@ -38,9 +39,9 @@ class BookingProvider extends ChangeNotifier {
       _status = BookingStatus.error;
       _errorMessage = e.toString();
       // Even if we fail, we log it clearly
-      print('--- PROVIDER ERROR: $e ---');
+      debugPrint('--- PROVIDER ERROR: $e ---');
     }
-    
+
     notifyListeners();
   }
 

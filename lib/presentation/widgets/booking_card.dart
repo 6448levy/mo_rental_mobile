@@ -7,11 +7,8 @@ class BookingCard extends StatelessWidget {
   final BookingModel booking;
   final VoidCallback onViewDetails;
 
-  const BookingCard({
-    super.key, 
-    required this.booking, 
-    required this.onViewDetails
-  });
+  const BookingCard(
+      {super.key, required this.booking, required this.onViewDetails});
 
   // Theme constants - replaced by AppPalette
 
@@ -25,7 +22,7 @@ class BookingCard extends StatelessWidget {
         border: Border.all(color: AppPalette.outline),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -39,7 +36,7 @@ class BookingCard extends StatelessWidget {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: AppPalette.brandBlue.withOpacity(0.1),
+                  backgroundColor: AppPalette.brandBlue.withValues(alpha: 0.1),
                   child: const Icon(Icons.person, color: AppPalette.brandBlue),
                 ),
                 const SizedBox(width: 12),
@@ -66,9 +63,11 @@ class BookingCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(booking.status).withOpacity(0.12),
+                    color:
+                        _getStatusColor(booking.status).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -91,16 +90,19 @@ class BookingCard extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                _buildRouteItem(Icons.radio_button_checked, Colors.green.shade600, "Pickup", booking.pickupLocation),
+                _buildRouteItem(Icons.radio_button_checked,
+                    Colors.green.shade600, "Pickup", booking.pickupLocation),
                 const SizedBox(height: 12),
-                _buildRouteItem(Icons.location_on, AppPalette.brandBlue, "Destination", booking.destination),
+                _buildRouteItem(Icons.location_on, AppPalette.brandBlue,
+                    "Destination", booking.destination),
               ],
             ),
           ),
 
           // ── Footer with Price & Date ────────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -109,7 +111,8 @@ class BookingCard extends StatelessWidget {
                   children: [
                     Text(
                       "Price",
-                      style: GoogleFonts.poppins(color: AppPalette.textDisabled, fontSize: 11),
+                      style: GoogleFonts.poppins(
+                          color: AppPalette.textDisabled, fontSize: 11),
                     ),
                     Text(
                       "\$${booking.price.toStringAsFixed(2)}",
@@ -126,11 +129,13 @@ class BookingCard extends StatelessWidget {
                   children: [
                     Text(
                       "Date",
-                      style: GoogleFonts.poppins(color: AppPalette.textDisabled, fontSize: 11),
+                      style: GoogleFonts.poppins(
+                          color: AppPalette.textDisabled, fontSize: 11),
                     ),
                     Text(
                       _formatDate(booking.createdAt),
-                      style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 12),
+                      style: GoogleFonts.poppins(
+                          color: AppPalette.textSecondary, fontSize: 12),
                     ),
                   ],
                 ),
@@ -143,7 +148,8 @@ class BookingCard extends StatelessWidget {
           // ── Action Button ───────────────────────────────────────────────────
           InkWell(
             onTap: onViewDetails,
-            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
+            borderRadius:
+                const BorderRadius.vertical(bottom: Radius.circular(20)),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 14),
@@ -167,7 +173,8 @@ class BookingCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRouteItem(IconData icon, Color color, String label, String value) {
+  Widget _buildRouteItem(
+      IconData icon, Color color, String label, String value) {
     return Row(
       children: [
         Icon(icon, color: color, size: 16),
@@ -188,11 +195,16 @@ class BookingCard extends StatelessWidget {
 
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
-      case 'active': return Colors.green.shade600;
-      case 'pending': return Colors.orange.shade600;
-      case 'completed': return AppPalette.brandBlue;
-      case 'cancelled': return Colors.red.shade600;
-      default: return AppPalette.textDisabled;
+      case 'active':
+        return Colors.green.shade600;
+      case 'pending':
+        return Colors.orange.shade600;
+      case 'completed':
+        return AppPalette.brandBlue;
+      case 'cancelled':
+        return Colors.red.shade600;
+      default:
+        return AppPalette.textDisabled;
     }
   }
 

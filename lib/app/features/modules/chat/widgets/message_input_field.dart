@@ -3,10 +3,12 @@ import '../../../../core/themes/app_palette.dart';
 
 class MessageInputField extends StatefulWidget {
   final Function(String) onSendMessage;
+  final Function(bool)? onTyping;
 
   const MessageInputField({
     super.key,
     required this.onSendMessage,
+    this.onTyping,
   });
 
   @override
@@ -37,7 +39,8 @@ class _MessageInputFieldState extends State<MessageInputField> {
         left: 16,
         right: 16,
         top: 12,
-        bottom: 12 + MediaQuery.of(context).padding.bottom, // Account for safe area
+        bottom:
+            12 + MediaQuery.of(context).padding.bottom, // Account for safe area
       ),
       decoration: const BoxDecoration(
         color: AppPalette.pureWhite,
@@ -75,12 +78,16 @@ class _MessageInputFieldState extends State<MessageInputField> {
                 minLines: 1,
                 maxLines: 4,
                 textInputAction: TextInputAction.send,
+                onChanged: (text) {
+                  widget.onTyping?.call(text.isNotEmpty);
+                },
                 onSubmitted: (_) => _handleSend(),
                 decoration: const InputDecoration(
                   hintText: 'Type a message...',
                   hintStyle: TextStyle(color: AppPalette.textDisabled),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   // Override theme decor slightly for chat input
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
@@ -92,7 +99,8 @@ class _MessageInputFieldState extends State<MessageInputField> {
           ),
           const SizedBox(width: 8),
           Container(
-            margin: const EdgeInsets.only(bottom: 2), // Align visually with text field
+            margin: const EdgeInsets.only(
+                bottom: 2), // Align visually with text field
             decoration: const BoxDecoration(
               color: AppPalette.brandBlue,
               shape: BoxShape.circle,

@@ -2,596 +2,355 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/booking_controller.dart';
-import 'package:carrental/app/routes/app_routes.dart';
-import 'package:carrental/app/core/themes/app_palette.dart';
+import '../../../../core/themes/app_palette.dart';
+import '../../../data/models/payment/payment_model.dart';
 
 class BookingOverviewPage extends GetView<BookingController> {
   const BookingOverviewPage({super.key});
-
-  // Theme constants - replaced by AppPalette
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppPalette.pureWhite,
-      body: Obx(() {
-        final driver = controller.selectedDriver.value;
-        if (driver == null) {
-          return const Center(
-            child: Text('No driver selected', style: TextStyle(color: AppPalette.textPrimary)),
-          );
-        }
-
-        return CustomScrollView(
-          slivers: [
-            // ── Custom App Bar ──────────────────────────────────────────────
-            SliverAppBar(
-              expandedHeight: 60,
-              floating: true,
-              backgroundColor: AppPalette.brandBlue,
-              foregroundColor: AppPalette.pureWhite,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios_new, color: AppPalette.pureWhite),
-                onPressed: () => Get.back(),
-              ),
-              title: Text(
-                'Booking Overview',
-                style: GoogleFonts.poppins(
-                  color: AppPalette.pureWhite,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                ),
-              ),
-              centerTitle: true,
-            ),
-
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 8),
-
-                    // ── Pickup time row ─────────────────────────────────────
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.access_time, color: AppPalette.brandBlue, size: 18),
-                            const SizedBox(width: 6),
-                            Text(
-                              'Pickup: ${_currentTime()}',
-                              style: GoogleFonts.poppins(
-                                color: AppPalette.textSecondary,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                        TextButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.my_location, size: 14, color: AppPalette.brandBlue),
-                          label: Text(
-                            'Track driver',
-                            style: GoogleFonts.poppins(
-                              color: AppPalette.brandBlue,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // ── Car / Driver banner card ────────────────────────────
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: AppPalette.pureWhite,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppPalette.outline, width: 1),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          // Car image placeholder
-                          ClipRRect(
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                            child: Container(
-                              height: 180,
-                              width: double.infinity,
-                              color: AppPalette.brandBlue.withOpacity(0.05),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  // Animated car icon
-                                  Icon(
-                                    Icons.directions_car,
-                                    size: 90,
-                                    color: AppPalette.brandBlue.withOpacity(0.35),
-                                  ),
-                                  // Yellow glow
-                                  Positioned.fill(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: RadialGradient(
-                                          colors: [
-                                            AppPalette.brandBlue.withValues(alpha: 0.1),
-                                            Colors.transparent,
-                                          ],
-                                          radius: 0.8,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  // Car model label
-                                  Positioned(
-                                    bottom: 12,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 6,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppPalette.brandBlue,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Text(
-                                        driver.displayName,
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 13,
-                                          color: AppPalette.pureWhite,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          // Driver info strip
-                          Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                // Avatar
-                                CircleAvatar(
-                                  radius: 24,
-                                  backgroundColor: AppPalette.brandBlue.withValues(alpha: 0.2),
-                                  backgroundImage: driver.profileImage != null
-                                      ? NetworkImage(driver.profileImage!)
-                                      : null,
-                                  child: driver.profileImage == null
-                                      ? Text(
-                                          driver.displayName.isNotEmpty
-                                              ? driver.displayName[0].toUpperCase()
-                                              : '?',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppPalette.brandBlue,
-                                          ),
-                                        )
-                                      : null,
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        driver.displayName,
-                                        style: GoogleFonts.poppins(
-                                          color: AppPalette.textPrimary,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.star, color: Colors.orange, size: 14),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            '${driver.ratingAverage.toStringAsFixed(1)} · ${driver.yearsExperience} yrs exp',
-                                            style: GoogleFonts.poppins(
-                                              color: AppPalette.textSecondary,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AppPalette.brandBlue,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    '\$${driver.hourlyRate.toStringAsFixed(0)}/hr',
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 14,
-                                      color: AppPalette.pureWhite,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // ── Ride details card ───────────────────────────────────
-                    _sectionLabel('Ride Details'),
-                    const SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppPalette.pureWhite,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppPalette.outline),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          _locationTile(
-                            icon: Icons.radio_button_checked,
-                            color: Colors.green.shade600,
-                            label: 'Pickup',
-                            controller: controller.pickupController,
-                          ),
-                          Divider(color: AppPalette.outline, height: 1, indent: 56),
-                          _locationTile(
-                            icon: Icons.location_on,
-                            color: AppPalette.brandBlue,
-                            label: 'Destination',
-                            controller: controller.destinationController,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // ── Payment method ──────────────────────────────────────
-                    _sectionLabel('Payment Method'),
-                    const SizedBox(height: 10),
-                    Obx(
-                      () => InkWell(
-                        onTap: () => Get.toNamed(AppRoutes.addCard),
-                        borderRadius: BorderRadius.circular(14),
-                        child: Container(
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: AppPalette.pureWhite,
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: AppPalette.outline,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.04),
-                                blurRadius: 8,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 32,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF1565C0),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Icon(
-                                  Icons.credit_card,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  controller.selectedPaymentMethod.value,
-                                  style: GoogleFonts.poppins(
-                                    color: AppPalette.textPrimary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                              const Icon(Icons.chevron_right, color: AppPalette.textSecondary),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // ── Ride cost summary ───────────────────────────────────
-                    _sectionLabel('Cost Estimate'),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppPalette.pureWhite,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppPalette.outline),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          _costRow('Hourly Rate', '\$${driver.hourlyRate.toStringAsFixed(0)}/hr'),
-                          const SizedBox(height: 8),
-                          _costRow('Service Fee', '\$2.00'),
-                          const Divider(color: AppPalette.outline, height: 24),
-                          _costRow(
-                            'Estimated Total',
-                            '\$${(driver.hourlyRate + 2).toStringAsFixed(2)}',
-                            isTotal: true,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // ── Ride status ─────────────────────────────────────────
-                    _sectionLabel('Ride Status'),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: AppPalette.pureWhite,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppPalette.outline),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: Colors.green.shade600,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            driver.isAvailable ? 'Driver Available — Ready to go' : 'Driver Offline',
-                            style: GoogleFonts.poppins(
-                              color: driver.isAvailable ? Colors.green.shade600 : AppPalette.textDisabled,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // ── Cancel ride ─────────────────────────────────────────
-                    TextButton(
-                      onPressed: () => _showCancelDialog(),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.cancel_outlined, color: Colors.redAccent, size: 18),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Cancel Ride',
-                            style: GoogleFonts.poppins(
-                              color: Colors.redAccent,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // ── Confirm Pay button ──────────────────────────────────
-                    Obx(
-                      () => SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: controller.isCreatingBooking.value
-                              ? null
-                              : () => controller.confirmBooking(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppPalette.brandBlue,
-                            disabledBackgroundColor: AppPalette.brandBlue.withValues(alpha: 0.5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: controller.isCreatingBooking.value
-                              ? const SizedBox(
-                                  width: 22,
-                                  height: 22,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.5,
-                                    color: AppPalette.pureWhite,
-                                  ),
-                                )
-                              : Text(
-                                  'Confirm & Pay',
-                                  style: GoogleFonts.poppins(
-                                    color: AppPalette.pureWhite,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 32),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      }),
-    );
-  }
-
-  // ── Helpers ─────────────────────────────────────────────────────────────────
-
-  Widget _sectionLabel(String text) => Text(
-        text,
-        style: GoogleFonts.poppins(
-          color: AppPalette.textSecondary,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.8,
+      appBar: AppBar(
+        backgroundColor: AppPalette.pureWhite,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: AppPalette.textPrimary, size: 20),
+          onPressed: () => Get.back(),
         ),
-      );
-
-  Widget _locationTile({
-    required IconData icon,
-    required Color color,
-    required String label,
-    required TextEditingController controller,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Row(
-        children: [
-          Icon(icon, color: color, size: 22),
-          const SizedBox(width: 14),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              style: GoogleFonts.poppins(color: AppPalette.textPrimary, fontSize: 14),
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 12),
-                border: InputBorder.none,
-                isDense: true,
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
+        title: Text(
+          'Booking Overview',
+          style: GoogleFonts.poppins(
+            color: AppPalette.textPrimary,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
           ),
-        ],
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // --- Driver Info Card ---
+              _buildSectionHeader('Driver Details'),
+              const SizedBox(height: 12),
+              _buildDriverCard(),
+
+              const SizedBox(height: 32),
+
+              // --- Promo Code Section ---
+              _buildSectionHeader('Promo Code'),
+              const SizedBox(height: 12),
+              _buildPromoSection(),
+
+              const SizedBox(height: 32),
+
+              // --- Payment Method Section ---
+              _buildSectionHeader('Payment Method'),
+              const SizedBox(height: 12),
+              _buildPaymentMethods(),
+
+              const SizedBox(height: 32),
+
+              // --- Price Summary ---
+              _buildSectionHeader('Price Details'),
+              const SizedBox(height: 12),
+              _buildPriceSummary(),
+
+              const SizedBox(height: 40),
+
+              // --- Confirm Button ---
+              _buildConfirmButton(),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _costRow(String label, String value, {bool isTotal = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildSectionHeader(String title) {
+    return Text(
+      title,
+      style: GoogleFonts.poppins(
+        color: AppPalette.textPrimary,
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+
+  Widget _buildDriverCard() {
+    return Obx(() {
+      final driver = controller.selectedDriver.value;
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppPalette.pureWhite,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppPalette.outline),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 28,
+              backgroundColor: AppPalette.brandBlue.withValues(alpha: 0.1),
+              child: const Icon(Icons.person, color: AppPalette.brandBlue, size: 32),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    driver?.displayName ?? 'Select a Driver',
+                    style: GoogleFonts.poppins(
+                      color: AppPalette.textPrimary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    'Professional Driver',
+                    style: GoogleFonts.poppins(
+                      color: AppPalette.textSecondary,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _buildPromoSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.poppins(
-            color: isTotal ? AppPalette.textPrimary : AppPalette.textSecondary,
-            fontSize: isTotal ? 15 : 13,
-            fontWeight: isTotal ? FontWeight.w700 : FontWeight.w400,
+        Container(
+          decoration: BoxDecoration(
+            color: AppPalette.pureWhite,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppPalette.outline),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: controller.promoCodeController,
+                  decoration: InputDecoration(
+                    hintText: 'Enter promo code',
+                    hintStyle: GoogleFonts.poppins(color: AppPalette.textDisabled, fontSize: 14),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                ),
+              ),
+              Obx(() => controller.isApplyingPromo.value
+                  ? const Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+                    )
+                  : TextButton(
+                      onPressed: () => controller.applyPromoCode(),
+                      child: Text(
+                        'Apply',
+                        style: GoogleFonts.poppins(
+                          color: AppPalette.brandBlue,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    )),
+            ],
           ),
         ),
-        Text(
-          value,
-          style: GoogleFonts.poppins(
-            color: isTotal ? AppPalette.brandBlue : AppPalette.textPrimary,
-            fontSize: isTotal ? 16 : 13,
-            fontWeight: isTotal ? FontWeight.w800 : FontWeight.w500,
-          ),
+        Obx(() => controller.promoMessage.value.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.only(top: 8.0, left: 4.0),
+                child: Text(
+                  controller.promoMessage.value,
+                  style: GoogleFonts.poppins(
+                    color: controller.promoDiscount.value > 0 ? AppPalette.success : AppPalette.error,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )
+            : const SizedBox.shrink()),
+      ],
+    );
+  }
+
+  Widget _buildPaymentMethods() {
+    return Column(
+      children: [
+        _buildPaymentOption(
+          method: PaymentMethod.mobile_wallet,
+          title: 'EcoCash / OneMoney',
+          subtitle: 'Mobile USSD Push',
+          icon: Icons.smartphone_rounded,
+        ),
+        const SizedBox(height: 12),
+        _buildPaymentOption(
+          method: PaymentMethod.paynow,
+          title: 'Paynow',
+          subtitle: 'Bank / Multi-channel',
+          icon: Icons.account_balance_rounded,
         ),
       ],
     );
   }
 
-  void _showCancelDialog() {
-    Get.dialog(
-      AlertDialog(
-        backgroundColor: AppPalette.pureWhite,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          'Cancel Ride?',
-          style: GoogleFonts.poppins(color: AppPalette.textPrimary, fontWeight: FontWeight.w700),
-        ),
-        content: Text(
-          'Are you sure you want to cancel this ride?',
-          style: GoogleFonts.poppins(color: AppPalette.textSecondary),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: Text('Keep Ride', style: GoogleFonts.poppins(color: AppPalette.textSecondary)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Get.back(); // Close dialog
-              Get.back(); // Go back to drivers
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            child: Text(
-              'Cancel Ride',
-              style: GoogleFonts.poppins(color: AppPalette.pureWhite, fontWeight: FontWeight.w600),
+  Widget _buildPaymentOption({
+    required PaymentMethod method,
+    required String title,
+    required String subtitle,
+    required IconData icon,
+  }) {
+    return Obx(() {
+      final isSelected = controller.selectedPaymentMethod.value == method;
+      return GestureDetector(
+        onTap: () => controller.selectedPaymentMethod.value = method,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isSelected ? AppPalette.brandBlue.withValues(alpha: 0.05) : AppPalette.pureWhite,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? AppPalette.brandBlue : AppPalette.outline,
+              width: isSelected ? 2 : 1,
             ),
           ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: isSelected ? AppPalette.brandBlue : AppPalette.outline.withValues(alpha: 0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: isSelected ? AppPalette.pureWhite : AppPalette.textSecondary, size: 20),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.poppins(
+                        color: AppPalette.textPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: GoogleFonts.poppins(
+                        color: AppPalette.textSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (isSelected)
+                const Icon(Icons.check_circle_rounded, color: AppPalette.brandBlue, size: 24),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget _buildPriceSummary() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppPalette.pureWhite,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppPalette.outline),
+      ),
+      child: Column(
+        children: [
+          _priceRow('Base Amount', controller.baseAmount, isTotal: false),
+          const SizedBox(height: 12),
+          _priceRow('Promo Discount', controller.promoDiscount, isTotal: false, isDiscount: true),
+          const Divider(height: 32, color: AppPalette.outline),
+          _priceRow('Total Amount', controller.finalAmount.value > 0 ? controller.finalAmount : controller.baseAmount, isTotal: true),
         ],
       ),
     );
   }
 
-  String _currentTime() {
-    final now = DateTime.now();
-    final hour = now.hour > 12 ? now.hour - 12 : now.hour;
-    final minute = now.minute.toString().padLeft(2, '0');
-    final period = now.hour >= 12 ? 'PM' : 'AM';
-    return '$hour:$minute $period';
+  Widget _priceRow(String label, RxDouble amount, {required bool isTotal, bool isDiscount = false}) {
+    return Obx(() => Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: GoogleFonts.poppins(
+                color: isTotal ? AppPalette.textPrimary : AppPalette.textSecondary,
+                fontSize: isTotal ? 16 : 14,
+                fontWeight: isTotal ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+            Text(
+              '${isDiscount ? "-" : ""}\$${amount.value.toStringAsFixed(2)}',
+              style: GoogleFonts.poppins(
+                color: isDiscount ? AppPalette.success : AppPalette.textPrimary,
+                fontSize: isTotal ? 20 : 14,
+                fontWeight: isTotal ? FontWeight.w800 : FontWeight.w600,
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget _buildConfirmButton() {
+    return Obx(() {
+      final isLoading = controller.isCreatingBooking.value || controller.isPolling.value;
+      return SizedBox(
+        width: double.infinity,
+        height: 60,
+        child: ElevatedButton(
+          onPressed: isLoading ? null : () => controller.confirmBooking(),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppPalette.brandBlue,
+            foregroundColor: AppPalette.pureWhite,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 0,
+          ),
+          child: isLoading
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(color: AppPalette.pureWhite, strokeWidth: 2),
+                )
+              : Text(
+                  'Confirm & Pay',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+        ),
+      );
+    });
   }
 }

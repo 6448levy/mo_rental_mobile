@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 class OnboardPage extends StatelessWidget {
   final String title, subtitle, image;
   const OnboardPage(
-      {super.key, required this.title, required this.subtitle, required this.image});
+      {super.key,
+      required this.title,
+      required this.subtitle,
+      required this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +15,8 @@ class OnboardPage extends StatelessWidget {
         image: DecorationImage(
           image: AssetImage(image),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.darken),
+          colorFilter: ColorFilter.mode(
+              Colors.black.withValues(alpha: 0.4), BlendMode.darken),
         ),
       ),
       child: Padding(
@@ -23,7 +27,9 @@ class OnboardPage extends StatelessWidget {
           children: [
             Text(title,
                 style: const TextStyle(
-                    fontSize: 34, fontWeight: FontWeight.bold, color: Colors.white)),
+                    fontSize: 34,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
             const SizedBox(height: 10),
             Text(subtitle,
                 style: TextStyle(fontSize: 18, color: Colors.grey.shade300)),

@@ -49,17 +49,24 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     // isMe (Customer): Brand Blue background, white text
     // not isMe (Driver): Light brand blue tint background, dark text
-    final bubbleColor = message.isMe ? AppPalette.brandBlue : AppPalette.brandBlue.withValues(alpha: 0.06);
-    final textColor = message.isMe ? AppPalette.pureWhite : AppPalette.textPrimary;
-    final timeColor = message.isMe ? AppPalette.pureWhite.withValues(alpha: 0.7) : AppPalette.textSecondary;
+    final bubbleColor = message.isMe
+        ? AppPalette.brandBlue
+        : AppPalette.brandBlue.withValues(alpha: 0.06);
+    final textColor =
+        message.isMe ? AppPalette.pureWhite : AppPalette.textPrimary;
+    final timeColor = message.isMe
+        ? AppPalette.pureWhite.withValues(alpha: 0.7)
+        : AppPalette.textSecondary;
     final borderColor = message.isMe ? Colors.transparent : AppPalette.outline;
-    
+
     // Bubble border radius setup for chat-like appearance
     final borderRadius = BorderRadius.only(
       topLeft: const Radius.circular(16),
       topRight: const Radius.circular(16),
-      bottomLeft: message.isMe ? const Radius.circular(16) : const Radius.circular(4),
-      bottomRight: message.isMe ? const Radius.circular(4) : const Radius.circular(16),
+      bottomLeft:
+          message.isMe ? const Radius.circular(16) : const Radius.circular(4),
+      bottomRight:
+          message.isMe ? const Radius.circular(4) : const Radius.circular(16),
     );
 
     return Align(
@@ -83,7 +90,8 @@ class MessageBubble extends StatelessWidget {
           ],
         ),
         child: Column(
-          crossAxisAlignment: message.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          crossAxisAlignment:
+              message.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
             Text(
               message.text,

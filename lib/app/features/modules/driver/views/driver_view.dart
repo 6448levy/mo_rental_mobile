@@ -25,9 +25,10 @@ class DriverView extends GetView<DriverController> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   CircularProgressIndicator(color: AppPalette.brandBlue),
+                  CircularProgressIndicator(color: AppPalette.brandBlue),
                   SizedBox(height: 16),
-                  Text('Loading driver profile...', style: TextStyle(color: AppPalette.textSecondary)),
+                  Text('Loading driver profile...',
+                      style: TextStyle(color: AppPalette.textSecondary)),
                 ],
               ),
             );
@@ -53,9 +54,12 @@ class DriverView extends GetView<DriverController> {
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: controller.refreshProfile,
-                      style: ElevatedButton.styleFrom(backgroundColor: AppPalette.brandBlue),
-                      icon: const Icon(Icons.refresh, color: AppPalette.pureWhite),
-                      label: const Text('Retry', style: TextStyle(color: AppPalette.pureWhite)),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: AppPalette.brandBlue),
+                      icon: const Icon(Icons.refresh,
+                          color: AppPalette.pureWhite),
+                      label: const Text('Retry',
+                          style: TextStyle(color: AppPalette.pureWhite)),
                     ),
                   ],
                 ),
@@ -67,18 +71,18 @@ class DriverView extends GetView<DriverController> {
             onRefresh: controller.refreshProfile,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 1. Driver Profile Section (real API data)
+                  // 1. Driver Profile Section (Hero Header)
                   Obx(() => DriverProfileHeader(
                         name: controller.driverName,
                         phoneNumber: controller.baseCity.isNotEmpty
                             ? '📍 ${controller.baseCity}, ${controller.driverProfile.value?.baseCountry ?? ''}'
                             : 'Location not set',
                         rating: controller.driverRating,
-                        ratingCount: controller.driverProfile.value?.ratingCount ?? 0,
+                        ratingCount:
+                            controller.driverProfile.value?.ratingCount ?? 0,
                         isVerified: controller.isVerified,
                         profileImageUrl: controller.profileImageUrl,
                         bio: controller.bio,
@@ -88,64 +92,69 @@ class DriverView extends GetView<DriverController> {
                         isLoading: controller.isLoadingProfile.value,
                       )),
 
-                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        // 2. Mode Selector
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: AppPalette.brandBlue.withValues(alpha: 0.05),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Obx(() => Row(
+                                children: [
+                                  _buildModeButton(
+                                    title: "Ride-Hailing",
+                                    icon: Icons.local_taxi_rounded,
+                                    isSelected: controller.isRideHailingMode.value,
+                                    onTap: () {
+                                      if (!controller.isRideHailingMode.value) {
+                                        controller.toggleMode();
+                                      }
+                                    },
+                                  ),
+                                  _buildModeButton(
+                                    title: "Car Rental",
+                                    icon: Icons.directions_car_rounded,
+                                    isSelected: !controller.isRideHailingMode.value,
+                                    onTap: () {
+                                      if (controller.isRideHailingMode.value) {
+                                        controller.toggleMode();
+                                      }
+                                    },
+                                  ),
+                                ],
+                              )),
+                        ),
 
-                  // 2. Mode Selector
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: AppPalette.brandBlue.withOpacity(0.05),
-                      borderRadius: BorderRadius.circular(12),
+                        const SizedBox(height: 24),
+
+                        // 3. Online/Offline Switch + Mode Content
+                        Obx(() {
+                          if (controller.isRideHailingMode.value) {
+                            return Column(
+                              children: [
+                                _buildOnlineSwitch(),
+                                const SizedBox(height: 24),
+                                const RideHailingContent(),
+                              ],
+                            );
+                          }
+                          return const CarRentalContent();
+                        }),
+
+                        const SizedBox(height: 24),
+                        const EarningsCard(),
+
+                        const SizedBox(height: 24),
+                        const DocumentList(),
+
+                        const SizedBox(height: 40),
+                      ],
                     ),
-                    child: Obx(() => Row(
-                          children: [
-                            _buildModeButton(
-                              title: "Ride-Hailing",
-                              icon: Icons.local_taxi,
-                              isSelected: controller.isRideHailingMode.value,
-                              onTap: () {
-                                if (!controller.isRideHailingMode.value) {
-                                  controller.toggleMode();
-                                }
-                              },
-                            ),
-                            _buildModeButton(
-                              title: "Car Rental",
-                              icon: Icons.directions_car,
-                              isSelected: !controller.isRideHailingMode.value,
-                              onTap: () {
-                                if (controller.isRideHailingMode.value) {
-                                  controller.toggleMode();
-                                }
-                              },
-                            ),
-                          ],
-                        )),
                   ),
-
-                  const SizedBox(height: 24),
-
-                  // 3. Online/Offline Switch + Mode Content
-                  Obx(() {
-                    if (controller.isRideHailingMode.value) {
-                      return Column(
-                        children: [
-                          _buildOnlineSwitch(),
-                          const SizedBox(height: 24),
-                          const RideHailingContent(),
-                        ],
-                      );
-                    }
-                    return const CarRentalContent();
-                  }),
-
-                  const SizedBox(height: 24),
-                  const EarningsCard(),
-
-                  const SizedBox(height: 24),
-                  const DocumentList(),
-
-                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -173,7 +182,7 @@ class DriverView extends GetView<DriverController> {
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: AppPalette.brandBlue.withOpacity(0.1),
+                      color: AppPalette.brandBlue.withValues(alpha: 0.1),
                       blurRadius: 5,
                       offset: const Offset(0, 2),
                     ),
@@ -185,14 +194,18 @@ class DriverView extends GetView<DriverController> {
             children: [
               Icon(
                 icon,
-                color: isSelected ? AppPalette.brandBlue : AppPalette.textSecondary,
+                color: isSelected
+                    ? AppPalette.brandBlue
+                    : AppPalette.textSecondary,
                 size: 20,
               ),
               const SizedBox(width: 8),
               Text(
                 title,
                 style: TextStyle(
-                  color: isSelected ? AppPalette.brandBlue : AppPalette.textSecondary,
+                  color: isSelected
+                      ? AppPalette.brandBlue
+                      : AppPalette.textSecondary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -213,7 +226,7 @@ class DriverView extends GetView<DriverController> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: controller.isOnline.value
-                  ? Colors.green.withOpacity(0.3)
+                  ? Colors.green.withValues(alpha: 0.3)
                   : AppPalette.outline,
             ),
           ),
@@ -225,8 +238,9 @@ class DriverView extends GetView<DriverController> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color:
-                          controller.isOnline.value ? Colors.green.shade600 : AppPalette.textDisabled,
+                      color: controller.isOnline.value
+                          ? Colors.green.shade600
+                          : AppPalette.textDisabled,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.power_settings_new,
@@ -262,7 +276,7 @@ class DriverView extends GetView<DriverController> {
               Switch(
                 value: controller.isOnline.value,
                 onChanged: controller.toggleOnlineStatus,
-                activeColor: Colors.green.shade600,
+                activeThumbColor: Colors.green.shade600,
               ),
             ],
           ),

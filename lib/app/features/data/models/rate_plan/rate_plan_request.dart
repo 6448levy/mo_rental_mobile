@@ -23,7 +23,7 @@ class RatePlanRequest {
 
   Map<String, dynamic> toQueryParams() {
     final params = <String, dynamic>{};
-    
+
     if (branchId != null) params['branch_id'] = branchId;
     if (vehicleClass != null) params['vehicle_class'] = vehicleClass;
     if (vehicleModelId != null) params['vehicle_model_id'] = vehicleModelId;
@@ -33,7 +33,7 @@ class RatePlanRequest {
     if (validOn != null) params['valid_on'] = validOn;
     if (page != null) params['page'] = page.toString();
     if (limit != null) params['limit'] = limit.toString();
-    
+
     return params;
   }
 }

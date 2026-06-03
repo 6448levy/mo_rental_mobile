@@ -1,10 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import '../../../../core/utils/logger.dart';
 import '../../../data/models/driver/driver_profile_model.dart';
 import '../../../data/services/driver_service.dart';
+import '../../../data/services/socket_service.dart';
 
 class DriverController extends GetxController {
   final DriverService _driverService = Get.find<DriverService>();
+  final SocketService _socketService = Get.find<SocketService>();
   final GetStorage _storage = GetStorage();
 
   // ─── UI Mode ────────────────────────────────────────────────────────────────
@@ -51,6 +55,23 @@ class DriverController extends GetxController {
     fetchPublicDriverProfiles();
     _tryLoadMyProfile();
     _loadMockEarningsData();
+    _setupSocketListeners();
+  }
+
+  void _setupSocketListeners() {
+    _socketService.on('new_booking', (data) {
+      Log.info('🔔 NEW BOOKING RECEIVED VIA SOCKET: $data');
+      incomingRequest.value = Map<String, dynamic>.from(data);
+      Get.snackbar(
+        "New Ride Request", 
+        "A customer is requesting a ride near you!",
+        duration: const Duration(seconds: 10),
+        mainButton: TextButton(
+          onPressed: () => Get.toNamed('/driver-dashboard'), // Navigate to accept screen
+          child: const Text("VIEW", style: TextStyle(color: Colors.white)),
+        ),
+      );
+    });
   }
 
   // ─── API Calls ──────────────────────────────────────────────────────────
@@ -70,7 +91,7 @@ class DriverController extends GetxController {
       }
     } else {
       profileError.value = response.message;
-      print('❌ Failed to load driver profiles: ${response.message}');
+      Log.info('❌ Failed to load driver profiles: ${response.message}');
     }
 
     isLoadingProfile.value = false;
@@ -80,17 +101,18 @@ class DriverController extends GetxController {
   Future<void> _tryLoadMyProfile() async {
     final token = _storage.read<String>('auth_token');
     if (token == null || token.isEmpty) {
-      print('⚠️ No auth token – skipping my profile fetch');
+      Log.info('⚠️ No auth token – skipping my profile fetch');
       return;
     }
 
-    final response = await _driverService.getMyDriverProfile(token: token);
+    final response = await _driverService.getMyDriverProfile();
     if (response.success && response.data != null) {
       driverProfile.value = response.data;
       _setProfileFromModel(response.data!);
-      print('✅ My driver profile loaded: ${response.data!.displayName}');
+      Log.info('✅ My driver profile loaded: ${response.data!.displayName}');
     } else {
-      print('⚠️ My profile not found (${response.message}) – using public list');
+      Log.info(
+          '⚠️ My profile not found (${response.message}) – using public list');
     }
   }
 
@@ -120,7 +142,8 @@ class DriverController extends GetxController {
 
     if (profile.identityDocument != null) {
       docs.add({
-        'name': 'Identity Document (${profile.identityDocument!.type.replaceAll('_', ' ').toUpperCase()})',
+        'name':
+            'Identity Document (${profile.identityDocument!.type.replaceAll('_', ' ').toUpperCase()})',
         'status': profile.isApproved ? 'Verified' : 'Pending',
         'expiry': null,
       });
@@ -152,29 +175,58 @@ class DriverController extends GetxController {
   }
 
   // ─── Trip Actions ───────────────────────────────────────────────────────
-  void acceptRequest() {
-    if (incomingRequest.value != null) {
+  Future<void> acceptRequest() async {
+    if (incomingRequest.value == null) return;
+    
+    final bookingId = incomingRequest.value!['_id'] ?? incomingRequest.value!['id'];
+    if (bookingId == null) return;
+
+    final response = await _driverService.updateBookingStatus(
+      bookingId: bookingId,
+      status: 'accepted',
+    );
+
+    if (response.success) {
       activeTrip.value = incomingRequest.value;
       activeTrip.value!['status'] = 'Picking Up';
       incomingRequest.value = null;
+      Get.snackbar("Trip Accepted", "Navigate to the pickup location.");
+    } else {
+      Get.snackbar("Error", response.message);
     }
   }
 
-  void rejectRequest() {
+  Future<void> rejectRequest() async {
     incomingRequest.value = null;
   }
 
-  void startTrip() {
-    if (activeTrip.value != null) {
+  Future<void> updateStatus(String status) async {
+    if (activeTrip.value == null) return;
+    
+    final bookingId = activeTrip.value!['_id'] ?? activeTrip.value!['id'];
+    if (bookingId == null) return;
+
+    final response = await _driverService.updateBookingStatus(
+      bookingId: bookingId,
+      status: status,
+    );
+
+    if (response.success) {
       activeTrip.update((val) {
-        val!['status'] = 'In Progress';
+        val!['status'] = status;
       });
+      if (status.toLowerCase() == 'completed') {
+        activeTrip.value = null;
+        Get.snackbar("Trip Completed", "Well done! Your earnings have been updated.");
+      }
+    } else {
+      Get.snackbar("Error", response.message);
     }
   }
 
-  void endTrip() {
-    activeTrip.value = null;
-  }
+  void startTrip() => updateStatus('started');
+  void arriveAtPickup() => updateStatus('arrived');
+  void endTrip() => updateStatus('completed');
 
   // ─── Mode ───────────────────────────────────────────────────────────────
   void toggleMode() {
@@ -192,11 +244,10 @@ class DriverController extends GetxController {
     if (token != null && profileId != null) {
       final response = await _driverService.toggleAvailability(
         profileId: profileId,
-        token: token,
         isAvailable: value,
       );
       if (!response.success) {
-        print('⚠️ Failed to sync online status: ${response.message}');
+        Log.info('⚠️ Failed to sync online status: ${response.message}');
         // Revert on failure
         isOnline.value = !value;
       }

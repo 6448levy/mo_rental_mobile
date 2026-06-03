@@ -5,13 +5,27 @@ import '../controllers/booking_controller.dart';
 import '../../../../../../app/routes/app_routes.dart';
 import '../../../../../../app/core/themes/app_palette.dart';
 
-class BookingSuccessPage extends GetView<BookingController> {
-  const BookingSuccessPage({super.key});
+import '../../booking/controllers/rental_booking_controller.dart';
 
-  // Theme constants - replaced by AppPalette
+class BookingSuccessPage extends StatelessWidget {
+  const BookingSuccessPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Detect which controller or arguments are providing the data
+    final args = Get.arguments as Map<String, dynamic>?;
+    final bool isRentalSuccess = args?['type'] == 'rental' || 
+                               (Get.isRegistered<RentalBookingController>() && 
+                                Get.find<RentalBookingController>().finalTotal.value > 0);
+    
+    final rentalCtrl = (isRentalSuccess && Get.isRegistered<RentalBookingController>()) 
+                       ? Get.find<RentalBookingController>() : null;
+    final driverCtrl = Get.isRegistered<BookingController>() ? Get.find<BookingController>() : null;
+
+    final vehicleName = args?['vehicle'] ?? rentalCtrl?.selectedVehicleModel.value?.fullName ?? 'Vehicle';
+    final rentalDays = args?['days'] ?? rentalCtrl?.rentalDays.value ?? 0;
+    final totalPrice = args?['total'] ?? (isRentalSuccess ? rentalCtrl?.finalTotal.value : driverCtrl?.finalAmount.value) ?? 0.0;
+
     return Scaffold(
       backgroundColor: AppPalette.pureWhite,
       body: SafeArea(
@@ -27,8 +41,10 @@ class BookingSuccessPage extends GetView<BookingController> {
                 height: 130,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppPalette.brandBlue.withOpacity(0.15),
-                  border: Border.all(color: AppPalette.brandBlue.withOpacity(0.4), width: 2),
+                  color: AppPalette.brandBlue.withValues(alpha: 0.15),
+                  border: Border.all(
+                      color: AppPalette.brandBlue.withValues(alpha: 0.4),
+                      width: 2),
                 ),
                 child: Center(
                   child: Container(
@@ -51,7 +67,7 @@ class BookingSuccessPage extends GetView<BookingController> {
 
               Text(
                 'Booking Confirmed!',
-                 style: GoogleFonts.poppins(
+                style: GoogleFonts.poppins(
                   color: AppPalette.textPrimary,
                   fontSize: 26,
                   fontWeight: FontWeight.w800,
@@ -60,8 +76,10 @@ class BookingSuccessPage extends GetView<BookingController> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Your ride has been booked successfully.\nYour driver is on the way.',
-                 style: GoogleFonts.poppins(
+                isRentalSuccess 
+                  ? 'Your car rental has been confirmed.\nGet ready for the road!'
+                  : 'Your ride has been booked successfully.\nYour driver is on the way.',
+                style: GoogleFonts.poppins(
                   color: AppPalette.textSecondary,
                   fontSize: 15,
                   height: 1.6,
@@ -72,38 +90,63 @@ class BookingSuccessPage extends GetView<BookingController> {
               const SizedBox(height: 36),
 
               // ── Booking summary card ────────────────────────────────────
-              Obx(() {
-                final booking = controller.latestBooking.value;
-                final driver = controller.selectedDriver.value;
-
-                return Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20),
-                   decoration: BoxDecoration(
-                    color: AppPalette.pureWhite,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppPalette.outline),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: AppPalette.pureWhite,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: AppPalette.outline),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.04),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: isRentalSuccess 
+                  ? [
+                      // Car Rental Summary
+                      _summaryRow(
+                        icon: Icons.directions_car,
+                        label: 'Vehicle',
+                        value: vehicleName,
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
+                      const SizedBox(height: 12),
+                      _summaryRow(
+                        icon: Icons.calendar_month,
+                        label: 'Duration',
+                        value: '$rentalDays Days',
+                      ),
+                      const SizedBox(height: 12),
+                      _summaryRow(
+                        icon: Icons.payments_outlined,
+                        label: 'Total Paid',
+                        value: '\$${totalPrice.toStringAsFixed(2)}',
+                        valueColor: AppPalette.brandBlue,
+                      ),
+                      const SizedBox(height: 12),
+                      _summaryRow(
+                        icon: Icons.location_on_outlined,
+                        label: 'Pickup',
+                        value: 'Branch Location', // Can be expanded to show actual branch name
+                      ),
+                    ]
+                  : [
+                      // Driver Booking Summary
                       _summaryRow(
                         icon: Icons.person,
                         label: 'Driver',
-                        value: driver?.displayName ?? 'N/A',
+                        value: driverCtrl?.selectedDriver.value?.displayName ?? 'N/A',
                       ),
                       const SizedBox(height: 12),
                       _summaryRow(
                         icon: Icons.radio_button_checked,
                         label: 'Pickup',
-                        value: controller.pickupController.text.isNotEmpty
-                            ? controller.pickupController.text
+                        value: driverCtrl?.pickupController.text.isNotEmpty == true
+                            ? driverCtrl!.pickupController.text
                             : 'Harare CBD',
                         iconColor: Colors.green.shade600,
                       ),
@@ -111,8 +154,8 @@ class BookingSuccessPage extends GetView<BookingController> {
                       _summaryRow(
                         icon: Icons.location_on,
                         label: 'Destination',
-                        value: controller.destinationController.text.isNotEmpty
-                            ? controller.destinationController.text
+                        value: driverCtrl?.destinationController.text.isNotEmpty == true
+                            ? driverCtrl!.destinationController.text
                             : 'Borrowdale',
                         iconColor: AppPalette.brandBlue,
                       ),
@@ -120,24 +163,15 @@ class BookingSuccessPage extends GetView<BookingController> {
                       _summaryRow(
                         icon: Icons.receipt_long,
                         label: 'Status',
-                        value: booking?.statusLabel ?? 'Pending',
+                        value: 'Confirmed',
                         valueColor: AppPalette.brandBlue,
                       ),
-                      if (booking?.id != null && booking!.id.isNotEmpty) ...[
-                        const SizedBox(height: 12),
-                        _summaryRow(
-                          icon: Icons.confirmation_number,
-                          label: 'Booking ID',
-                          value: booking.id,
-                        ),
-                      ],
                     ],
-                  ),
-                );
-              }),
+                ),
+              ),
 
               const Spacer(),
-
+ 
               // ── CTA Buttons ───────────────────────────────────────────────
               Row(
                 children: [

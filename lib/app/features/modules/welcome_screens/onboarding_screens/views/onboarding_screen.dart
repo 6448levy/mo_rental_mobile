@@ -63,7 +63,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   height: 10,
                   width: currentPage == i ? 25 : 10,
                   decoration: BoxDecoration(
-                    color: currentPage == i ? AppPalette.brandBlue : AppPalette.textDisabled,
+                    color: currentPage == i
+                        ? AppPalette.brandBlue
+                        : AppPalette.textDisabled,
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
@@ -93,9 +95,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       curve: Curves.easeOut);
                 }
               },
-              child: Text(currentPage == pages.length - 1
-                  ? "Get Started"
-                  : "Next"),
+              child: Text(
+                  currentPage == pages.length - 1 ? "Get Started" : "Next"),
             ),
           )
         ],

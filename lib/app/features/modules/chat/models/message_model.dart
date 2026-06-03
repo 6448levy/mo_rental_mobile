@@ -1,4 +1,3 @@
-
 enum MessageStatus {
   sent,
   delivered,

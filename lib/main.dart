@@ -11,10 +11,15 @@ import 'app/core/themes/app_theme.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 
+import 'app/core/themes/theme_controller.dart';
+
 void main() async {
-  // Initialize GetStorage
+  // Initialize GetStorage 
   await GetStorage.init();
   
+  // Initialize Theme Controller
+  Get.put(ThemeController());
+
   final bookingService = clean_service.BookingService();
   final bookingRepository = BookingRepository(service: bookingService);
 
@@ -35,23 +40,25 @@ class MoRentalApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeController = Get.find<ThemeController>();
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "MoRental",
-      
+
       // Theme setup
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.light, // Updated to use the new light brand theme
+      themeMode: themeController.theme, 
 
       // Navigation setup
       initialRoute: AppRoutes.splash,
       getPages: AppPages.pages,
-      
+
       // Enable GetX logging in debug mode
       enableLog: true,
       logWriterCallback: (String text, {bool isError = false}) {
-        if (isError || Get.isLogEnable) print(text);
+        if (isError || Get.isLogEnable) debugPrint(text);
       },
     );
   }

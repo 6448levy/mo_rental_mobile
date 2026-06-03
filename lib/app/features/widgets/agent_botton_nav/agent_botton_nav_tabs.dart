@@ -8,12 +8,11 @@ import '../../modules/bindings/rate_plan_binding.dart';
 import '../../modules/driver/views/driver_view.dart';
 import '../../modules/driver/bindings/driver_binding.dart'; // Added
 import '../../modules/car_listing/views/car_listing_screen.dart';
+import '../../modules/bindings/fleet_binding.dart';
 import '../../modules/profile/views/profile_screen.dart';
 import '../../modules/rate_plans/views/rate_plans_screen.dart';
 import '../../modules/chat/pages/chat_screen.dart';
 import 'package:carrental/app/core/themes/app_palette.dart';
-
-
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -26,21 +25,24 @@ class _MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
   final GetStorage _storage = GetStorage();
   final AuthController _authController = Get.find<AuthController>();
-  
+
   // Create instances of Bindings
   final RatePlanBinding _ratePlanBinding = RatePlanBinding();
-  final DriverBinding _driverBinding = DriverBinding(); // Added
+  final DriverBinding _driverBinding = DriverBinding(); 
+  final FleetBinding _fleetBinding = FleetBinding();
 
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize dependencies immediately so they are available for the first build
-    print('🔄 Initializing RatePlan dependencies in MainNavigation');
+    debugPrint('🔄 Initializing RatePlan dependencies in MainNavigation');
     _ratePlanBinding.dependencies();
-    print('🔄 Initializing Driver dependencies in MainNavigation');
-    _driverBinding.dependencies(); 
-    
+    debugPrint('🔄 Initializing Driver dependencies in MainNavigation');
+    _driverBinding.dependencies();
+    debugPrint('🔄 Initializing Fleet dependencies in MainNavigation');
+    _fleetBinding.dependencies();
+
     _checkAuth();
   }
 
@@ -68,7 +70,10 @@ class _MainNavigationState extends State<MainNavigation> {
       CarListingScreen(),
       const DriverView(),
       RatePlansScreen(),
-      const ChatScreen(driverName: 'Driver Match', vehicleInfo: 'Available Models',), // NEW: Replaces profile for now or added alongside
+      const ChatScreen(
+        driverName: 'Driver Match',
+        vehicleInfo: 'Available Models',
+      ), // NEW: Replaces profile for now or added alongside
       ProfileScreen(),
     ];
 
@@ -92,12 +97,16 @@ class _MainNavigationState extends State<MainNavigation> {
           children: [
             Text(
               appBarTitles[_currentIndex],
-              style: const TextStyle(color: AppPalette.textPrimary, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  color: AppPalette.textPrimary, fontWeight: FontWeight.bold),
             ),
             if (_currentIndex == 0 && userData['full_name'] != null)
               Text(
                 "Welcome, ${userData['full_name']}!",
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: AppPalette.textSecondary),
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                    color: AppPalette.textSecondary),
               ),
           ],
         ),
@@ -117,7 +126,7 @@ class _MainNavigationState extends State<MainNavigation> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
@@ -130,7 +139,8 @@ class _MainNavigationState extends State<MainNavigation> {
           selectedItemColor: AppPalette.brandBlue,
           unselectedItemColor: AppPalette.textDisabled,
           type: BottomNavigationBarType.fixed,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          selectedLabelStyle:
+              const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
           unselectedLabelStyle: const TextStyle(fontSize: 12),
           items: const [
             BottomNavigationBarItem(
@@ -169,4 +179,3 @@ class _MainNavigationState extends State<MainNavigation> {
     );
   }
 }
-

@@ -4,6 +4,8 @@ import '../features/data/services/driver_service.dart';
 import '../features/data/services/booking_service.dart';
 import '../features/modules/auth/controllers/auth_controller.dart';
 import '../features/modules/welcome_screens/onboarding_screens/controllers/onboarding_controller.dart';
+import '../features/data/services/socket_service.dart';
+import '../features/modules/chat/controllers/chat_controller.dart';
 
 class AuthBinding extends Bindings {
   @override
@@ -23,5 +25,11 @@ class AuthBinding extends Bindings {
 
     Get.lazyPut<OnboardingController>(() => OnboardingController());
     Get.lazyPut<AuthController>(() => AuthController());
+
+    // Socket and Chat globally available for bottom nav
+    if (!Get.isRegistered<SocketService>()) {
+      Get.put<SocketService>(SocketService(), permanent: true);
+    }
+    Get.lazyPut<ChatController>(() => ChatController());
   }
 }

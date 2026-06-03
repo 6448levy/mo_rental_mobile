@@ -1,6 +1,7 @@
 // lib/app/features/modules/drivers/controllers/drivers_controller.dart
 import 'dart:async';
 import 'package:get/get.dart';
+import '../../../../core/utils/logger.dart';
 import '../../../data/models/driver/driver_profile_model.dart';
 import '../../../data/services/driver_service.dart';
 import '../../booking/controllers/booking_controller.dart';
@@ -73,7 +74,7 @@ class DriversController extends GetxController {
         drivers.assignAll(response.data!);
       }
     } catch (e) {
-      print('Polling error: $e');
+      Log.info('Polling error: $e');
     }
   }
 
@@ -82,9 +83,7 @@ class DriversController extends GetxController {
     // Ensure BookingController is registered before navigating
     if (!Get.isRegistered<BookingController>()) {
       Get.lazyPut<BookingController>(
-        () => BookingController(
-          bookingService: Get.find(),
-        ),
+        () => BookingController(),
       );
     }
     Get.find<BookingController>().startBookingFlow(driver);

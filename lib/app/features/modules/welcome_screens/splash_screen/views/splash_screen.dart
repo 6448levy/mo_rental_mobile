@@ -39,7 +39,8 @@ class _SplashScreenState extends State<SplashScreen> {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.car_rental, size: 80, color: AppPalette.brandBlue),
+                const Icon(Icons.car_rental,
+                    size: 80, color: AppPalette.brandBlue),
                 const SizedBox(height: 16),
                 Text(
                   "MO_RENTAL",

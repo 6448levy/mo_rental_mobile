@@ -12,7 +12,7 @@ class PromoCodeScreen extends StatelessWidget {
     if (!Get.isRegistered<PromoCodeController>()) {
       Get.put(PromoCodeController());
     }
-    
+
     final PromoCodeController controller = Get.find<PromoCodeController>();
 
     return Scaffold(
@@ -50,7 +50,8 @@ class PromoCodeScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 64, color: AppPalette.error),
+                const Icon(Icons.error_outline,
+                    size: 64, color: AppPalette.error),
                 const SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -63,8 +64,10 @@ class PromoCodeScreen extends StatelessWidget {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: controller.refreshPromoCodes,
-                  style: ElevatedButton.styleFrom(backgroundColor: AppPalette.brandBlue),
-                  child: const Text('Try Again', style: TextStyle(color: AppPalette.pureWhite)),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppPalette.brandBlue),
+                  child: const Text('Try Again',
+                      style: TextStyle(color: AppPalette.pureWhite)),
                 ),
               ],
             ),
@@ -73,7 +76,8 @@ class PromoCodeScreen extends StatelessWidget {
 
         if (controller.activePromoCodes.isEmpty) {
           return const Center(
-            child: Text('No active promo codes found', style: TextStyle(color: AppPalette.textSecondary)),
+            child: Text('No active promo codes found',
+                style: TextStyle(color: AppPalette.textSecondary)),
           );
         }
 
@@ -90,7 +94,7 @@ class PromoCodeScreen extends StatelessWidget {
                 border: Border.all(color: AppPalette.outline),
                 boxShadow: [
                   BoxShadow(
-                    color: AppPalette.cardShadow.withOpacity(0.04),
+                    color: AppPalette.cardShadow.withValues(alpha: 0.04),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -98,25 +102,32 @@ class PromoCodeScreen extends StatelessWidget {
               ),
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: promo.isValid ? Colors.green.shade50 : AppPalette.outline,
+                  backgroundColor:
+                      promo.isValid ? Colors.green.shade50 : AppPalette.outline,
                   child: Text(
                     promo.code[0].toUpperCase(),
                     style: TextStyle(
-                      color: promo.isValid ? Colors.green.shade700 : AppPalette.textSecondary,
+                      color: promo.isValid
+                          ? Colors.green.shade700
+                          : AppPalette.textSecondary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 title: Text(
                   promo.code,
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppPalette.textPrimary),
                 ),
                 subtitle: Text(
                   '${promo.type} - ${promo.value}',
-                  style: const TextStyle(color: AppPalette.textSecondary, fontSize: 13),
+                  style: const TextStyle(
+                      color: AppPalette.textSecondary, fontSize: 13),
                 ),
-                trailing: promo.isValid 
-                    ? Icon(Icons.check_circle_rounded, color: Colors.green.shade600)
+                trailing: promo.isValid
+                    ? Icon(Icons.check_circle_rounded,
+                        color: Colors.green.shade600)
                     : const Icon(Icons.close_rounded, color: AppPalette.error),
               ),
             );

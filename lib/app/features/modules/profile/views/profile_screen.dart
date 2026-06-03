@@ -9,9 +9,8 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GetStorage storage = GetStorage();
     final AuthController authController = Get.find<AuthController>();
-    final userData = storage.read('user_data') ?? {};
+    final user = authController.user;
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -37,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
                       border: Border.all(color: AppPalette.brandBlue, width: 2),
                       boxShadow: [
                         BoxShadow(
-                          color: AppPalette.brandBlue.withOpacity(0.1),
+                          color: AppPalette.brandBlue.withValues(alpha: 0.1),
                           blurRadius: 20,
                           spreadRadius: 5,
                         ),
@@ -47,8 +46,13 @@ class ProfileScreen extends StatelessWidget {
                       radius: 56,
                       backgroundColor: AppPalette.pureWhite,
                       child: Text(
-                        userData['full_name'] != null ? userData['full_name'][0].toUpperCase() : 'G',
-                        style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: AppPalette.brandBlue),
+                        user?.fullName != null && user!.fullName.isNotEmpty
+                            ? user.fullName[0].toUpperCase()
+                            : 'G',
+                        style: const TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: AppPalette.brandBlue),
                       ),
                     ),
                   ),
@@ -61,7 +65,8 @@ class ProfileScreen extends StatelessWidget {
                         color: AppPalette.brandBlue,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.edit_rounded, size: 16, color: AppPalette.pureWhite),
+                      child: const Icon(Icons.edit_rounded,
+                          size: 16, color: AppPalette.pureWhite),
                     ),
                   ),
                 ],
@@ -69,17 +74,19 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              userData['full_name'] ?? 'Premium User',
-              style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
+              user?.fullName ?? 'Premium User',
+              style: theme.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
             ),
             const SizedBox(height: 4),
             Text(
-              userData['email'] ?? 'Welcome to MoRental',
-              style: theme.textTheme.bodyMedium?.copyWith(color: AppPalette.textSecondary),
+              user?.email ?? 'Welcome to MoRental',
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: AppPalette.textSecondary),
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Stats Row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -89,9 +96,9 @@ class ProfileScreen extends StatelessWidget {
                 _buildSimpleStat('Gold', 'Status'),
               ],
             ),
-            
+
             const SizedBox(height: 40),
-            
+
             // Account Information
             Container(
               padding: const EdgeInsets.all(24),
@@ -101,7 +108,7 @@ class ProfileScreen extends StatelessWidget {
                 border: Border.all(color: AppPalette.outline),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withValues(alpha: 0.04),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -112,48 +119,63 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.person_outline_rounded, color: AppPalette.brandBlue, size: 20),
+                      const Icon(Icons.person_outline_rounded,
+                          color: AppPalette.brandBlue, size: 20),
                       const SizedBox(width: 12),
                       Text(
                         'Account Information',
-                        style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
+                        style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: AppPalette.textPrimary),
                       ),
                     ],
                   ),
                   const SizedBox(height: 24),
-                  _buildInfoRow(Icons.phone_iphone_rounded, 'Phone', userData['phone'] ?? 'Not set'),
+                  _buildInfoRow(Icons.phone_iphone_rounded, 'Phone',
+                      user?.phone ?? 'Not set'),
                   const Divider(height: 32, color: AppPalette.outline),
-                  _buildInfoRow(Icons.pin_rounded, 'User ID', userData['_id']?.toString() ?? 'N/A'),
+                  _buildInfoRow(Icons.pin_rounded, 'User ID',
+                      user?.id ?? 'N/A'),
                   const Divider(height: 32, color: AppPalette.outline),
-                  _buildInfoRow(Icons.verified_user_rounded, 'Account Status', (userData['status'] ?? 'Active').toString().toUpperCase()),
+                  _buildInfoRow(
+                      Icons.verified_user_rounded,
+                      'Account Status',
+                      (user?.status.name ?? 'Active').toUpperCase()),
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 32),
-            
+
             // Action Menu
             Column(
               children: [
-                _buildActionTile(Icons.history_rounded, 'Booking History', () {}),
-                _buildActionTile(Icons.payment_rounded, 'Payment Methods', () {}),
-                _buildActionTile(Icons.notifications_none_rounded, 'Notifications', () {}),
-                _buildActionTile(Icons.headset_mic_outlined, 'Support Center', () {}),
+                _buildActionTile(
+                    Icons.history_rounded, 'Booking History', () {}),
+                _buildActionTile(
+                    Icons.payment_rounded, 'Payment Methods', () {}),
+                _buildActionTile(
+                    Icons.notifications_none_rounded, 'Notifications', () {}),
+                _buildActionTile(
+                    Icons.headset_mic_outlined, 'Support Center', () {}),
                 const SizedBox(height: 20),
                 _buildActionTile(
-                  Icons.logout_rounded, 
-                  'Logout', 
+                  Icons.logout_rounded,
+                  'Logout',
                   () => authController.logout(),
                   isDestructive: true,
                 ),
               ],
             ),
-            
+
             // Version Info
             const SizedBox(height: 40),
             const Text(
               'MoRental v1.2.0-stable',
-              style: TextStyle(color: AppPalette.textDisabled, fontSize: 10, letterSpacing: 1),
+              style: TextStyle(
+                  color: AppPalette.textDisabled,
+                  fontSize: 10,
+                  letterSpacing: 1),
             ),
             const SizedBox(height: 40),
           ],
@@ -165,9 +187,15 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildSimpleStat(String value, String label) {
     return Column(
       children: [
-        Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppPalette.textPrimary)),
+        Text(value,
+            style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppPalette.textPrimary)),
         const SizedBox(height: 4),
-        Text(label, style: const TextStyle(fontSize: 12, color: AppPalette.textSecondary)),
+        Text(label,
+            style:
+                const TextStyle(fontSize: 12, color: AppPalette.textSecondary)),
       ],
     );
   }
@@ -188,9 +216,15 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(fontSize: 12, color: AppPalette.textSecondary)),
+              Text(label,
+                  style: const TextStyle(
+                      fontSize: 12, color: AppPalette.textSecondary)),
               const SizedBox(height: 2),
-              Text(value, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppPalette.textPrimary)),
+              Text(value,
+                  style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppPalette.textPrimary)),
             ],
           ),
         ),
@@ -198,33 +232,43 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionTile(IconData icon, String title, VoidCallback onTap, {bool isDestructive = false}) {
-    final color = isDestructive ? Colors.redAccent.shade400 : AppPalette.textPrimary;
-    
+  Widget _buildActionTile(IconData icon, String title, VoidCallback onTap,
+      {bool isDestructive = false}) {
+    final color =
+        isDestructive ? Colors.redAccent.shade400 : AppPalette.textPrimary;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: isDestructive ? Colors.redAccent.withOpacity(0.05) : AppPalette.pureWhite,
+        color: isDestructive
+            ? Colors.redAccent.withValues(alpha: 0.05)
+            : AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDestructive ? Colors.redAccent.withOpacity(0.1) : AppPalette.outline,
+          color: isDestructive
+              ? Colors.redAccent.withValues(alpha: 0.1)
+              : AppPalette.outline,
         ),
-        boxShadow: !isDestructive ? [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          )
-        ] : null,
+        boxShadow: !isDestructive
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.02),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                )
+              ]
+            : null,
       ),
       child: ListTile(
         onTap: onTap,
         leading: Icon(icon, color: color, size: 22),
         title: Text(
-          title, 
-          style: TextStyle(color: color, fontSize: 15, fontWeight: FontWeight.w500),
+          title,
+          style: TextStyle(
+              color: color, fontSize: 15, fontWeight: FontWeight.w500),
         ),
-        trailing: Icon(Icons.chevron_right_rounded, color: color.withOpacity(0.3), size: 18),
+        trailing: Icon(Icons.chevron_right_rounded,
+            color: color.withValues(alpha: 0.3), size: 18),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );

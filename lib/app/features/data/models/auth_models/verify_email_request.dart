@@ -8,7 +8,7 @@ class VerifyEmailRequest {
   });
 
   Map<String, dynamic> toJson() => {
-    "email": email,
-    "otp": otp,
-  };
+        "email": email,
+        "otp": otp,
+      };
 }

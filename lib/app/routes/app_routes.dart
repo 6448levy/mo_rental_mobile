@@ -19,4 +19,9 @@ class AppRoutes {
   static const addCard = '/add-card';
   static const bookingSuccess = '/booking-success';
   static const myBookings = '/my-bookings';
+  static const settings = '/settings';
+  static const profile = '/profile';
+  
+  // ── Chat
+  static const chat = '/chat';
 }

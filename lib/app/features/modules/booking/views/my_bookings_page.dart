@@ -13,303 +13,139 @@ class MyBookingsPage extends GetView<BookingController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppPalette.pureWhite,
-      appBar: AppBar(
-        backgroundColor: AppPalette.brandBlue,
-        foregroundColor: AppPalette.pureWhite,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppPalette.pureWhite),
-          onPressed: () => Get.back(),
-        ),
-        title: Text(
-          'My Bookings',
-          style: GoogleFonts.poppins(
-            color: AppPalette.pureWhite,
-            fontWeight: FontWeight.w700,
-            fontSize: 18,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: AppPalette.pureWhite,
+        appBar: AppBar(
+          backgroundColor: AppPalette.brandBlue,
+          foregroundColor: AppPalette.pureWhite,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new, color: AppPalette.pureWhite),
+            onPressed: () => Get.back(),
+          ),
+          title: Text(
+            'My Activity',
+            style: GoogleFonts.poppins(
+              color: AppPalette.pureWhite,
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
+            ),
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh_rounded, color: AppPalette.pureWhite),
+              onPressed: () => controller.fetchBookings(),
+              tooltip: 'Refresh',
+            ),
+          ],
+          bottom: TabBar(
+            indicatorColor: AppPalette.pureWhite,
+            indicatorWeight: 3,
+            labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 14),
+            unselectedLabelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500, fontSize: 14),
+            tabs: const [
+              Tab(text: 'Rides'),
+              Tab(text: 'Rentals'),
+            ],
           ),
         ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh_rounded, color: AppPalette.pureWhite),
-            onPressed: () => controller.fetchBookings(),
-            tooltip: 'Refresh',
-          ),
-        ],
+        body: TabBarView(
+          children: [
+            // --- RIDES TAB ---
+            Obx(() {
+              if (controller.isLoading.value && controller.driverBookings.isEmpty) {
+                return _buildShimmerList();
+              }
+              if (controller.driverBookings.isEmpty) {
+                return _buildEmptyState('No Rides Yet', 'Your ride history will appear here.');
+              }
+              return RefreshIndicator(
+                onRefresh: () => controller.fetchBookings(),
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(20),
+                  itemCount: controller.driverBookings.length,
+                  itemBuilder: (context, index) => _buildDriverBookingCard(controller.driverBookings[index], index),
+                ),
+              );
+            }),
+
+            // --- RENTALS TAB ---
+            Obx(() {
+              if (controller.isLoading.value && controller.reservations.isEmpty) {
+                return _buildShimmerList();
+              }
+              if (controller.reservations.isEmpty) {
+                return _buildEmptyState('No Rentals Yet', 'Your car rental history will appear here.');
+              }
+              return RefreshIndicator(
+                onRefresh: () => controller.fetchBookings(),
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(20),
+                  itemCount: controller.reservations.length,
+                  itemBuilder: (context, index) => _buildRentalCard(controller.reservations[index], index),
+                ),
+              );
+            }),
+          ],
+        ),
       ),
-      body: Obx(() {
-        // Loading state
-        if (controller.isLoading.value && controller.bookings.isEmpty) {
-          return _buildShimmerList();
-        }
-
-        // Error state
-        if (controller.errorMessage.isNotEmpty && controller.bookings.isEmpty) {
-          return _buildErrorState();
-        }
-
-        // Empty state
-        if (controller.bookings.isEmpty) {
-          return _buildEmptyState();
-        }
-
-        // Booking list
-        return RefreshIndicator(
-          onRefresh: () => controller.fetchBookings(),
-          color: AppPalette.brandBlue,
-          backgroundColor: AppPalette.pureWhite,
-          child: ListView.builder(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-            itemCount: controller.bookings.length,
-            itemBuilder: (context, index) {
-              final booking = controller.bookings[index];
-              return _buildBookingCard(booking, index);
-            },
-          ),
-        );
-      }),
     );
   }
 
   // ── Booking Card ────────────────────────────────────────────────────────────
 
-  Widget _buildBookingCard(BookingModel booking, int index) {
-    final statusColor = _statusColor(booking);
+  // ── Driver Booking Card ──────────────────────────────────────────────────────
+  Widget _buildDriverBookingCard(dynamic booking, int index) {
+    final statusColor = _statusColor(booking.status);
     return AnimatedContainer(
       duration: Duration(milliseconds: 200 + index * 50),
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: statusColor.withOpacity(0.25),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: statusColor.withValues(alpha: 0.25)),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 12, offset: const Offset(0, 4))],
       ),
       child: Column(
         children: [
-          // ── Header with status ─────────────────────────────────────────
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.08),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            ),
+            decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.08), borderRadius: const BorderRadius.vertical(top: Radius.circular(20))),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.confirmation_number_outlined, color: statusColor, size: 16),
-                    const SizedBox(width: 6),
-                    Text(
-                      booking.id.length > 12
-                          ? '#${booking.id.substring(booking.id.length - 8).toUpperCase()}'
-                          : '#${booking.id.toUpperCase()}',
-                      style: GoogleFonts.sourceCodePro(
-                        color: AppPalette.textSecondary,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-                _statusChip(booking, statusColor),
+                Text('#${booking.code.toUpperCase()}', style: GoogleFonts.sourceCodePro(color: AppPalette.textSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
+                _statusChip(booking.status, statusColor),
               ],
             ),
           ),
-
-          // ── Driver Info ────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
                 Row(
                   children: [
-                    // Avatar
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppPalette.brandBlue.withOpacity(0.15),
-                      ),
-                      child: booking.driverImage != null
-                          ? ClipOval(
-                              child: Image.network(
-                                booking.driverImage!,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : Center(
-                              child: Text(
-                                booking.driverName?.isNotEmpty == true
-                                    ? booking.driverName![0].toUpperCase()
-                                    : 'D',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                   color: AppPalette.brandBlue,
-                                 ),
-                              ),
-                            ),
-                    ),
+                    CircleAvatar(backgroundColor: AppPalette.brandBlue.withValues(alpha: 0.1), child: const Icon(Icons.person, color: AppPalette.brandBlue)),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            booking.driverName?.isNotEmpty == true
-                                ? booking.driverName!
-                                : 'Driver',
-                            style: GoogleFonts.poppins(
-                              color: AppPalette.textPrimary,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          if (booking.carModel?.isNotEmpty == true)
-                            Text(
-                              booking.carModel!,
-                               style: GoogleFonts.poppins(
-                                color: AppPalette.textSecondary,
-                                fontSize: 12,
-                              ),
-                            ),
-                        ],
-                      ),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('Ride to Destination', style: GoogleFonts.poppins(color: AppPalette.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
+                        Text('Driver Requested', style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 12)),
+                      ]),
                     ),
-                    // Price
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '\$${booking.price.toStringAsFixed(2)}',
-                          style: GoogleFonts.poppins(
-                            color: AppPalette.brandBlue,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        Text(
-                          'Total',
-                          style: GoogleFonts.poppins(
-                            color: AppPalette.textDisabled,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    ),
+                    Text('\$${booking.pricing.totalAmount.toStringAsFixed(2)}', style: GoogleFonts.poppins(color: AppPalette.brandBlue, fontSize: 18, fontWeight: FontWeight.w800)),
                   ],
                 ),
-
                 const SizedBox(height: 14),
                 const Divider(color: AppPalette.outline, height: 1),
                 const SizedBox(height: 14),
-
-                // ── Route ─────────────────────────────────────────────────
-                Row(
-                  children: [
-                    // Left: icons
-                    Column(
-                      children: [
-                        Icon(Icons.radio_button_checked, color: Colors.green.shade600, size: 14),
-                        Container(
-                          width: 1,
-                          height: 20,
-                          color: AppPalette.outline,
-                        ),
-                        const Icon(Icons.location_on, color: AppPalette.brandBlue, size: 14),
-                      ],
-                    ),
-                    const SizedBox(width: 10),
-                    // Right: locations
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            booking.pickupLocation,
-                           style: GoogleFonts.poppins(
-                              color: AppPalette.textPrimary,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 14),
-                          Text(
-                            booking.destination,
-                            style: GoogleFonts.poppins(
-                              color: AppPalette.textPrimary,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-                if (booking.createdAt.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      const Icon(Icons.calendar_today, color: AppPalette.textDisabled, size: 12),
-                      const SizedBox(width: 6),
-                      Text(
-                        _formatDate(booking.createdAt),
-                        style: GoogleFonts.poppins(
-                          color: AppPalette.textDisabled,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                _locationRow(Icons.radio_button_checked, Colors.green, booking.pickupLocation.address),
+                const SizedBox(height: 8),
+                _locationRow(Icons.location_on, AppPalette.brandBlue, booking.dropoffLocation.address),
               ],
-            ),
-          ),
-
-          // ── View Details Button ────────────────────────────────────────
-          Container(
-            decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: AppPalette.outline)),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-            ),
-            child: TextButton(
-              onPressed: () => _showBookingDetails(booking),
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'View Details',
-                    style: GoogleFonts.poppins(
-                      color: AppPalette.brandBlue,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  const Icon(Icons.arrow_forward_ios, size: 12, color: AppPalette.brandBlue),
-                ],
-              ),
             ),
           ),
         ],
@@ -317,32 +153,100 @@ class MyBookingsPage extends GetView<BookingController> {
     );
   }
 
-  // ── Status helpers ──────────────────────────────────────────────────────────
-
-  Widget _statusChip(BookingModel booking, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+  // ── Rental Card ─────────────────────────────────────────────────────────────
+  Widget _buildRentalCard(dynamic reservation, int index) {
+    final statusColor = _statusColor(reservation.status);
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 200 + index * 50),
+      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: AppPalette.pureWhite,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withOpacity(0.4)),
+        border: Border.all(color: statusColor.withValues(alpha: 0.25)),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 12, offset: const Offset(0, 4))],
       ),
-      child: Text(
-        booking.statusLabel,
-        style: GoogleFonts.poppins(
-          color: color,
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-        ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.08), borderRadius: const BorderRadius.vertical(top: Radius.circular(20))),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('#${reservation.code.toUpperCase()}', style: GoogleFonts.sourceCodePro(color: AppPalette.textSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
+                _statusChip(reservation.status, statusColor),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 50, height: 50,
+                      decoration: BoxDecoration(color: AppPalette.brandBlue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
+                      child: const Icon(Icons.directions_car, color: AppPalette.brandBlue),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('Car Rental', style: GoogleFonts.poppins(color: AppPalette.textPrimary, fontSize: 15, fontWeight: FontWeight.w700)),
+                        Text('Vehicle Reservation', style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 12)),
+                      ]),
+                    ),
+                    Text('\$${reservation.pricing.grandTotal}', style: GoogleFonts.poppins(color: AppPalette.brandBlue, fontSize: 18, fontWeight: FontWeight.w800)),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                const Divider(color: AppPalette.outline, height: 1),
+                const SizedBox(height: 14),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _dateInfo('Pickup', reservation.pickup.at),
+                    const Icon(Icons.arrow_forward, color: AppPalette.outline, size: 16),
+                    _dateInfo('Dropoff', reservation.dropoff.at),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Color _statusColor(BookingModel booking) {
-    if (booking.isActive) return Colors.green.shade600;
-    if (booking.isPending) return Colors.orange.shade600;
-    if (booking.isCompleted) return AppPalette.brandBlue;
-    if (booking.isCancelled) return Colors.red.shade600;
+  Widget _locationRow(IconData icon, Color color, String address) {
+    return Row(children: [
+      Icon(icon, color: color, size: 14),
+      const SizedBox(width: 10),
+      Expanded(child: Text(address, style: GoogleFonts.poppins(color: AppPalette.textPrimary, fontSize: 13, fontWeight: FontWeight.w500), overflow: TextOverflow.ellipsis)),
+    ]);
+  }
+
+  Widget _dateInfo(String label, DateTime? date) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(label, style: GoogleFonts.poppins(color: AppPalette.textDisabled, fontSize: 10, fontWeight: FontWeight.w600)),
+      Text(date != null ? '${date.day}/${date.month}/${date.year}' : 'N/A', style: GoogleFonts.poppins(color: AppPalette.textPrimary, fontSize: 13, fontWeight: FontWeight.w600)),
+    ]);
+  }
+
+  Widget _statusChip(String status, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(20), border: Border.all(color: color.withValues(alpha: 0.4))),
+      child: Text(status.toUpperCase(), style: GoogleFonts.poppins(color: color, fontSize: 11, fontWeight: FontWeight.w700)),
+    );
+  }
+
+  Color _statusColor(String status) {
+    final s = status.toLowerCase();
+    if (s == 'active' || s == 'confirmed' || s == 'paid') return Colors.green.shade600;
+    if (s == 'pending' || s == 'requested') return Colors.orange.shade600;
+    if (s == 'completed') return AppPalette.brandBlue;
+    if (s == 'cancelled' || s == 'failed') return Colors.red.shade600;
     return AppPalette.textDisabled;
   }
 
@@ -374,13 +278,14 @@ class MyBookingsPage extends GetView<BookingController> {
             Text(
               'Booking Details',
               style: GoogleFonts.poppins(
-                color: Colors.white,
+                color: AppPalette.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 20),
-            _detailRow('Booking ID', booking.id.isNotEmpty ? booking.id : 'N/A'),
+            _detailRow(
+                'Booking ID', booking.id.isNotEmpty ? booking.id : 'N/A'),
             _detailRow('Driver', booking.driverName ?? 'N/A'),
             if (booking.carModel?.isNotEmpty == true)
               _detailRow('Car Model', booking.carModel!),
@@ -408,7 +313,8 @@ class MyBookingsPage extends GetView<BookingController> {
             width: 110,
             child: Text(
               label,
-              style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 13),
+              style: GoogleFonts.poppins(
+                  color: AppPalette.textSecondary, fontSize: 13),
             ),
           ),
           const SizedBox(width: 8),
@@ -448,7 +354,7 @@ class MyBookingsPage extends GetView<BookingController> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(String title, String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -458,13 +364,14 @@ class MyBookingsPage extends GetView<BookingController> {
             height: 100,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppPalette.brandBlue.withOpacity(0.1),
+              color: AppPalette.brandBlue.withValues(alpha: 0.1),
             ),
-            child: const Icon(Icons.calendar_today_outlined, size: 48, color: AppPalette.brandBlue),
+            child: const Icon(Icons.calendar_today_outlined,
+                size: 48, color: AppPalette.brandBlue),
           ),
           const SizedBox(height: 24),
           Text(
-            'No Bookings Yet',
+            title,
             style: GoogleFonts.poppins(
               color: AppPalette.textPrimary,
               fontSize: 20,
@@ -473,8 +380,9 @@ class MyBookingsPage extends GetView<BookingController> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Your booking history will appear here\nafter you make your first booking.',
-            style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 14, height: 1.6),
+            message,
+            style: GoogleFonts.poppins(
+                color: AppPalette.textSecondary, fontSize: 14, height: 1.6),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 28),
@@ -483,14 +391,16 @@ class MyBookingsPage extends GetView<BookingController> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppPalette.brandBlue,
               foregroundColor: AppPalette.pureWhite,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14)),
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
               elevation: 0,
             ),
             icon: const Icon(Icons.search, size: 18),
             label: Text(
-              'Find a Driver',
-              style: GoogleFonts.poppins(fontWeight: FontWeight.w700, fontSize: 14),
+              'Explore Now',
+              style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w700, fontSize: 14),
             ),
           ),
         ],
@@ -505,12 +415,13 @@ class MyBookingsPage extends GetView<BookingController> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.wifi_off_rounded, size: 64, color: Colors.redAccent),
+            const Icon(Icons.wifi_off_rounded,
+                size: 64, color: Colors.redAccent),
             const SizedBox(height: 20),
             Text(
               'Connection Error',
               style: GoogleFonts.poppins(
-                color: Colors.white,
+                color: AppPalette.textPrimary,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
@@ -518,7 +429,8 @@ class MyBookingsPage extends GetView<BookingController> {
             const SizedBox(height: 8),
             Text(
               controller.errorMessage.value,
-              style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 13),
+              style: GoogleFonts.poppins(
+                  color: AppPalette.textSecondary, fontSize: 13),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -527,8 +439,10 @@ class MyBookingsPage extends GetView<BookingController> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppPalette.brandBlue,
                 foregroundColor: AppPalette.pureWhite,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                 elevation: 0,
               ),
               icon: const Icon(Icons.refresh, size: 18),
@@ -548,8 +462,18 @@ class MyBookingsPage extends GetView<BookingController> {
     try {
       final dt = DateTime.parse(raw);
       const months = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
       ];
       return '${dt.day} ${months[dt.month - 1]} ${dt.year}';
     } catch (_) {

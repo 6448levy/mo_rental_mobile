@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../data/services/rate_plan_service.dart';
 import '../../../widgets/sidebar_widget/sidebar_widget.dart';
+import '../../../data/models/fleet/vehicle_model.dart';
 import '../../car_details/views/car_detail_screen.dart';
 import '../../promo_code/views/promo_code_screen.dart';
 import '../../rate_plans/controllers/rate_plan_controller.dart';
-
 
 import '../../../../core/themes/app_palette.dart';
 
@@ -71,7 +71,8 @@ class _HomeContent extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 28,
-                      backgroundColor: AppPalette.brandBlue.withValues(alpha: 0.1),
+                      backgroundColor:
+                          AppPalette.brandBlue.withValues(alpha: 0.1),
                       child: Text(
                         userData['full_name'] != null
                             ? userData['full_name'][0].toUpperCase()
@@ -107,9 +108,13 @@ class _HomeContent extends StatelessWidget {
                           if (userData['status'] != null)
                             Container(
                               margin: const EdgeInsets.only(top: 6),
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 2),
                               decoration: BoxDecoration(
-                                color: (userData['status'] == 'active' ? Colors.green : Colors.orange).withValues(alpha: 0.15),
+                                color: (userData['status'] == 'active'
+                                        ? Colors.green
+                                        : Colors.orange)
+                                    .withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(
@@ -131,7 +136,8 @@ class _HomeContent extends StatelessWidget {
                       onPressed: () {
                         Get.to(() => const PromoCodeScreen());
                       },
-                      icon: const Icon(Icons.local_offer, color: AppPalette.brandBlue),
+                      icon: const Icon(Icons.local_offer,
+                          color: AppPalette.brandBlue),
                       tooltip: 'View Promo Codes',
                     ),
                   ],
@@ -144,7 +150,7 @@ class _HomeContent extends StatelessWidget {
             const Text(
               "Find your perfect ride",
               style: TextStyle(
-                fontSize: 26, 
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
                 color: AppPalette.textPrimary,
               ),
@@ -157,12 +163,16 @@ class _HomeContent extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
                 children: [
-                  carCard(context,
-                      "assets/images/campbell-3ZUsNJhi_Ik-unsplash.jpg", "BMW M4"),
-                  carCard(context,
+                  carCard(
+                      context,
+                      "assets/images/campbell-3ZUsNJhi_Ik-unsplash.jpg",
+                      "BMW M4"),
+                  carCard(
+                      context,
                       "assets/images/joshua-koblin-eqW1MPinEV4-unsplash.jpg",
                       "Mercedes AMG"),
-                  carCard(context,
+                  carCard(
+                      context,
                       "assets/images/peter-broomfield-m3m-lnR90uM-unsplash.jpg",
                       "Audi R8"),
                 ],
@@ -174,48 +184,56 @@ class _HomeContent extends StatelessWidget {
             const Text(
               "Quick Stats",
               style: TextStyle(
-                fontSize: 20, 
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppPalette.textSecondary,
               ),
             ),
             const SizedBox(height: 20),
 
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 1.4, // Wider than tall — prevents overflow
-              children: [
-                _buildStatCard(
-                  icon: Icons.calendar_today,
-                  title: "Bookings",
-                  value: "0",
-                  color: Colors.blueAccent,
-                ),
-                _buildStatCard(
-                  icon: Icons.local_offer,
-                  title: "Active Promos",
-                  value: "0",
-                  color: AppPalette.brandBlue,
-                  onTap: () => Get.to(() => const PromoCodeScreen()),
-                ),
-                _buildStatCard(
-                  icon: Icons.favorite,
-                  title: "Favorites",
-                  value: "0",
-                  color: Colors.redAccent,
-                ),
-                _buildStatCard(
-                  icon: Icons.history,
-                  title: "History",
-                  value: "0",
-                  color: Colors.greenAccent,
-                ),
-              ],
-            ),
+            LayoutBuilder(builder: (context, constraints) {
+              // Calculate aspect ratio dynamically based on width to prevent overflow
+              // A width around 160 requires an aspect ratio of ~1.0 for these cards.
+              double width = constraints.maxWidth;
+              double aspectRatio =
+                  width < 350 ? 1.0 : (width < 400 ? 1.1 : 1.4);
+
+              return GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: aspectRatio,
+                children: [
+                  _buildStatCard(
+                    icon: Icons.calendar_today,
+                    title: "Bookings",
+                    value: "0",
+                    color: Colors.blueAccent,
+                  ),
+                  _buildStatCard(
+                    icon: Icons.local_offer,
+                    title: "Active Promos",
+                    value: "0",
+                    color: AppPalette.brandBlue,
+                    onTap: () => Get.to(() => const PromoCodeScreen()),
+                  ),
+                  _buildStatCard(
+                    icon: Icons.favorite,
+                    title: "Favorites",
+                    value: "0",
+                    color: Colors.redAccent,
+                  ),
+                  _buildStatCard(
+                    icon: Icons.history,
+                    title: "History",
+                    value: "0",
+                    color: Colors.greenAccent,
+                  ),
+                ],
+              );
+            }),
 
             // Promo Code Banner
             const SizedBox(height: 35),
@@ -245,10 +263,28 @@ class _HomeContent extends StatelessWidget {
   }
 
   Widget carCard(BuildContext context, String img, String name) {
+    // Construct a mock VehicleModel for the preview cards
+    final mockModel = VehicleModel(
+      id: name.toLowerCase().replaceAll(' ', '_'),
+      make: name.split(' ')[0],
+      model: name.split(' ').length > 1 ? name.split(' ').sublist(1).join(' ') : name,
+      year: 2024,
+      category: 'Luxury',
+      transmission: VehicleTransmission.automatic,
+      fuelType: VehicleFuelType.petrol,
+      seats: 4,
+      doors: 2,
+      dailyRate: 150.0,
+      currency: 'USD',
+      imageUrl: img,
+      features: ['Air Conditioning', 'Bluetooth', 'GPS'],
+      isActive: true,
+    );
+
     return GestureDetector(
       onTap: () {
         Get.to(
-          () => CarDetailsScreen(carName: name, image: img),
+          () => CarDetailsScreen(model: mockModel),
         );
       },
       child: Container(
@@ -275,7 +311,7 @@ class _HomeContent extends StatelessWidget {
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
               colors: [
-                Colors.black.withValues(alpha: 0.9), 
+                Colors.black.withValues(alpha: 0.9),
                 Colors.black.withValues(alpha: 0.4),
                 Colors.transparent
               ],
@@ -288,8 +324,8 @@ class _HomeContent extends StatelessWidget {
               Text(
                 name,
                 style: const TextStyle(
-                  fontSize: 22, 
-                  fontWeight: FontWeight.bold, 
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                   color: AppPalette.pureWhite,
                 ),
               ),
@@ -300,7 +336,9 @@ class _HomeContent extends StatelessWidget {
                   const SizedBox(width: 4),
                   Text(
                     "4.8 (120 reviews)",
-                    style: TextStyle(color: AppPalette.pureWhite.withValues(alpha: 0.8), fontSize: 12),
+                    style: TextStyle(
+                        color: AppPalette.pureWhite.withValues(alpha: 0.8),
+                        fontSize: 12),
                   ),
                 ],
               ),
@@ -336,25 +374,26 @@ class _HomeContent extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(icon, size: 24, color: color),
+                  child: Icon(icon, size: 22, color: color),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
                     value,
                     style: const TextStyle(
-                      fontSize: 22, 
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: AppPalette.textPrimary,
                     ),
@@ -367,7 +406,7 @@ class _HomeContent extends StatelessWidget {
                   child: Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 11, 
+                      fontSize: 11,
                       color: AppPalette.textSecondary,
                       fontWeight: FontWeight.w500,
                     ),
@@ -450,7 +489,8 @@ class _HomeContent extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: const Text('View', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: const Text('View',
+                style: TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -464,7 +504,7 @@ class _HomeContent extends StatelessWidget {
         const Text(
           "Recent Activity",
           style: TextStyle(
-            fontSize: 20, 
+            fontSize: 20,
             fontWeight: FontWeight.bold,
             color: AppPalette.textSecondary,
           ),
@@ -487,7 +527,8 @@ class _HomeContent extends StatelessWidget {
                   subtitle: 'SUMMER25 - 25% off',
                   time: 'Just now',
                 ),
-                const Divider(color: AppPalette.outline, indent: 64, endIndent: 16),
+                const Divider(
+                    color: AppPalette.outline, indent: 64, endIndent: 16),
                 _activityTile(
                   icon: Icons.car_rental,
                   color: Colors.blueAccent,
@@ -495,7 +536,8 @@ class _HomeContent extends StatelessWidget {
                   subtitle: 'BMW M4 - 2 days',
                   time: '2 hours ago',
                 ),
-                const Divider(color: AppPalette.outline, indent: 64, endIndent: 16),
+                const Divider(
+                    color: AppPalette.outline, indent: 64, endIndent: 16),
                 _activityTile(
                   icon: Icons.payment,
                   color: Colors.purpleAccent,
@@ -529,7 +571,10 @@ class _HomeContent extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: const TextStyle(color: AppPalette.textPrimary, fontSize: 14, fontWeight: FontWeight.w600),
+        style: const TextStyle(
+            color: AppPalette.textPrimary,
+            fontSize: 14,
+            fontWeight: FontWeight.w600),
       ),
       subtitle: Text(
         subtitle,

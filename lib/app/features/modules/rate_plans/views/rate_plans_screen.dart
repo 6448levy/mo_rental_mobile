@@ -9,15 +9,15 @@ class RatePlansScreen extends StatelessWidget {
   const RatePlansScreen({super.key});
 
   @override
-Widget build(BuildContext context) {
-  final RatePlanController controller = Get.find<RatePlanController>();
-  final AuthController authController = Get.find<AuthController>();
-  
-  // Print user role info
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    authController.printUserRoleInfo();
-  });
-  
+  Widget build(BuildContext context) {
+    final RatePlanController controller = Get.find<RatePlanController>();
+    final AuthController authController = Get.find<AuthController>();
+
+    // Print user role info
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      authController.printUserRoleInfo();
+    });
+
     return Scaffold(
       backgroundColor: AppPalette.pureWhite,
       appBar: AppBar(
@@ -44,11 +44,13 @@ Widget build(BuildContext context) {
             Padding(
               padding: const EdgeInsets.all(16),
               child: TextField(
-                controller: TextEditingController(text: controller.searchQuery.value),
+                controller:
+                    TextEditingController(text: controller.searchQuery.value),
                 onChanged: controller.searchPlans,
                 decoration: InputDecoration(
                   hintText: 'Search rate plans...',
-                  prefixIcon: const Icon(Icons.search, color: AppPalette.brandBlue),
+                  prefixIcon:
+                      const Icon(Icons.search, color: AppPalette.brandBlue),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(color: AppPalette.outline),
@@ -59,31 +61,35 @@ Widget build(BuildContext context) {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: AppPalette.brandBlue, width: 2),
+                    borderSide:
+                        const BorderSide(color: AppPalette.brandBlue, width: 2),
                   ),
                   filled: true,
                   fillColor: AppPalette.pureWhite,
                 ),
               ),
             ),
-            
+
             // Filters Summary
             if (controller.selectedVehicleClass.value.isNotEmpty ||
                 controller.selectedCurrency.value != 'USD' ||
                 controller.selectedDate.value.isNotEmpty)
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                color: AppPalette.brandBlue.withOpacity(0.05),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                color: AppPalette.brandBlue.withValues(alpha: 0.05),
                 child: Row(
                   children: [
-                    const Icon(Icons.filter_list, size: 16, color: AppPalette.brandBlue),
+                    const Icon(Icons.filter_list,
+                        size: 16, color: AppPalette.brandBlue),
                     const SizedBox(width: 8),
                     Expanded(
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
-                            if (controller.selectedVehicleClass.value.isNotEmpty)
+                            if (controller
+                                .selectedVehicleClass.value.isNotEmpty)
                               _buildFilterChip(
                                 'Class: ${controller.selectedVehicleClass.value}',
                                 onDelete: () {
@@ -113,12 +119,13 @@ Widget build(BuildContext context) {
                     ),
                     TextButton(
                       onPressed: controller.clearFilters,
-                      child: const Text('Clear All', style: TextStyle(color: AppPalette.brandBlue)),
+                      child: const Text('Clear All',
+                          style: TextStyle(color: AppPalette.brandBlue)),
                     ),
                   ],
                 ),
               ),
-            
+
             // Loading Indicator
             if (controller.isLoading.value && controller.ratePlans.isEmpty)
               const Expanded(
@@ -126,32 +133,37 @@ Widget build(BuildContext context) {
                   child: CircularProgressIndicator(color: AppPalette.brandBlue),
                 ),
               ),
-            
+
             // Error Message
-            if (controller.errorMessage.value.isNotEmpty && controller.ratePlans.isEmpty)
+            if (controller.errorMessage.value.isNotEmpty &&
+                controller.ratePlans.isEmpty)
               Expanded(
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.error_outline, size: 60, color: AppPalette.error),
+                      const Icon(Icons.error_outline,
+                          size: 60, color: AppPalette.error),
                       const SizedBox(height: 16),
                       Text(
                         controller.errorMessage.value,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 16, color: AppPalette.error),
+                        style: const TextStyle(
+                            fontSize: 16, color: AppPalette.error),
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: controller.loadRatePlans,
-                        style: ElevatedButton.styleFrom(backgroundColor: AppPalette.brandBlue),
-                        child: const Text('Retry', style: TextStyle(color: AppPalette.pureWhite)),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: AppPalette.brandBlue),
+                        child: const Text('Retry',
+                            style: TextStyle(color: AppPalette.pureWhite)),
                       ),
                     ],
                   ),
                 ),
               ),
-            
+
             // Empty State
             if (!controller.isLoading.value &&
                 controller.errorMessage.value.isEmpty &&
@@ -165,18 +177,22 @@ Widget build(BuildContext context) {
                       const SizedBox(height: 16),
                       const Text(
                         'No rate plans found',
-                        style: TextStyle(fontSize: 18, color: AppPalette.textPrimary, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: AppPalette.textPrimary,
+                            fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Try adjusting your filters',
-                        style: TextStyle(fontSize: 14, color: AppPalette.textSecondary),
+                        style: TextStyle(
+                            fontSize: 14, color: AppPalette.textSecondary),
                       ),
                     ],
                   ),
                 ),
               ),
-            
+
             // Rate Plans List
             if (controller.filteredPlans.isNotEmpty)
               Expanded(
@@ -192,12 +208,14 @@ Widget build(BuildContext context) {
                         return RatePlanCard(plan: plan);
                       } else {
                         // Load more indicator
-                        if (controller.currentPage.value < controller.totalPages.value) {
+                        if (controller.currentPage.value <
+                            controller.totalPages.value) {
                           controller.loadMore();
                           return const Padding(
                             padding: EdgeInsets.all(16),
                             child: Center(
-                              child: CircularProgressIndicator(color: AppPalette.brandBlue),
+                              child: CircularProgressIndicator(
+                                  color: AppPalette.brandBlue),
                             ),
                           );
                         }
@@ -207,7 +225,7 @@ Widget build(BuildContext context) {
                   ),
                 ),
               ),
-            
+
             // Stats
             if (controller.filteredPlans.isNotEmpty)
               Container(
@@ -249,9 +267,10 @@ Widget build(BuildContext context) {
       margin: const EdgeInsets.only(right: 8),
       child: Chip(
         label: Text(label, style: const TextStyle(color: AppPalette.brandBlue)),
-        deleteIcon: const Icon(Icons.close, size: 16, color: AppPalette.brandBlue),
+        deleteIcon:
+            const Icon(Icons.close, size: 16, color: AppPalette.brandBlue),
         onDeleted: onDelete,
-        backgroundColor: AppPalette.brandBlue.withOpacity(0.1),
+        backgroundColor: AppPalette.brandBlue.withValues(alpha: 0.1),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
     );
@@ -265,7 +284,6 @@ class RatePlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 2,
@@ -294,18 +312,23 @@ class RatePlanCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: plan.isActive ? Colors.green.shade100 : Colors.red.shade100,
+                    color: plan.isActive
+                        ? Colors.green.shade100
+                        : Colors.red.shade100,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
                     plan.isActive ? 'ACTIVE' : 'INACTIVE',
                     style: TextStyle(
                       fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: plan.isActive ? Colors.green.shade700 : AppPalette.error,
-                  ),
+                      fontWeight: FontWeight.bold,
+                      color: plan.isActive
+                          ? Colors.green.shade700
+                          : AppPalette.error,
+                    ),
                   ),
                 ),
               ],
@@ -316,7 +339,7 @@ class RatePlanCard extends StatelessWidget {
               style: TextStyle(color: AppPalette.textSecondary),
             ),
             const SizedBox(height: 16),
-            
+
             // Vehicle Info
             Row(
               children: [
@@ -335,7 +358,7 @@ class RatePlanCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            
+
             // Rates
             const Text(
               'Rates:',
@@ -351,20 +374,21 @@ class RatePlanCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            
+
             // Rental Period
             Row(
               children: [
                 Icon(Icons.calendar_today, size: 16, color: Colors.green),
                 const SizedBox(width: 8),
-                Text('Rental: ${plan.minRentalDays}-${plan.maxRentalDays} days'),
+                Text(
+                    'Rental: ${plan.minRentalDays}-${plan.maxRentalDays} days'),
                 const Spacer(),
                 Icon(Icons.date_range, size: 16, color: Colors.orange),
                 const SizedBox(width: 8),
                 Text(plan.validityPeriod),
               ],
             ),
-            
+
             // Actions
             const SizedBox(height: 16),
             Row(
@@ -372,22 +396,26 @@ class RatePlanCard extends StatelessWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.edit, size: 20),
-                  onPressed: () => Get.to(() => AddEditRatePlanScreen(plan: plan)),
+                  onPressed: () =>
+                      Get.to(() => AddEditRatePlanScreen(plan: plan)),
                   tooltip: 'Edit',
                 ),
-                 IconButton(
-                  icon: const Icon(Icons.delete, size: 20, color: AppPalette.error),
+                IconButton(
+                  icon: const Icon(Icons.delete,
+                      size: 20, color: AppPalette.error),
                   onPressed: () {
                     Get.defaultDialog(
                       title: 'Delete Rate Plan',
-                      middleText: 'Are you sure you want to delete ${plan.name}?',
-                       textConfirm: 'Delete',
+                      middleText:
+                          'Are you sure you want to delete ${plan.name}?',
+                      textConfirm: 'Delete',
                       textCancel: 'Cancel',
                       confirmTextColor: AppPalette.pureWhite,
                       buttonColor: AppPalette.error,
                       onConfirm: () async {
                         Get.back();
-                        await Get.find<RatePlanController>().deletePlan(plan.id);
+                        await Get.find<RatePlanController>()
+                            .deletePlan(plan.id);
                       },
                     );
                   },
@@ -455,30 +483,35 @@ class FilterBottomSheet extends StatelessWidget {
         children: [
           const Text(
             'Filters',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppPalette.textPrimary),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
-          
+
           // Vehicle Class
-          const Text('Vehicle Class', style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text('Vehicle Class',
+              style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: controller.vehicleClasses.map((cls) {
               return Obx(() => ChoiceChip(
-                label: Text(cls.toUpperCase()),
-                selected: controller.selectedVehicleClass.value == cls,
-                onSelected: (selected) {
-                  controller.selectedVehicleClass.value = selected ? cls : '';
-                },
-              ));
+                    label: Text(cls.toUpperCase()),
+                    selected: controller.selectedVehicleClass.value == cls,
+                    onSelected: (selected) {
+                      controller.selectedVehicleClass.value =
+                          selected ? cls : '';
+                    },
+                  ));
             }).toList(),
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // Currency
           const Text('Currency', style: TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
@@ -486,26 +519,27 @@ class FilterBottomSheet extends StatelessWidget {
             spacing: 8,
             children: controller.currencies.map((curr) {
               return Obx(() => ChoiceChip(
-                label: Text(curr),
-                selected: controller.selectedCurrency.value == curr,
-                onSelected: (selected) {
-                  controller.selectedCurrency.value = selected ? curr : 'USD';
-                },
-              ));
+                    label: Text(curr),
+                    selected: controller.selectedCurrency.value == curr,
+                    onSelected: (selected) {
+                      controller.selectedCurrency.value =
+                          selected ? curr : 'USD';
+                    },
+                  ));
             }).toList(),
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // Active Only
           Obx(() => SwitchListTile(
-            title: const Text('Show Active Plans Only'),
-            value: controller.showActiveOnly.value,
-            onChanged: (value) => controller.showActiveOnly.value = value,
-          )),
-          
+                title: const Text('Show Active Plans Only'),
+                value: controller.showActiveOnly.value,
+                onChanged: (value) => controller.showActiveOnly.value = value,
+              )),
+
           const SizedBox(height: 30),
-          
+
           Row(
             children: [
               Expanded(
@@ -542,24 +576,19 @@ class AddEditRatePlanScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEdit = plan != null;
     final controller = Get.find<RatePlanController>();
-    
+
     final nameController = TextEditingController(text: plan?.name ?? '');
     final descController = TextEditingController(text: plan?.description ?? '');
-    final dailyRateController = TextEditingController(
-      text: plan?.dailyRate.toString() ?? '0.0'
-    );
-    final weeklyRateController = TextEditingController(
-      text: plan?.weeklyRate.toString() ?? '0.0'
-    );
-    final monthlyRateController = TextEditingController(
-      text: plan?.monthlyRate.toString() ?? '0.0'
-    );
-    final minDaysController = TextEditingController(
-      text: plan?.minRentalDays.toString() ?? '1'
-    );
-    final maxDaysController = TextEditingController(
-      text: plan?.maxRentalDays.toString() ?? '30'
-    );
+    final dailyRateController =
+        TextEditingController(text: plan?.dailyRate.toString() ?? '0.0');
+    final weeklyRateController =
+        TextEditingController(text: plan?.weeklyRate.toString() ?? '0.0');
+    final monthlyRateController =
+        TextEditingController(text: plan?.monthlyRate.toString() ?? '0.0');
+    final minDaysController =
+        TextEditingController(text: plan?.minRentalDays.toString() ?? '1');
+    final maxDaysController =
+        TextEditingController(text: plan?.maxRentalDays.toString() ?? '30');
 
     return Scaffold(
       appBar: AppBar(
@@ -590,26 +619,25 @@ class AddEditRatePlanScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            
-            const Text('Vehicle Class', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text('Vehicle Class',
+                style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-           Obx(() => Wrap(
-  spacing: 8,
-  children: controller.vehicleClasses.map((cls) {
-    return ChoiceChip(
-      label: Text(cls.toUpperCase()),
-      selected: controller.selectedVehicleClass.value == cls,
-      onSelected: (selected) {
-        controller.selectedVehicleClass.value = selected ? cls : '';
-      },
-    );
-  }).toList(),
-)),
-            
+            Obx(() => Wrap(
+                  spacing: 8,
+                  children: controller.vehicleClasses.map((cls) {
+                    return ChoiceChip(
+                      label: Text(cls.toUpperCase()),
+                      selected: controller.selectedVehicleClass.value == cls,
+                      onSelected: (selected) {
+                        controller.selectedVehicleClass.value =
+                            selected ? cls : '';
+                      },
+                    );
+                  }).toList(),
+                )),
             const SizedBox(height: 20),
             const Text('Rates', style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            
             Row(
               children: [
                 Expanded(
@@ -646,7 +674,6 @@ class AddEditRatePlanScreen extends StatelessWidget {
                 ),
               ],
             ),
-            
             const SizedBox(height: 20),
             Row(
               children: [
@@ -672,7 +699,6 @@ class AddEditRatePlanScreen extends StatelessWidget {
                 ),
               ],
             ),
-            
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () async {
@@ -688,20 +714,21 @@ class AddEditRatePlanScreen extends StatelessWidget {
                   'vehicle_class': controller.selectedVehicleClass.value,
                   'is_active': true,
                 };
-                
+
                 if (isEdit) {
                   await controller.updatePlan(plan!.id, data);
                 } else {
                   await controller.createPlan(data);
                 }
-                
+
                 Get.back();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppPalette.brandBlue,
                 foregroundColor: AppPalette.pureWhite,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
               ),
               child: Text(isEdit ? 'Update Plan' : 'Create Plan'),
             ),

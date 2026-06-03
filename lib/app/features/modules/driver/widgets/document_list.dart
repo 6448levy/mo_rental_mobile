@@ -13,12 +13,17 @@ class DocumentList extends GetView<DriverController> {
       children: [
         const Text(
           "Documents & Compliance",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppPalette.textPrimary),
         ),
         const SizedBox(height: 16),
         Obx(() => Column(
-          children: controller.documents.map((doc) => _buildDocItem(doc)).toList(),
-        )),
+              children: controller.documents
+                  .map((doc) => _buildDocItem(doc))
+                  .toList(),
+            )),
       ],
     );
   }
@@ -54,7 +59,7 @@ class DocumentList extends GetView<DriverController> {
         border: Border.all(color: AppPalette.outline),
         boxShadow: [
           BoxShadow(
-            color: AppPalette.cardShadow.withOpacity(0.04),
+            color: AppPalette.cardShadow.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -62,7 +67,8 @@ class DocumentList extends GetView<DriverController> {
       ),
       child: Row(
         children: [
-          Icon(Icons.description_rounded, color: AppPalette.brandBlue.withOpacity(0.5)),
+          Icon(Icons.description_rounded,
+              color: AppPalette.brandBlue.withValues(alpha: 0.5)),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -70,12 +76,15 @@ class DocumentList extends GetView<DriverController> {
               children: [
                 Text(
                   doc['name'],
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppPalette.textPrimary),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppPalette.textPrimary),
                 ),
                 if (doc['expiry'] != null)
                   Text(
                     "Exp: ${doc['expiry']}",
-                    style: TextStyle(color: AppPalette.textSecondary, fontSize: 12),
+                    style: TextStyle(
+                        color: AppPalette.textSecondary, fontSize: 12),
                   ),
               ],
             ),
@@ -83,7 +92,7 @@ class DocumentList extends GetView<DriverController> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
-              color: statusColor.withOpacity(0.1),
+              color: statusColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -101,10 +110,11 @@ class DocumentList extends GetView<DriverController> {
               ],
             ),
           ),
-          if (doc['status'] != 'Verified') 
+          if (doc['status'] != 'Verified')
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Icon(Icons.chevron_right_rounded, color: AppPalette.textDisabled),
+              child: Icon(Icons.chevron_right_rounded,
+                  color: AppPalette.textDisabled),
             ),
         ],
       ),

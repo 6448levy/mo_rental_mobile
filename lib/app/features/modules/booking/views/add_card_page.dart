@@ -8,8 +8,6 @@ import 'package:carrental/app/core/themes/app_palette.dart';
 class AddCardPage extends GetView<BookingController> {
   const AddCardPage({super.key});
 
-  // Theme constants - replaced by AppPalette
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,36 +36,34 @@ class AddCardPage extends GetView<BookingController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Card visual preview ────────────────────────────────────────
-            Obx(() {
-              final name = controller.cardNameController.text.isEmpty
-                  ? 'YOUR NAME'
-                  : controller.cardNameController.text.toUpperCase();
-              final number = controller.cardNumberController.text.isEmpty
-                  ? '**** **** **** ****'
-                  : _formatCardNumber(controller.cardNumberController.text);
-              final expiry = controller.cardExpiryController.text.isEmpty
-                  ? 'MM/YY'
-                  : controller.cardExpiryController.text;
+            // UPDATED: Now uses .value from the controller's observables
+      Obx(() {
+              final name = controller.cardName.value.isEmpty
+                  ? 'CUSTOMER NAME'
+                  : controller.cardName.value.toUpperCase();
+              final phoneNumber = controller.cardNumber.value.isEmpty
+                  ? '+263 77-000-0000'
+                  : controller.cardNumber.value;
 
               return Container(
-                height: 200,
+                height: 180,
                 width: double.infinity,
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xFF1565C0),
-                      Color(0xFF0D47A1),
+                      Color(0xFF2E7D32), // EcoCash Green
+                      Color(0xFF1B5E20),
                     ],
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.blue.withValues(alpha: 0.4),
+                      color: Colors.green.withValues(alpha: 0.3),
                       blurRadius: 20,
-                      offset: Offset(0, 10),
+                      offset: const Offset(0, 10),
                     ),
                   ],
                 ),
@@ -78,95 +74,34 @@ class AddCardPage extends GetView<BookingController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'MoRental',
+                          'MOBILE WALLET',
                           style: GoogleFonts.poppins(
                             color: Colors.white70,
-                            fontSize: 13,
+                            fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        Row(
-                          children: [
-                            Container(
-                              width: 28,
-                              height: 28,
-                              decoration: BoxDecoration(
-                                color: Colors.orange.withValues(alpha: 0.9),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                            Transform.translate(
-                              offset: Offset(-10, 0),
-                              child: Container(
-                                width: 28,
-                                height: 28,
-                                decoration: BoxDecoration(
-                                  color: Colors.redAccent.withValues(alpha: 0.8),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        const Icon(Icons.account_balance_wallet, color: Colors.white70),
                       ],
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Text(
-                      number,
+                      phoneNumber,
                       style: GoogleFonts.sourceCodePro(
                         color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 3,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
                       ),
                     ),
-                    SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'CARD HOLDER',
-                              style: GoogleFonts.poppins(
-                                color: Colors.white54,
-                                fontSize: 9,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            Text(
-                              name,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              'EXPIRES',
-                              style: GoogleFonts.poppins(
-                                color: Colors.white54,
-                                fontSize: 9,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            Text(
-                              expiry,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    const SizedBox(height: 12),
+                    Text(
+                      name,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -176,29 +111,26 @@ class AddCardPage extends GetView<BookingController> {
             const SizedBox(height: 36),
 
             // ── Form fields ────────────────────────────────────────────────
-            _fieldLabel('Cardholder Name'),
-            const SizedBox(height: 8),
-            _buildField(
-              controller: controller.cardNameController,
-              hint: 'John Doe',
-              inputType: TextInputType.name,
-              icon: Icons.person_outline,
-            ),
-
-            const SizedBox(height: 20),
-            _fieldLabel('Card Number'),
-            const SizedBox(height: 8),
-            _buildField(
-              controller: controller.cardNumberController,
-              hint: '1234 5678 9012 3456',
-              inputType: TextInputType.number,
-              icon: Icons.credit_card,
-              formatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                _CardNumberFormatter(),
-              ],
-              maxLength: 19,
-            ),
+          
+        _fieldLabel('Full Name'), // Changed from Cardholder Name
+const SizedBox(height: 8),
+_buildField(
+  controller: controller.cardNameController,
+  hint: 'Benjamin Levi',
+  inputType: TextInputType.name,
+  icon: Icons.person_outline,
+  onChanged: (val) => controller.cardName.value = val,
+),
+_fieldLabel('Mobile Money Number'), // Changed from Card Number
+const SizedBox(height: 8),
+_buildField(
+  controller: controller.cardNumberController,
+  hint: '0771 234 567', // Changed hint
+  inputType: TextInputType.phone, // Changed to phone
+  icon: Icons.phone_android, // Changed icon
+  onChanged: (val) => controller.cardNumber.value = val,
+  maxLength: 10, // Changed to 10 for ZIM mobile numbers
+),
 
             const SizedBox(height: 20),
             Row(
@@ -214,6 +146,8 @@ class AddCardPage extends GetView<BookingController> {
                         hint: 'MM/YY',
                         inputType: TextInputType.number,
                         icon: Icons.calendar_today,
+                        onChanged: (val) =>
+                            controller.cardExpiry.value = val, // UPDATED
                         formatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           _ExpiryFormatter(),
@@ -312,6 +246,7 @@ class AddCardPage extends GetView<BookingController> {
     bool obscureText = false,
     List<TextInputFormatter>? formatters,
     int? maxLength,
+    Function(String)? onChanged,
   }) {
     return TextField(
       controller: controller,
@@ -319,14 +254,15 @@ class AddCardPage extends GetView<BookingController> {
       obscureText: obscureText,
       inputFormatters: formatters,
       maxLength: maxLength,
-      onChanged: (_) {},
+      onChanged: onChanged,
       style: GoogleFonts.poppins(color: AppPalette.textPrimary, fontSize: 15),
       decoration: InputDecoration(
         filled: true,
         fillColor: AppPalette.pureWhite,
         counterText: '',
         hintText: hint,
-        hintStyle: GoogleFonts.poppins(color: AppPalette.textDisabled, fontSize: 14),
+        hintStyle:
+            GoogleFonts.poppins(color: AppPalette.textDisabled, fontSize: 14),
         prefixIcon: Icon(icon, color: AppPalette.textDisabled, size: 20),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
@@ -344,45 +280,9 @@ class AddCardPage extends GetView<BookingController> {
       ),
     );
   }
-
-  String _formatCardNumber(String raw) {
-    final digits = raw.replaceAll(' ', '');
-    final buffer = StringBuffer();
-    for (int i = 0; i < digits.length; i++) {
-      if (i > 0 && i % 4 == 0) buffer.write(' ');
-      buffer.write(digits[i]);
-    }
-    // Pad remaining
-    final remaining = 16 - digits.length;
-    for (int i = 0; i < remaining; i++) {
-      if ((digits.length + i) % 4 == 0 && digits.length + i > 0) buffer.write(' ');
-      buffer.write('*');
-    }
-    return buffer.toString();
-  }
 }
 
 // ── Input formatters ───────────────────────────────────────────────────────
-
-class _CardNumberFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final text = newValue.text.replaceAll(' ', '');
-    final buffer = StringBuffer();
-    for (int i = 0; i < text.length; i++) {
-      if (i > 0 && i % 4 == 0) buffer.write(' ');
-      buffer.write(text[i]);
-    }
-    final formatted = buffer.toString();
-    return newValue.copyWith(
-      text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
-    );
-  }
-}
 
 class _ExpiryFormatter extends TextInputFormatter {
   @override

@@ -15,6 +15,7 @@ class CustomTextField extends StatelessWidget {
   final void Function(String)? onChanged;
   final Color? fillColor;
   final Color? textColor;
+  final TextAlign textAlign;
 
   const CustomTextField({
     super.key,
@@ -31,6 +32,7 @@ class CustomTextField extends StatelessWidget {
     this.onChanged,
     this.fillColor,
     this.textColor,
+    this.textAlign = TextAlign.start,
   });
 
   @override
@@ -43,6 +45,7 @@ class CustomTextField extends StatelessWidget {
       maxLength: maxLength,
       enabled: enabled,
       onChanged: onChanged,
+      textAlign: textAlign,
       style: TextStyle(color: textColor ?? AppPalette.textPrimary),
       decoration: InputDecoration(
         labelText: labelText,
@@ -61,10 +64,12 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: AppPalette.brandBlue, width: 2),
         ),
-        prefixIcon: prefixIcon != null ? IconTheme(
-          data: IconThemeData(color: AppPalette.textSecondary),
-          child: prefixIcon!,
-        ) : null,
+        prefixIcon: prefixIcon != null
+            ? IconTheme(
+                data: IconThemeData(color: AppPalette.textSecondary),
+                child: prefixIcon!,
+              )
+            : null,
         suffixIcon: suffixIcon,
         filled: true,
         fillColor: fillColor ?? AppPalette.pureWhite,
@@ -82,6 +87,7 @@ class CustomElevatedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isLoading;
   final double height;
+  final double? width;
   final Color? backgroundColor;
   final Color? textColor;
 
@@ -91,6 +97,7 @@ class CustomElevatedButton extends StatelessWidget {
     required this.onPressed,
     this.isLoading = false,
     this.height = 50,
+    this.width,
     this.backgroundColor,
     this.textColor,
   });
@@ -98,7 +105,7 @@ class CustomElevatedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
+      width: width ?? double.infinity,
       height: height,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
@@ -106,12 +113,13 @@ class CustomElevatedButton extends StatelessWidget {
           backgroundColor: backgroundColor ?? AppPalette.brandBlue,
           foregroundColor: textColor ?? AppPalette.pureWhite,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           elevation: 0,
+          shadowColor: AppPalette.brandBlue.withValues(alpha: 0.3),
         ),
         child: isLoading
-            ? SizedBox(
+            ? const SizedBox(
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
@@ -122,7 +130,7 @@ class CustomElevatedButton extends StatelessWidget {
             : Text(
                 text,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.w700,
                 ),
               ),

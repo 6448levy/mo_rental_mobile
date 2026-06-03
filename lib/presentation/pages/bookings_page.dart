@@ -63,7 +63,8 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
         ),
       ),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: AppPalette.pureWhite, size: 18),
+        icon: const Icon(Icons.arrow_back_ios_new,
+            color: AppPalette.pureWhite, size: 18),
         onPressed: () => Navigator.pop(context),
       ),
     );
@@ -96,10 +97,11 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
           Container(
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: AppPalette.brandBlue.withOpacity(0.08),
+              color: AppPalette.brandBlue.withValues(alpha: 0.08),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.calendar_today_outlined, color: AppPalette.brandBlue, size: 48),
+            child: const Icon(Icons.calendar_today_outlined,
+                color: AppPalette.brandBlue, size: 48),
           ),
           const SizedBox(height: 24),
           Text(
@@ -113,7 +115,8 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
           const SizedBox(height: 10),
           Text(
             "Your trip history will appear here once you\nbook your first ride with us.",
-            style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 13, height: 1.6),
+            style: GoogleFonts.poppins(
+                color: AppPalette.textSecondary, fontSize: 13, height: 1.6),
             textAlign: TextAlign.center,
           ),
         ],
@@ -128,7 +131,8 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 56),
+            const Icon(Icons.error_outline_rounded,
+                color: Colors.redAccent, size: 56),
             const SizedBox(height: 20),
             Text(
               "Connection Error",
@@ -141,7 +145,8 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
             const SizedBox(height: 8),
             Text(
               "Something went wrong while fetching your bookings. This typically happens if the server returns HTML instead of JSON.",
-              style: GoogleFonts.poppins(color: AppPalette.textSecondary, fontSize: 13),
+              style: GoogleFonts.poppins(
+                  color: AppPalette.textSecondary, fontSize: 13),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -150,8 +155,10 @@ class _MyBookingsPageState extends State<MyBookingsPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppPalette.brandBlue,
                 foregroundColor: AppPalette.pureWhite,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
               child: Text(
                 "Try Again",
