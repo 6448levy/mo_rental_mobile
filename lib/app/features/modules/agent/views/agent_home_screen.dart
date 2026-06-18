@@ -218,22 +218,9 @@ class _HomeContent extends StatelessWidget {
             // Recent Activity
             const SizedBox(height: 35),
             _buildRecentActivity(),
-            const SizedBox(height: 80), // Space for FAB
+            const SizedBox(height: 24),
           ],
         ),
-      ),
-
-      // Floating Action Button for Promo Codes
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Get.to(() => const PromoCodeScreen());
-        },
-        icon: const Icon(Icons.local_offer),
-        label: const Text('Promo Codes'),
-        backgroundColor: _accent,
-        foregroundColor: Colors.white,
-        elevation: 8,
-        tooltip: 'View all promo codes',
       ),
     );
   }
@@ -330,45 +317,46 @@ class _HomeContent extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(icon, size: 24, color: color),
-                ),
-                const SizedBox(height: 8),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    value,
-                    style: const TextStyle(
-                      fontSize: 22, 
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            // FittedBox scales the whole stack down to fit the cell, so the card
+            // can never overflow regardless of screen width or font metrics.
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(icon, size: 24, color: color),
                     ),
-                    maxLines: 1,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 11, 
-                      color: Colors.white54,
-                      fontWeight: FontWeight.w500,
+                    const SizedBox(height: 8),
+                    Text(
+                      value,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      maxLines: 1,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
+                    const SizedBox(height: 4),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.white54,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

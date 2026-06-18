@@ -126,11 +126,13 @@ class ApiService extends GetxService {
   }
 
   // GET method
+  // fromJson receives the raw `data` payload, which may be a Map OR a List
+  // (e.g. list endpoints like /rate-plans). Typed dynamic so both flow through.
   Future<ApiResponse<T>> get<T>(
     String endpoint, {
     Map<String, String>? headers,
     Map<String, dynamic>? queryParams,
-    T Function(Map<String, dynamic>)? fromJson,
+    T Function(dynamic)? fromJson,
   }) async {
     final Stopwatch stopwatch = Stopwatch()..start();
     

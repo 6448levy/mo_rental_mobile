@@ -7,14 +7,57 @@ class RatePlanResponse {
     required this.pagination,
   });
 
-  factory RatePlanResponse.fromJson(Map<String, dynamic> json) {
-    return RatePlanResponse(
-      plans: List<RatePlan>.from(
-        (json['plans'] ?? []).map((x) => RatePlan.fromJson(x)),
-      ),
-      pagination: PaginationInfo.fromJson(json['pagination'] ?? {}),
-    );
+  /// The backend returns the rate-plan `data` as a bare JSON array. Older/paged
+  /// shapes wrapped it in `{plans, pagination}` — accept both.
+  factory RatePlanResponse.fromJson(dynamic json) {
+    final List rawList = json is List
+        ? json
+        : (json is Map ? (json['plans'] ?? json['data'] ?? []) : []);
+    final plans = rawList
+        .whereType<Map>()
+        .map((x) => RatePlan.fromJson(Map<String, dynamic>.from(x)))
+        .toList();
+    final pagination = (json is Map && json['pagination'] is Map)
+        ? PaginationInfo.fromJson(Map<String, dynamic>.from(json['pagination']))
+        : PaginationInfo(page: 1, limit: plans.length, total: plans.length, totalPages: 1);
+    return RatePlanResponse(plans: plans, pagination: pagination);
   }
+}
+
+// ── Parsing helpers for the backend's Mongo-shaped payload ────────────────────
+
+/// Parses numbers that may arrive as `{"$numberDecimal":"90.00"}`, a num, or a
+/// numeric string.
+double _toDouble(dynamic v) {
+  if (v == null) return 0.0;
+  if (v is num) return v.toDouble();
+  if (v is String) return double.tryParse(v) ?? 0.0;
+  if (v is Map && v[r'$numberDecimal'] != null) {
+    return double.tryParse(v[r'$numberDecimal'].toString()) ?? 0.0;
+  }
+  return 0.0;
+}
+
+/// A field that may be a plain id string, a populated `{_id, name, ...}` object,
+/// or null. Returns the id string.
+String _idOf(dynamic v) {
+  if (v == null) return '';
+  if (v is String) return v;
+  if (v is Map) return (v['_id'] ?? '').toString();
+  return '';
+}
+
+/// A populated reference's display name, when available.
+String _nameOf(dynamic v) {
+  if (v is Map) return (v['name'] ?? '').toString();
+  return '';
+}
+
+DateTime _toDate(dynamic v) {
+  if (v is String && v.isNotEmpty) {
+    return DateTime.tryParse(v) ?? DateTime.now();
+  }
+  return DateTime.now();
 }
 
 class RatePlan {
@@ -59,25 +102,27 @@ class RatePlan {
   });
 
   factory RatePlan.fromJson(Map<String, dynamic> json) {
+    // branch_id may be a populated object — prefer its name for display.
+    final branchName = _nameOf(json['branch_id']);
     return RatePlan(
-      id: json['_id'] ?? '',
+      id: _idOf(json['_id']).isNotEmpty ? _idOf(json['_id']) : (json['_id'] ?? '').toString(),
       name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      branchId: json['branch_id'] ?? '',
+      description: json['notes'] ?? json['description'] ?? '',
+      branchId: branchName.isNotEmpty ? branchName : _idOf(json['branch_id']),
       vehicleClass: json['vehicle_class'] ?? '',
-      vehicleModelId: json['vehicle_model_id'],
-      vehicleId: json['vehicle_id'],
-      dailyRate: (json['daily_rate'] ?? 0.0).toDouble(),
-      weeklyRate: (json['weekly_rate'] ?? 0.0).toDouble(),
-      monthlyRate: (json['monthly_rate'] ?? 0.0).toDouble(),
+      vehicleModelId: json['vehicle_model_id'] == null ? null : _idOf(json['vehicle_model_id']),
+      vehicleId: json['vehicle_id'] == null ? null : _idOf(json['vehicle_id']),
+      dailyRate: _toDouble(json['daily_rate']),
+      weeklyRate: _toDouble(json['weekly_rate']),
+      monthlyRate: _toDouble(json['monthly_rate']),
       currency: json['currency'] ?? 'USD',
       minRentalDays: json['min_rental_days'] ?? 1,
       maxRentalDays: json['max_rental_days'] ?? 30,
-      isActive: json['is_active'] ?? false,
-      validFrom: DateTime.parse(json['valid_from'] ?? DateTime.now().toIso8601String()),
-      validTo: DateTime.parse(json['valid_to'] ?? DateTime.now().toIso8601String()),
-      createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
-      updatedAt: DateTime.parse(json['updated_at'] ?? DateTime.now().toIso8601String()),
+      isActive: json['active'] ?? json['is_active'] ?? false,
+      validFrom: _toDate(json['valid_from']),
+      validTo: _toDate(json['valid_to']),
+      createdAt: _toDate(json['createdAt'] ?? json['created_at']),
+      updatedAt: _toDate(json['updatedAt'] ?? json['updated_at']),
     );
   }
 

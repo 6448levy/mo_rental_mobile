@@ -19,10 +19,11 @@ void main() {
     await GetStorage.init();
     await CrashReporter.instance.initialize();
 
-    // Route Flutter framework errors to the crash reporter.
+    // Route Flutter framework/UI errors to the crash reporter. These are
+    // non-fatal (e.g. layout overflow in debug) — the app keeps running.
     FlutterError.onError = (details) {
       FlutterError.presentError(details);
-      CrashReporter.instance.recordError(details.exception, details.stack, fatal: true);
+      CrashReporter.instance.recordError(details.exception, details.stack, fatal: false);
     };
 
     runApp(const MoRentalApp());
