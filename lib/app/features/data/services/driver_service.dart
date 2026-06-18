@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -14,19 +15,19 @@ class DriverService extends GetxService {
   // GET /api/v1/driver-profiles/public
   // ---------------------------------------------------------------------------
   Future<ApiResponse<List<DriverProfileModel>>> getPublicDriverProfiles() async {
-    print('\n🚗 FETCHING PUBLIC DRIVER PROFILES');
+    AppLogger.d('\n🚗 FETCHING PUBLIC DRIVER PROFILES');
     try {
       final urlStr = ApiConstants.join('/api/v1/driver-profiles/public');
       final url = Uri.parse(urlStr);
-      print('📡 URL: $url');
+      AppLogger.d('📡 URL: $url');
 
       final response = await http.get(
         url,
         headers: {'Accept': 'application/json'},
       ).timeout(_apiService.timeout);
 
-      print('📊 Status: ${response.statusCode}');
-      print('📝 Body: ${response.body}');
+      AppLogger.d('📊 Status: ${response.statusCode}');
+      AppLogger.d('📝 Body: ${response.body}');
 
       final Map<String, dynamic> responseData = json.decode(response.body);
 
@@ -34,7 +35,7 @@ class DriverService extends GetxService {
         final List<dynamic> rawList = responseData['data'] ?? [];
         final profiles =
             rawList.map((e) => DriverProfileModel.fromJson(e)).toList();
-        print('✅ Fetched ${profiles.length} driver profiles');
+        AppLogger.d('✅ Fetched ${profiles.length} driver profiles');
         return ApiResponse<List<DriverProfileModel>>(
           success: true,
           message: 'Driver profiles fetched successfully',
@@ -42,7 +43,7 @@ class DriverService extends GetxService {
         );
       } else {
         final msg = responseData['message'] ?? 'Failed to fetch driver profiles';
-        print('❌ Error: $msg');
+        AppLogger.d('❌ Error: $msg');
         return ApiResponse<List<DriverProfileModel>>(
           success: false,
           message: msg,
@@ -50,7 +51,7 @@ class DriverService extends GetxService {
         );
       }
     } catch (e) {
-      print('❌ DRIVER SERVICE ERROR: $e');
+      AppLogger.d('❌ DRIVER SERVICE ERROR: $e');
       return ApiResponse<List<DriverProfileModel>>(
         success: false,
         message: 'An error occurred: ${e.toString()}',
@@ -67,7 +68,7 @@ class DriverService extends GetxService {
     required String profileId,
     required String token,
   }) async {
-    print('\n🚗 FETCHING DRIVER PROFILE: $profileId');
+    AppLogger.d('\n🚗 FETCHING DRIVER PROFILE: $profileId');
 
     final headers = {
       'Authorization': 'Bearer $token',
@@ -88,7 +89,7 @@ class DriverService extends GetxService {
   Future<ApiResponse<DriverProfileModel>> getMyDriverProfile({
     required String token,
   }) async {
-    print('\n🚗 FETCHING MY DRIVER PROFILE');
+    AppLogger.d('\n🚗 FETCHING MY DRIVER PROFILE');
 
     final headers = {
       'Authorization': 'Bearer $token',
@@ -111,8 +112,8 @@ class DriverService extends GetxService {
     required String token,
     required Map<String, dynamic> data,
   }) async {
-    print('\n✏️ UPDATING DRIVER PROFILE: $profileId');
-    print('📊 Data: $data');
+    AppLogger.d('\n✏️ UPDATING DRIVER PROFILE: $profileId');
+    AppLogger.d('📊 Data: $data');
 
     final headers = {
       'Authorization': 'Bearer $token',
@@ -136,7 +137,7 @@ class DriverService extends GetxService {
     required String token,
     required bool isAvailable,
   }) async {
-    print('\n🔄 TOGGLING DRIVER AVAILABILITY: $isAvailable');
+    AppLogger.d('\n🔄 TOGGLING DRIVER AVAILABILITY: $isAvailable');
 
     return await updateDriverProfile(
       profileId: profileId,

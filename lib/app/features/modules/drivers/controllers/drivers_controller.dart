@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 // lib/app/features/modules/drivers/controllers/drivers_controller.dart
 import 'dart:async';
 import 'package:get/get.dart';
@@ -73,7 +74,7 @@ class DriversController extends GetxController {
         drivers.assignAll(response.data!);
       }
     } catch (e) {
-      print('Polling error: $e');
+      AppLogger.d('Polling error: $e');
     }
   }
 

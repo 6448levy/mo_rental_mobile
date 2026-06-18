@@ -46,3 +46,15 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Release signing secrets — NEVER commit these
+android/key.properties
+**/*.jks
+**/*.keystore
+
+# Firebase config (add your own per environment)
+# google-services.json
+# GoogleService-Info.plist
+
+# Local analyzer dumps
+analyze_output*.txt

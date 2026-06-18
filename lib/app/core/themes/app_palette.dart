@@ -6,10 +6,21 @@ class AppPalette {
   static const Color primaryBlue = Color(0xFF047BC1);
   static const Color darkBlue = Color(0xFF3C425E);
   static const Color premiumDark = Color(0xFF1A1A2E);
-  static const Color premiumYellow = Color(0xFFFFC107);
   static const Color premiumCard = Color(0xFF16213E);
   static const Color pureWhite = Color(0xFFF9FAFB);
   static const Color softGrey = Color(0xFFA3ABB5);
+
+  // ─── Brand accent (single source of truth) ─────────────────────────────────
+  // The app's accent. Changed from amber to blue brand color.
+  static const Color accent = primaryBlue;          // #047BC1
+  static const Color accentDark = Color(0xFF035A8E); // pressed / deep states
+  static const Color accentLight = Color(0xFF3DA0DB); // highlights / hover
+  // Foreground that reads well on top of the accent color.
+  static const Color onAccent = Colors.white;
+
+  // Deprecated alias — kept so existing references compile; now points to blue.
+  @Deprecated('Use AppPalette.accent instead')
+  static const Color premiumYellow = accent;
   
   // Additional Indigo shades for depth
   static const Color indigo = Color(0xFF4F46E5);
@@ -58,12 +69,12 @@ class AppPalette {
     ),
     borderRadius: BorderRadius.circular(16),
     border: Border.all(
-      color: Colors.white.withOpacity(0.2),
+      color: Colors.white.withValues(alpha: 0.2),
       width: 1,
     ),
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.1),
+        color: Colors.black.withValues(alpha: 0.1),
         blurRadius: 20,
         offset: const Offset(0, 4),
       ),
@@ -71,15 +82,15 @@ class AppPalette {
   );
   
   static BoxDecoration glassCardDecoration = BoxDecoration(
-    color: Colors.white.withOpacity(0.7),
+    color: Colors.white.withValues(alpha: 0.7),
     borderRadius: BorderRadius.circular(20),
     border: Border.all(
-      color: Colors.white.withOpacity(0.3),
+      color: Colors.white.withValues(alpha: 0.3),
       width: 1,
     ),
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.1),
+        color: Colors.black.withValues(alpha: 0.1),
         blurRadius: 30,
         offset: const Offset(0, 10),
       ),

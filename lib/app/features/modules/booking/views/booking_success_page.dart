@@ -8,7 +8,7 @@ import '../../../../../../app/routes/app_routes.dart';
 class BookingSuccessPage extends GetView<BookingController> {
   const BookingSuccessPage({super.key});
 
-  static const _yellow = Color(0xFFFFC107);
+  static const _accent = Color(0xFF047BC1);
   static const _dark = Color(0xFF1A1A2E);
   static const _card = Color(0xFF16213E);
 
@@ -29,8 +29,8 @@ class BookingSuccessPage extends GetView<BookingController> {
                 height: 130,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _yellow.withOpacity(0.15),
-                  border: Border.all(color: _yellow.withOpacity(0.4), width: 2),
+                  color: _accent.withValues(alpha: 0.15),
+                  border: Border.all(color: _accent.withValues(alpha: 0.4), width: 2),
                 ),
                 child: Center(
                   child: Container(
@@ -38,11 +38,11 @@ class BookingSuccessPage extends GetView<BookingController> {
                     height: 90,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _yellow,
+                      color: _accent,
                     ),
                     child: const Icon(
                       Icons.check_rounded,
-                      color: Colors.black,
+                      color: Colors.white,
                       size: 50,
                     ),
                   ),
@@ -84,7 +84,7 @@ class BookingSuccessPage extends GetView<BookingController> {
                   decoration: BoxDecoration(
                     color: _card,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: _yellow.withOpacity(0.2)),
+                    border: Border.all(color: _accent.withValues(alpha: 0.2)),
                   ),
                   child: Column(
                     children: [
@@ -109,14 +109,14 @@ class BookingSuccessPage extends GetView<BookingController> {
                         value: controller.destinationController.text.isNotEmpty
                             ? controller.destinationController.text
                             : 'Borrowdale',
-                        iconColor: _yellow,
+                        iconColor: _accent,
                       ),
                       const SizedBox(height: 12),
                       _summaryRow(
                         icon: Icons.receipt_long,
                         label: 'Status',
                         value: booking?.statusLabel ?? 'Pending',
-                        valueColor: _yellow,
+                        valueColor: _accent,
                       ),
                       if (booking?.id != null && booking!.id.isNotEmpty) ...[
                         const SizedBox(height: 12),
@@ -162,8 +162,8 @@ class BookingSuccessPage extends GetView<BookingController> {
                     child: ElevatedButton.icon(
                       onPressed: () => Get.toNamed(AppRoutes.myBookings),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _yellow,
-                        foregroundColor: Colors.black,
+                        backgroundColor: _accent,
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
@@ -176,7 +176,7 @@ class BookingSuccessPage extends GetView<BookingController> {
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                       ),
                     ),

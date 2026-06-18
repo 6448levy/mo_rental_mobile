@@ -11,10 +11,6 @@ import '../../rate_plans/controllers/rate_plan_controller.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  static const _yellow = Color(0xFFFFC107);
-  static const _dark = Color(0xFF1A1A2E);
-  static const _card = Color(0xFF16213E);
-
   @override
   Widget build(BuildContext context) {
     // Ensure services are initialized
@@ -38,7 +34,7 @@ class _HomeContent extends StatelessWidget {
   _HomeContent();
 
   final GetStorage storage = GetStorage();
-  static const _yellow = Color(0xFFFFC107);
+  static const _accent = Color(0xFF047BC1);
   static const _dark = Color(0xFF1A1A2E);
   static const _card = Color(0xFF16213E);
 
@@ -69,7 +65,7 @@ class _HomeContent extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 28,
-                      backgroundColor: _yellow,
+                      backgroundColor: _accent,
                       child: Text(
                         userData['full_name'] != null
                             ? userData['full_name'][0].toUpperCase()
@@ -77,7 +73,7 @@ class _HomeContent extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -107,7 +103,7 @@ class _HomeContent extends StatelessWidget {
                               margin: const EdgeInsets.only(top: 6),
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
                               decoration: BoxDecoration(
-                                color: (userData['status'] == 'active' ? Colors.green : Colors.orange).withOpacity(0.15),
+                                color: (userData['status'] == 'active' ? Colors.green : Colors.orange).withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Text(
@@ -129,7 +125,7 @@ class _HomeContent extends StatelessWidget {
                       onPressed: () {
                         Get.to(() => const PromoCodeScreen());
                       },
-                      icon: const Icon(Icons.local_offer, color: _yellow),
+                      icon: const Icon(Icons.local_offer, color: _accent),
                       tooltip: 'View Promo Codes',
                     ),
                   ],
@@ -185,7 +181,7 @@ class _HomeContent extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
-              childAspectRatio: 1.1, // Adjusted to give more vertical space
+              childAspectRatio: 1.05, // slightly taller cells so content never overflows
               children: [
                 _buildStatCard(
                   icon: Icons.calendar_today,
@@ -197,7 +193,7 @@ class _HomeContent extends StatelessWidget {
                   icon: Icons.local_offer,
                   title: "Active Promos",
                   value: "0",
-                  color: _yellow,
+                  color: _accent,
                   onTap: () => Get.to(() => const PromoCodeScreen()),
                 ),
                 _buildStatCard(
@@ -234,8 +230,8 @@ class _HomeContent extends StatelessWidget {
         },
         icon: const Icon(Icons.local_offer),
         label: const Text('Promo Codes'),
-        backgroundColor: _yellow,
-        foregroundColor: Colors.black,
+        backgroundColor: _accent,
+        foregroundColor: Colors.white,
         elevation: 8,
         tooltip: 'View all promo codes',
       ),
@@ -258,7 +254,7 @@ class _HomeContent extends StatelessWidget {
           image: DecorationImage(image: AssetImage(img), fit: BoxFit.cover),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -273,8 +269,8 @@ class _HomeContent extends StatelessWidget {
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
               colors: [
-                Colors.black.withOpacity(0.9), 
-                Colors.black.withOpacity(0.4),
+                Colors.black.withValues(alpha: 0.9), 
+                Colors.black.withValues(alpha: 0.4),
                 Colors.transparent
               ],
             ),
@@ -294,7 +290,7 @@ class _HomeContent extends StatelessWidget {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  const Icon(Icons.star, color: _yellow, size: 14),
+                  const Icon(Icons.star, color: _accent, size: 14),
                   const SizedBox(width: 4),
                   const Text(
                     "4.8 (120 reviews)",
@@ -322,10 +318,10 @@ class _HomeContent extends StatelessWidget {
         decoration: BoxDecoration(
           color: _card,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               offset: const Offset(0, 4),
               blurRadius: 8,
             ),
@@ -341,7 +337,7 @@ class _HomeContent extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
+                    color: color.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(icon, size: 24, color: color),
@@ -386,10 +382,10 @@ class _HomeContent extends StatelessWidget {
       decoration: BoxDecoration(
         color: _card,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _yellow.withOpacity(0.2)),
+        border: Border.all(color: _accent.withValues(alpha: 0.2)),
         gradient: LinearGradient(
           colors: [
-            _yellow.withOpacity(0.05),
+            _accent.withValues(alpha: 0.05),
             Colors.transparent,
           ],
           begin: Alignment.topLeft,
@@ -401,13 +397,13 @@ class _HomeContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: _yellow.withOpacity(0.1),
+              color: _accent.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
               Icons.local_offer_outlined,
               size: 32,
-              color: _yellow,
+              color: _accent,
             ),
           ),
           const SizedBox(width: 15),
@@ -420,7 +416,7 @@ class _HomeContent extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: _yellow,
+                    color: _accent,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -440,8 +436,8 @@ class _HomeContent extends StatelessWidget {
               Get.to(() => const PromoCodeScreen());
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: _yellow,
-              foregroundColor: Colors.black,
+              backgroundColor: _accent,
+              foregroundColor: Colors.white,
               elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 14),
               shape: RoundedRectangleBorder(
@@ -472,7 +468,7 @@ class _HomeContent extends StatelessWidget {
           decoration: BoxDecoration(
             color: _card,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -520,7 +516,7 @@ class _HomeContent extends StatelessWidget {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, color: color, size: 20),

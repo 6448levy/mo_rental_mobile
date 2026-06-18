@@ -4,12 +4,18 @@ import 'package:get/get.dart';
 import '../../../data/models/driver/driver_profile_model.dart';
 import '../../../data/models/booking/booking_model.dart';
 import '../../../data/services/booking_service.dart';
+import '../../../data/services/payment/payment_models.dart';
+import '../../../data/services/payment/payment_service.dart';
 import '../../../../../../app/routes/app_routes.dart';
 
 class BookingController extends GetxController {
   final BookingService _bookingService;
+  final PaymentService _paymentService = Get.find<PaymentService>();
   BookingController({required BookingService bookingService})
       : _bookingService = bookingService;
+
+  // Gateway token for the saved card (from PaymentService). Never the raw PAN.
+  String? _savedPaymentReference;
 
   // ─── State ───────────────────────────────────────────────────────────────
   final RxBool isLoading = false.obs;
@@ -85,6 +91,29 @@ class BookingController extends GetxController {
       isCreatingBooking.value = true;
       errorMessage.value = '';
 
+      // Take payment through the provider-agnostic seam. With the stub this is
+      // test mode (always succeeds, no real charge); a real gateway plugs in
+      // here without changing this flow.
+      final amount = driver.hourlyRate + 2.0; // matches the cost estimate UI
+      final payment = await _paymentService.charge(
+        amount: amount,
+        currency: 'USD',
+        savedReference: _savedPaymentReference,
+        reference: 'booking_${driver.id}',
+      );
+      if (!payment.isSuccess) {
+        Get.snackbar(
+          'Payment Failed',
+          payment.message,
+          backgroundColor: Colors.red.shade600,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
+        );
+        return;
+      }
+
       final response = await _bookingService.createBooking(
         driverId: driver.id,
         pickupLocation: pickupController.text.trim(),
@@ -122,16 +151,18 @@ class BookingController extends GetxController {
   }
 
   // ─── Save payment card ────────────────────────────────────────────────────
-  void saveCard() {
-    final name = cardNameController.text.trim();
-    final number = cardNumberController.text.trim();
-    final expiry = cardExpiryController.text.trim();
-    final cvv = cardCvvController.text.trim();
+  Future<void> saveCard() async {
+    final card = PaymentCard(
+      holderName: cardNameController.text.trim(),
+      number: cardNumberController.text.trim(),
+      expiry: cardExpiryController.text.trim(),
+      cvv: cardCvvController.text.trim(),
+    );
 
-    if (name.isEmpty || number.isEmpty || expiry.isEmpty || cvv.isEmpty) {
+    if (!card.isValid) {
       Get.snackbar(
         'Incomplete',
-        'Please fill all card details',
+        'Please enter valid card details',
         backgroundColor: Colors.orange.shade600,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
@@ -141,15 +172,31 @@ class BookingController extends GetxController {
       return;
     }
 
-    // Show last 4 digits
-    final lastFour = number.length >= 4 ? number.substring(number.length - 4) : number;
-    selectedPaymentMethod.value = 'Mastercard ****$lastFour';
+    // Tokenize through the payment seam (raw card data is never stored).
+    final result = await _paymentService.savePaymentMethod(card);
+    if (!result.isSuccess) {
+      Get.snackbar(
+        'Card Error',
+        result.message,
+        backgroundColor: Colors.red.shade600,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 12,
+      );
+      return;
+    }
+
+    _savedPaymentReference = result.reference;
+    selectedPaymentMethod.value = card.maskedLabel;
     cardSaved.value = true;
 
     Get.back(); // Return to booking overview
     Get.snackbar(
-      '✅ Card Saved',
-      'Payment method updated successfully',
+      result.isStub ? '✅ Card Saved · Test Mode' : '✅ Card Saved',
+      result.isStub
+          ? 'No real charge occurs in test mode'
+          : 'Payment method updated successfully',
       backgroundColor: Colors.green.shade600,
       colorText: Colors.white,
       snackPosition: SnackPosition.BOTTOM,

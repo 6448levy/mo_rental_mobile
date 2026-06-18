@@ -1,33 +1,35 @@
+import 'dart:async';
+
+import 'package:carrental/app/core/utils/app_logger.dart';
+import 'package:carrental/app/core/utils/crash_reporter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import 'package:provider/provider.dart';
-import 'data/services/booking_service.dart' as clean_service;
-import 'data/repositories/booking_repository.dart';
-import 'presentation/providers/booking_provider.dart';
-
 import 'app/core/themes/app_theme.dart';
+import 'app/core/widgets/responsive_shell.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 
-void main() async {
-  // Initialize GetStorage
-  await GetStorage.init();
-  
-  final bookingService = clean_service.BookingService();
-  final bookingRepository = BookingRepository(service: bookingService);
+void main() {
+  // Run inside a guarded zone so async errors are captured centrally.
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => BookingProvider(repository: bookingRepository),
-        ),
-      ],
-      child: const MoRentalApp(),
-    ),
-  );
+    await GetStorage.init();
+    await CrashReporter.instance.initialize();
+
+    // Route Flutter framework errors to the crash reporter.
+    FlutterError.onError = (details) {
+      FlutterError.presentError(details);
+      CrashReporter.instance.recordError(details.exception, details.stack, fatal: true);
+    };
+
+    runApp(const MoRentalApp());
+  }, (error, stack) {
+    // Uncaught async errors.
+    CrashReporter.instance.recordError(error, stack, fatal: true);
+  });
 }
 
 class MoRentalApp extends StatelessWidget {
@@ -47,11 +49,15 @@ class MoRentalApp extends StatelessWidget {
       // Navigation setup
       initialRoute: AppRoutes.login,
       getPages: AppPages.pages,
-      
+
+      // Responsive shell — centres the mobile UI on large screens so the app
+      // fits any screen size (phone, tablet, laptop, desktop, web).
+      builder: (context, child) => ResponsiveShell(child: child ?? const SizedBox.shrink()),
+
       // Enable GetX logging in debug mode
       enableLog: true,
       logWriterCallback: (String text, {bool isError = false}) {
-        if (isError || Get.isLogEnable) print(text);
+        if (isError || Get.isLogEnable) AppLogger.d(text);
       },
     );
   }

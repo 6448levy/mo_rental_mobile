@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../data/models/driver/driver_profile_model.dart';
@@ -70,7 +71,7 @@ class DriverController extends GetxController {
       }
     } else {
       profileError.value = response.message;
-      print('❌ Failed to load driver profiles: ${response.message}');
+      AppLogger.d('❌ Failed to load driver profiles: ${response.message}');
     }
 
     isLoadingProfile.value = false;
@@ -80,7 +81,7 @@ class DriverController extends GetxController {
   Future<void> _tryLoadMyProfile() async {
     final token = _storage.read<String>('auth_token');
     if (token == null || token.isEmpty) {
-      print('⚠️ No auth token – skipping my profile fetch');
+      AppLogger.d('⚠️ No auth token – skipping my profile fetch');
       return;
     }
 
@@ -88,9 +89,9 @@ class DriverController extends GetxController {
     if (response.success && response.data != null) {
       driverProfile.value = response.data;
       _setProfileFromModel(response.data!);
-      print('✅ My driver profile loaded: ${response.data!.displayName}');
+      AppLogger.d('✅ My driver profile loaded: ${response.data!.displayName}');
     } else {
-      print('⚠️ My profile not found (${response.message}) – using public list');
+      AppLogger.d('⚠️ My profile not found (${response.message}) – using public list');
     }
   }
 
@@ -196,7 +197,7 @@ class DriverController extends GetxController {
         isAvailable: value,
       );
       if (!response.success) {
-        print('⚠️ Failed to sync online status: ${response.message}');
+        AppLogger.d('⚠️ Failed to sync online status: ${response.message}');
         // Revert on failure
         isOnline.value = !value;
       }

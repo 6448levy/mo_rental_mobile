@@ -1,16 +1,17 @@
+import '../config/app_config.dart';
+
 class ApiConstants {
-  // Use 127.0.0.1 for local development (standard for web/mobile)
-  static const String baseUrl = 'http://13.61.185.238:5050';
-  
-  // Production URL (Found in notes)
-  // static const String baseUrl = 'https://car-rental-backend-system.onrender.com';
+  // Base URL is resolved per-environment from AppConfig (single source of truth).
+  // Select with --dart-define=ENV=dev|staging|prod (see AppConfig).
+  static String get baseUrl => AppConfig.baseUrl;
 
   // Auth Endpoints (Ensure leading slash)
   static const String register = '/api/v1/users/register';
   static const String verifyEmail = '/api/v1/users/verify-email';
-  static const String login = '/api/v1/users/login'; 
-  static const String resendOtp = '/api/v1/users/resend-otp'; 
-  
+  static const String login = '/api/v1/users/login';
+  // NOTE: backend has no verification-resend endpoint. For password reset use
+  // /api/v1/users/forgot-password/request-otp instead.
+
   // Safe URL Joining Loophole Fix
   static String join(String endpoint) {
     String base = baseUrl;
@@ -21,10 +22,7 @@ class ApiConstants {
   }
 
   // Common Headers
-  static const Map<String, String> headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
-  
-  static const Duration apiTimeout = Duration(seconds: 30);
+  static const Map<String, String> headers = AppConfig.defaultHeaders;
+
+  static const Duration apiTimeout = AppConfig.apiTimeout;
 }

@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 import 'package:get/get.dart';
 import '../../data/services/api_service.dart';
 import '../../data/services/rate_plan_service.dart';
@@ -6,7 +7,7 @@ import '../rate_plans/controllers/rate_plan_controller.dart';
 class RatePlanBinding extends Bindings {
   @override
   void dependencies() {
-    print('📦 Initializing RatePlanBinding dependencies');
+    AppLogger.d('📦 Initializing RatePlanBinding dependencies');
     
     // Ensure ApiService is initialized first
     if (!Get.isRegistered<ApiService>()) {

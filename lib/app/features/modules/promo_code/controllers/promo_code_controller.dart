@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 import 'package:get/get.dart';
 import '../../../../../domain/repositories/promo_code_repository.dart';
 import '../../../data/models/promo_code_model/promo_code_model.dart';
@@ -28,7 +29,7 @@ class PromoCodeController extends GetxController {
       activePromoCodes.value = promoCodes;
     } catch (e) {
       error.value = e.toString();
-      print('❌ Error in controller: $e');
+      AppLogger.d('❌ Error in controller: $e');
     } finally {
       isLoading.value = false;
     }

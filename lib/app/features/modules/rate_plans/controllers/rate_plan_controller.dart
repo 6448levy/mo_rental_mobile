@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 import 'dart:math'; // ADD THIS IMPORT
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -45,7 +46,7 @@ class RatePlanController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print('📊 RatePlanController initialized');
+    AppLogger.d('📊 RatePlanController initialized');
     // Load rate plans if user is authenticated
     if (isAuthenticated) {
       loadRatePlans();
@@ -71,13 +72,13 @@ Future<void> loadRatePlans({int page = 1}) async {
   errorMessage.value = '';
   
   try {
-    print('\n📊 ========== LOADING RATE PLANS ==========');
-    print('📊 Page: $page');
-    print('🔑 Auth Token Present: ${authToken != null}');
+    AppLogger.d('\n📊 ========== LOADING RATE PLANS ==========');
+    AppLogger.d('📊 Page: $page');
+    AppLogger.d('🔑 Auth Token Present: ${authToken != null}');
     if (authToken != null) {
       // FIX: Use min from dart:math
       final tokenLength = min(30, authToken!.length);
-      print('🔑 Token (first 30 chars): ${authToken!.substring(0, tokenLength)}...');
+      AppLogger.d('🔑 Token (first 30 chars): ${authToken!.substring(0, tokenLength)}...');
     }
     
     final request = RatePlanRequest(
@@ -90,19 +91,19 @@ Future<void> loadRatePlans({int page = 1}) async {
       limit: 10,
     );
     
-    print('📋 Query Params: ${request.toQueryParams()}');
+    AppLogger.d('📋 Query Params: ${request.toQueryParams()}');
     
     final response = await _ratePlanService.getRatePlans(
       token: authToken!,
       request: request,
     );
     
-    print('\n📊 ========== RATE PLANS RESPONSE ==========');
-    print('📊 Success: ${response.success}');
-    print('📊 Message: ${response.message}');
-    print('📊 Error: ${response.error}');
-    print('📊 Plans count: ${response.data?.plans.length ?? 0}');
-    print('📊 ======================================\n');
+    AppLogger.d('\n📊 ========== RATE PLANS RESPONSE ==========');
+    AppLogger.d('📊 Success: ${response.success}');
+    AppLogger.d('📊 Message: ${response.message}');
+    AppLogger.d('📊 Error: ${response.error}');
+    AppLogger.d('📊 Plans count: ${response.data?.plans.length ?? 0}');
+    AppLogger.d('📊 ======================================\n');
     
     if (response.success && response.data != null) {
       if (page == 1) {
@@ -148,10 +149,10 @@ Future<void> loadRatePlans({int page = 1}) async {
       }
     }
   } catch (e) {
-    print('\n🔥 ========== RATE PLANS EXCEPTION ==========');
-    print('🔥 Error: $e');
-    print('🔥 StackTrace: ${e.toString()}');
-    print('🔥 =======================================\n');
+    AppLogger.d('\n🔥 ========== RATE PLANS EXCEPTION ==========');
+    AppLogger.d('🔥 Error: $e');
+    AppLogger.d('🔥 StackTrace: ${e.toString()}');
+    AppLogger.d('🔥 =======================================\n');
     
     errorMessage.value = e.toString();
     Get.snackbar(
@@ -172,12 +173,12 @@ Future<void> loadRatePlans({int page = 1}) async {
   }
   
   void applyFilters() {
-    print('🔍 Applying filters');
-    print('📍 Branch: ${selectedBranch.value}');
-    print('🚗 Class: ${selectedVehicleClass.value}');
-    print('💰 Currency: ${selectedCurrency.value}');
-    print('✅ Active Only: ${showActiveOnly.value}');
-    print('📅 Date: ${selectedDate.value}');
+    AppLogger.d('🔍 Applying filters');
+    AppLogger.d('📍 Branch: ${selectedBranch.value}');
+    AppLogger.d('🚗 Class: ${selectedVehicleClass.value}');
+    AppLogger.d('💰 Currency: ${selectedCurrency.value}');
+    AppLogger.d('✅ Active Only: ${showActiveOnly.value}');
+    AppLogger.d('📅 Date: ${selectedDate.value}');
     
     // Reset to first page and reload
     currentPage.value = 1;

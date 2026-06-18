@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -34,9 +35,9 @@ class _MainNavigationState extends State<MainNavigation> {
     super.initState();
     
     // Initialize dependencies immediately so they are available for the first build
-    print('🔄 Initializing RatePlan dependencies in MainNavigation');
+    AppLogger.d('🔄 Initializing RatePlan dependencies in MainNavigation');
     _ratePlanBinding.dependencies();
-    print('🔄 Initializing Driver dependencies in MainNavigation');
+    AppLogger.d('🔄 Initializing Driver dependencies in MainNavigation');
     _driverBinding.dependencies(); 
     
     _checkAuth();
@@ -60,7 +61,7 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     final userData = _storage.read('user_data') ?? {};
     const dark = Color(0xFF1A1A2E);
-    const yellow = Color(0xFFFFC107);
+    const accent = Color(0xFF047BC1);
     const card = Color(0xFF16213E);
 
     // Define screens and titles inside build to support Hot Reload
@@ -116,7 +117,7 @@ class _MainNavigationState extends State<MainNavigation> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
@@ -126,7 +127,7 @@ class _MainNavigationState extends State<MainNavigation> {
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
           backgroundColor: card,
-          selectedItemColor: yellow,
+          selectedItemColor: accent,
           unselectedItemColor: Colors.white30,
           type: BottomNavigationBarType.fixed,
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),

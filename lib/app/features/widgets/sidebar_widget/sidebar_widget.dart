@@ -28,7 +28,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
   late AnimationController _animController;
   late Animation<double> _slideAnim;
 
-  static const _yellow = Color(0xFFFFC107);
+  static const _accent = Color(0xFF047BC1);
   static const _dark = Color(0xFF1A1A2E);
 
   final List<_SidebarItem> _sidebarItems = [
@@ -134,7 +134,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
               return GestureDetector(
                 onTap: _toggleSidebar,
                 child: Container(
-                  color: Colors.black.withOpacity(0.6 * _slideAnim.value),
+                  color: Colors.black.withValues(alpha: 0.6 * _slideAnim.value),
                 ),
               );
             },
@@ -183,10 +183,10 @@ class _SidebarWidgetState extends State<SidebarWidget>
                                 height: 56,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: _yellow,
+                                  color: _accent,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: _yellow.withOpacity(0.4),
+                                      color: _accent.withValues(alpha: 0.4),
                                       blurRadius: 10,
                                       offset: const Offset(0, 4),
                                     ),
@@ -198,7 +198,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
                                     style: GoogleFonts.poppins(
                                       fontSize: 22,
                                       fontWeight: FontWeight.w800,
-                                      color: Colors.black,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
@@ -242,20 +242,20 @@ class _SidebarWidgetState extends State<SidebarWidget>
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                             decoration: BoxDecoration(
-                              color: _yellow.withOpacity(0.15),
+                              color: _accent.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: _yellow.withOpacity(0.4)),
+                              border: Border.all(color: _accent.withValues(alpha: 0.4)),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.star, color: _yellow, size: 14),
+                                const Icon(Icons.star, color: _accent, size: 14),
                                 const SizedBox(width: 4),
                                 Text(
                                   'Premium Member',
                                   style: GoogleFonts.poppins(
                                     fontSize: 11,
-                                    color: _yellow,
+                                    color: _accent,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -289,7 +289,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
                           Get.offAllNamed(AppRoutes.login);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent.withOpacity(0.1),
+                          backgroundColor: Colors.redAccent.withValues(alpha: 0.1),
                           foregroundColor: Colors.redAccent,
                           elevation: 0,
                           side: const BorderSide(color: Colors.redAccent, width: 1),
@@ -329,7 +329,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
+                          color: Colors.black.withValues(alpha: 0.15),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -354,7 +354,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
-        color: isSelected ? _yellow.withOpacity(0.12) : Colors.transparent,
+        color: isSelected ? _accent.withValues(alpha: 0.12) : Colors.transparent,
         borderRadius: BorderRadius.circular(14),
       ),
       child: ListTile(
@@ -362,19 +362,19 @@ class _SidebarWidgetState extends State<SidebarWidget>
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: isSelected ? _yellow : Colors.white.withOpacity(0.06),
+            color: isSelected ? _accent : Colors.white.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
             item.icon,
             size: 20,
-            color: isSelected ? Colors.black : Colors.white60,
+            color: isSelected ? Colors.white : Colors.white60,
           ),
         ),
         title: Text(
           item.title,
           style: GoogleFonts.poppins(
-            color: isSelected ? _yellow : Colors.white,
+            color: isSelected ? _accent : Colors.white,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
             fontSize: 14,
           ),
@@ -384,7 +384,7 @@ class _SidebarWidgetState extends State<SidebarWidget>
                 width: 6,
                 height: 6,
                 decoration: const BoxDecoration(
-                  color: _yellow,
+                  color: _accent,
                   shape: BoxShape.circle,
                 ),
               )

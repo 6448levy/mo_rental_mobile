@@ -12,7 +12,7 @@ class OnboardPage extends StatelessWidget {
         image: DecorationImage(
           image: AssetImage(image),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.darken),
+          colorFilter: ColorFilter.mode(Colors.black.withValues(alpha: 0.4), BlendMode.darken),
         ),
       ),
       child: Padding(

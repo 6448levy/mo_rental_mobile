@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../app/features/data/models/promo_code_model/promo_code_model.dart';
@@ -54,29 +55,29 @@ class PromoCodeRepository {
       }
     } catch (e) {
       if (printToTerminal) {
-        print('❌ Error fetching promo codes: $e');
+        AppLogger.d('❌ Error fetching promo codes: $e');
       }
       rethrow;
     }
   }
 
   void _printPromoCodesToTerminal(List<PromoCode> promoCodes) {
-    print('\n${'=' * 60}');
-    print('🎟️  ACTIVE PROMO CODES');
-    print('=' * 60);
-    print('Total Active Codes: ${promoCodes.length}\n');
+    AppLogger.d('\n${'=' * 60}');
+    AppLogger.d('🎟️  ACTIVE PROMO CODES');
+    AppLogger.d('=' * 60);
+    AppLogger.d('Total Active Codes: ${promoCodes.length}\n');
 
     if (promoCodes.isEmpty) {
-      print('No active promo codes found.');
+      AppLogger.d('No active promo codes found.');
     } else {
       for (var promo in promoCodes) {
-        print(promo.toString());
+        AppLogger.d(promo.toString());
       }
     }
 
-    print('\n${'=' * 60}');
-    print('📊 SUMMARY');
-    print('=' * 60);
+    AppLogger.d('\n${'=' * 60}');
+    AppLogger.d('📊 SUMMARY');
+    AppLogger.d('=' * 60);
     
     final percentageCodes = promoCodes.where((p) => p.type == 'percentage').length;
     final fixedCodes = promoCodes.where((p) => p.type == 'fixed').length;
@@ -86,10 +87,10 @@ class PromoCodeRepository {
       p.validUntil!.difference(DateTime.now()).inDays <= 7
     ).length;
 
-    print('Percentage Discounts: $percentageCodes');
-    print('Fixed Amount Discounts: $fixedCodes');
-    print('Unlimited Usage: $unlimitedCodes');
-    print('Expiring in 7 days: $expiredSoon');
-    print('=' * 60 + '\n');
+    AppLogger.d('Percentage Discounts: $percentageCodes');
+    AppLogger.d('Fixed Amount Discounts: $fixedCodes');
+    AppLogger.d('Unlimited Usage: $unlimitedCodes');
+    AppLogger.d('Expiring in 7 days: $expiredSoon');
+    AppLogger.d('=' * 60 + '\n');
   }                                                                                                                           
 }

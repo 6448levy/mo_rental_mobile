@@ -18,7 +18,7 @@ class EarningsCard extends GetView<DriverController> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -37,7 +37,7 @@ class EarningsCard extends GetView<DriverController> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Text(
@@ -52,7 +52,7 @@ class EarningsCard extends GetView<DriverController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildEarningItem("Today", controller.dailyEarnings),
-              Container(height: 40, width: 1, color: Colors.white.withOpacity(0.2)),
+              Container(height: 40, width: 1, color: Colors.white.withValues(alpha: 0.2)),
               _buildEarningItem("Weekly", controller.weeklyEarnings),
             ],
           ),

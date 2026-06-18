@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../core/utils/validators.dart';
@@ -27,11 +28,11 @@ class _LoginScreenState extends State<LoginScreen> {
     _authController.errorMessage.value = '';
     
     // Print debug info
-    print('\n📱 LOGIN SCREEN INITIALIZED');
-    print('📱 Screen size: ${Get.size}');
-    print('📱 Theme: ${Get.theme.brightness}');
-    print('📱 Authenticated: ${_authController.isAuthenticated}');
-    print('📱 Pending verification: ${_authController.pendingVerificationEmail}');
+    AppLogger.d('\n📱 LOGIN SCREEN INITIALIZED');
+    AppLogger.d('📱 Screen size: ${Get.size}');
+    AppLogger.d('📱 Theme: ${Get.theme.brightness}');
+    AppLogger.d('📱 Authenticated: ${_authController.isAuthenticated}');
+    AppLogger.d('📱 Pending verification: ${_authController.pendingVerificationEmail}');
   }
 
   @override
@@ -57,10 +58,10 @@ class _LoginScreenState extends State<LoginScreen> {
 ⏰ Time: ${DateTime.now()}
       ''';
 
-      print('\n👤 USER LOGIN ATTEMPT:');
-      print('📧 Email: $email');
-      print('🔑 Password length: ${password.length}');
-      print('📱 Device: ${GetPlatform.isMobile ? 'Mobile' : 'Web'}');
+      AppLogger.d('\n👤 USER LOGIN ATTEMPT:');
+      AppLogger.d('📧 Email: $email');
+      AppLogger.d('🔑 Password length: ${password.length}');
+      AppLogger.d('📱 Device: ${GetPlatform.isMobile ? 'Mobile' : 'Web'}');
 
       final response = await _authController.login(
         email: email,
@@ -80,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _forgotPassword() {
-    print('🔗 Forgot password clicked');
+    AppLogger.d('🔗 Forgot password clicked');
     Get.snackbar(
       'Forgot Password',
       'Password reset functionality coming soon',
@@ -121,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: theme.primaryColor.withOpacity(0.1),
+                        color: theme.primaryColor.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -208,9 +209,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           margin: const EdgeInsets.only(bottom: 24),
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.redAccent.withOpacity(0.1),
+                            color: Colors.redAccent.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.redAccent.withOpacity(0.2)),
+                            border: Border.all(color: Colors.redAccent.withValues(alpha: 0.2)),
                           ),
                           child: Row(
                             children: [
@@ -263,9 +264,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   return Container(
                     margin: const EdgeInsets.symmetric(vertical: 24),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.03),
+                      color: Colors.white.withValues(alpha: 0.03),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
                     ),
                     child: ExpansionTile(
                       shape: const RoundedRectangleBorder(side: BorderSide.none),

@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for all builds to reach the (HTTPS) backend. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="carrental"
+        android:label="MoRental"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -1,4 +1,4 @@
-package com.example.carrental
+package com.morental.app
 
 import io.flutter.embedding.android.FlutterActivity
 

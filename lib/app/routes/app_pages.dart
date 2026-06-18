@@ -22,8 +22,7 @@ import '../features/modules/drivers/bindings/drivers_binding.dart';
 import '../features/modules/booking/views/booking_overview_page.dart';
 import '../features/modules/booking/views/add_card_page.dart';
 import '../features/modules/booking/views/booking_success_page.dart';
-import '../../presentation/pages/bookings_page.dart'; // New Clean Arch version
-// import '../features/modules/booking/views/my_bookings_page.dart'; // Old GetX version
+import '../features/modules/booking/views/my_bookings_page.dart';
 import '../features/modules/booking/bindings/booking_binding.dart';
 
 class AppPages {

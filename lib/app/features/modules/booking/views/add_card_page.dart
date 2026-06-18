@@ -8,7 +8,7 @@ import '../controllers/booking_controller.dart';
 class AddCardPage extends GetView<BookingController> {
   const AddCardPage({super.key});
 
-  static const _yellow = Color(0xFFFFC107);
+  static const _accent = Color(0xFF047BC1);
   static const _dark = Color(0xFF1A1A2E);
   static const _card = Color(0xFF16213E);
 
@@ -93,7 +93,7 @@ class AddCardPage extends GetView<BookingController> {
                               width: 28,
                               height: 28,
                               decoration: BoxDecoration(
-                                color: _yellow.withValues(alpha: 0.9),
+                                color: _accent.withValues(alpha: 0.9),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -256,7 +256,7 @@ class AddCardPage extends GetView<BookingController> {
               child: ElevatedButton(
                 onPressed: () => controller.saveCard(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _yellow,
+                  backgroundColor: _accent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -265,7 +265,7 @@ class AddCardPage extends GetView<BookingController> {
                 child: Text(
                   'Save Card',
                   style: GoogleFonts.poppins(
-                    color: Colors.black,
+                    color: Colors.white,
                     fontWeight: FontWeight.w800,
                     fontSize: 16,
                   ),
@@ -340,7 +340,7 @@ class AddCardPage extends GetView<BookingController> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: _yellow, width: 2),
+          borderSide: const BorderSide(color: _accent, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),

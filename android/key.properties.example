@@ -1,0 +1,12 @@
+# Release signing — copy to android/key.properties and fill in REAL values.
+# NEVER commit the real key.properties or the .jks keystore (both are gitignored).
+#
+# Generate a keystore once:
+#   keytool -genkey -v -keystore morental-release.jks \
+#     -keyalg RSA -keysize 2048 -validity 10000 -alias morental
+#
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=morental
+# Absolute path is safest, e.g. C:/keys/morental-release.jks
+storeFile=/absolute/path/to/morental-release.jks

@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 // lib/app/features/data/services/booking_service.dart
 import 'dart:convert';
 import 'package:get/get.dart';
@@ -21,33 +22,44 @@ class BookingService extends GetxService {
   }
 
   // ---------------------------------------------------------------------------
-  // POST /bookings  — Create a new booking
+  // POST /api/v1/driver-bookings  — Create a new booking
+  // Body must match the backend's DriverBookingCreateRequest contract.
+  // NOTE: start_at/hours/currency are not yet collected by the booking UI —
+  // sensible defaults are sent for now. Wire real values (date-time picker,
+  // duration, currency) and map coordinates before production.
   // ---------------------------------------------------------------------------
   Future<ApiResponse<BookingModel>> createBooking({
     required String driverId,
     required String pickupLocation,
     required String destination,
     String paymentMethod = 'card',
+    DateTime? startAt,
+    num hoursRequested = 1,
+    String currency = 'USD',
   }) async {
-    print('\n🗓️ CREATING BOOKING');
+    AppLogger.d('\n🗓️ CREATING BOOKING');
     try {
-      final url = Uri.parse('${_apiService.baseUrl}/api/v1/bookings');
+      final url = Uri.parse('${_apiService.baseUrl}/api/v1/driver-bookings');
       final body = json.encode({
-        'driver_id': driverId,
-        'pickup_location': pickupLocation,
-        'destination': destination,
-        'payment_method': paymentMethod,
+        'driver_profile_id': driverId,
+        'start_at': (startAt ?? DateTime.now().toUtc()).toIso8601String(),
+        'pickup_location': {'address': pickupLocation},
+        'dropoff_location': {'address': destination},
+        'pricing': {
+          'currency': currency,
+          'hours_requested': hoursRequested,
+        },
       });
 
-      print('📡 URL: $url');
-      print('📦 BODY: $body');
+      AppLogger.d('📡 URL: $url');
+      AppLogger.d('📦 BODY: $body');
 
       final response = await http
           .post(url, headers: _authHeaders, body: body)
           .timeout(_apiService.timeout);
 
-      print('📊 Status: ${response.statusCode}');
-      print('📝 Body: ${response.body}');
+      AppLogger.d('📊 Status: ${response.statusCode}');
+      AppLogger.d('📝 Body: ${response.body}');
 
       final Map<String, dynamic> responseData = json.decode(response.body);
 
@@ -72,7 +84,7 @@ class BookingService extends GetxService {
         );
       }
     } catch (e) {
-      print('❌ BOOKING SERVICE ERROR: $e');
+      AppLogger.d('❌ BOOKING SERVICE ERROR: $e');
       return ApiResponse<BookingModel>(
         success: false,
         message: 'An error occurred: ${e.toString()}',
@@ -85,24 +97,24 @@ class BookingService extends GetxService {
   // GET /bookings  — Retrieve all bookings for current user
   // ---------------------------------------------------------------------------
   Future<ApiResponse<List<BookingModel>>> getBookings() async {
-    print('\n📋 FETCHING BOOKINGS');
+    AppLogger.d('\n📋 FETCHING BOOKINGS');
     try {
-      final url = Uri.parse('${_apiService.baseUrl}/api/v1/bookings');
-      print('📡 URL: $url');
+      final url = Uri.parse('${_apiService.baseUrl}/api/v1/driver-bookings/me');
+      AppLogger.d('📡 URL: $url');
 
       final response = await http
           .get(url, headers: _authHeaders)
           .timeout(_apiService.timeout);
 
-      print('📊 Status: ${response.statusCode}');
-      print('📝 Body: ${response.body}');
+      AppLogger.d('📊 Status: ${response.statusCode}');
+      AppLogger.d('📝 Body: ${response.body}');
 
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {
         final List<dynamic> rawList = responseData['data'] ?? [];
         final bookings = rawList.map((e) => BookingModel.fromJson(e)).toList();
-        print('✅ Fetched ${bookings.length} bookings');
+        AppLogger.d('✅ Fetched ${bookings.length} bookings');
         return ApiResponse<List<BookingModel>>(
           success: true,
           message: 'Bookings fetched successfully',
@@ -116,7 +128,7 @@ class BookingService extends GetxService {
         );
       }
     } catch (e) {
-      print('❌ BOOKING SERVICE ERROR: $e');
+      AppLogger.d('❌ BOOKING SERVICE ERROR: $e');
       return ApiResponse<List<BookingModel>>(
         success: false,
         message: 'An error occurred: ${e.toString()}',
@@ -129,9 +141,9 @@ class BookingService extends GetxService {
   // GET /bookings/:id  — Retrieve a single booking
   // ---------------------------------------------------------------------------
   Future<ApiResponse<BookingModel>> getBookingById(String id) async {
-    print('\n📋 FETCHING BOOKING: $id');
+    AppLogger.d('\n📋 FETCHING BOOKING: $id');
     try {
-      final url = Uri.parse('${_apiService.baseUrl}/api/v1/bookings/$id');
+      final url = Uri.parse('${_apiService.baseUrl}/api/v1/driver-bookings/me/$id');
       final response = await http
           .get(url, headers: _authHeaders)
           .timeout(_apiService.timeout);

@@ -1,11 +1,17 @@
+import '../config/app_config.dart';
+
+/// Legacy constants. Configuration now lives in [AppConfig] — prefer that.
+/// These forwarders remain so older references keep compiling.
 class AppConstants {
-  static const String baseUrl = 'http://13.61.185.238:5050';
+  @Deprecated('Use AppConfig.baseUrl')
+  static String get baseUrl => AppConfig.baseUrl;
+
   static const String registerEndpoint = '/api/v1/users/register';
   static const String verifyEmailEndpoint = '/api/v1/users/verify-email';
-  static const Duration apiTimeout = Duration(seconds: 30);
-  
-  static const Map<String, String> headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
+
+  @Deprecated('Use AppConfig.apiTimeout')
+  static const Duration apiTimeout = AppConfig.apiTimeout;
+
+  @Deprecated('Use AppConfig.defaultHeaders')
+  static const Map<String, String> headers = AppConfig.defaultHeaders;
 }

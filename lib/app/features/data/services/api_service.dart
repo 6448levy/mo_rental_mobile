@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -20,11 +21,11 @@ class ApiService extends GetxService {
     final Stopwatch stopwatch = Stopwatch()..start();
     
     try {
-      print('\n🌐 API CALL STARTED');
+      AppLogger.d('\n🌐 API CALL STARTED');
       final String fullUrl = ApiConstants.join(endpoint);
-      print('📡 URL: $fullUrl');
-      print('📦 REQUEST BODY: $body');
-      print('⏰ Timeout: ${timeout.inSeconds} seconds');
+      AppLogger.d('📡 URL: $fullUrl');
+      AppLogger.d('📦 REQUEST BODY: $body');
+      AppLogger.d('⏰ Timeout: ${timeout.inSeconds} seconds');
       
       final url = Uri.parse(fullUrl);
       final defaultHeaders = {
@@ -42,15 +43,15 @@ class ApiService extends GetxService {
 
       stopwatch.stop();
       
-      print('✅ API CALL COMPLETED');
-      print('⏱️  Response Time: ${stopwatch.elapsedMilliseconds}ms');
-      print('📊 Status Code: ${response.statusCode}');
-      print('📄 Response Headers: ${response.headers}');
-      print('📝 Response Body: ${response.body}');
+      AppLogger.d('✅ API CALL COMPLETED');
+      AppLogger.d('⏱️  Response Time: ${stopwatch.elapsedMilliseconds}ms');
+      AppLogger.d('📊 Status Code: ${response.statusCode}');
+      AppLogger.d('📄 Response Headers: ${response.headers}');
+      AppLogger.d('📝 Response Body: ${response.body}');
       
       final contentType = response.headers['content-type'] ?? '';
       if (!contentType.contains('application/json')) {
-        print('❌ INVALID CONTENT TYPE: $contentType');
+        AppLogger.d('❌ INVALID CONTENT TYPE: $contentType');
         return ApiResponse<T>(
           success: false,
           message: 'Server returned an invalid response (HTML instead of JSON). Status: ${response.statusCode}',
@@ -60,7 +61,7 @@ class ApiService extends GetxService {
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        print('🎉 API SUCCESS');
+        AppLogger.d('🎉 API SUCCESS');
         return ApiResponse<T>(
           success: true,
           message: responseData['message'] ?? 'Success',
@@ -80,7 +81,7 @@ class ApiService extends GetxService {
           }
         }
         
-        print('❌ API ERROR: $errorMessage');
+        AppLogger.d('❌ API ERROR: $errorMessage');
         return ApiResponse<T>(
           success: false,
           message: errorMessage,
@@ -89,14 +90,14 @@ class ApiService extends GetxService {
       }
     } on http.ClientException catch (e) {
       stopwatch.stop();
-      print('❌ HTTP CLIENT ERROR: $e');
-      print('⏱️  Failed after: ${stopwatch.elapsedMilliseconds}ms');
+      AppLogger.d('❌ HTTP CLIENT ERROR: $e');
+      AppLogger.d('⏱️  Failed after: ${stopwatch.elapsedMilliseconds}ms');
       
       String msg = 'Network error: ${e.message}';
       if (GetPlatform.isWeb && e.message.contains('Failed to fetch')) {
         msg = 'Network error: Failed to fetch (Possible CORS issue, server is down, or wrong URL).';
-        print('💡 PRO-TIP: If you are running locally, ensure your backend is on port 8000 with CORS enabled.');
-        print('💡 PRO-TIP: You can also try switching to the Render URL in api_constants.dart if the local server is not intended.');
+        AppLogger.d('💡 PRO-TIP: If you are running locally, ensure your backend is on port 8000 with CORS enabled.');
+        AppLogger.d('💡 PRO-TIP: You can also try switching to the Render URL in api_constants.dart if the local server is not intended.');
       }
       
       return ApiResponse<T>(
@@ -106,7 +107,7 @@ class ApiService extends GetxService {
       );
     } on FormatException catch (e) {
       stopwatch.stop();
-      print('❌ JSON FORMAT ERROR: $e');
+      AppLogger.d('❌ JSON FORMAT ERROR: $e');
       return ApiResponse<T>(
         success: false,
         message: 'Invalid response from server',
@@ -114,8 +115,8 @@ class ApiService extends GetxService {
       );
     } catch (e) {
       stopwatch.stop();
-      print('❌ UNEXPECTED ERROR: $e');
-      print('⏱️  Failed after: ${stopwatch.elapsedMilliseconds}ms');
+      AppLogger.d('❌ UNEXPECTED ERROR: $e');
+      AppLogger.d('⏱️  Failed after: ${stopwatch.elapsedMilliseconds}ms');
       return ApiResponse<T>(
         success: false,
         message: 'An unexpected error occurred: ${e.toString()}',
@@ -134,7 +135,7 @@ class ApiService extends GetxService {
     final Stopwatch stopwatch = Stopwatch()..start();
     
     try {
-      print('\n🌐 API CALL STARTED');
+      AppLogger.d('\n🌐 API CALL STARTED');
       final String fullUrl = ApiConstants.join(endpoint);
       String finalUrl = fullUrl;
       
@@ -144,7 +145,7 @@ class ApiService extends GetxService {
         finalUrl += '?$queryString';
       }
 
-      print('📡 URL: $finalUrl');
+      AppLogger.d('📡 URL: $finalUrl');
       
       final response = await http.get(
         Uri.parse(finalUrl),
@@ -153,15 +154,15 @@ class ApiService extends GetxService {
 
       stopwatch.stop();
       
-      print('✅ API CALL COMPLETED');
-      print('⏱️ Response Time: ${stopwatch.elapsedMilliseconds}ms');
-      print('📊 Status Code: ${response.statusCode}');
-      print('📄 Response Headers: ${response.headers}');
-      print('📝 Response Body: ${response.body}');
+      AppLogger.d('✅ API CALL COMPLETED');
+      AppLogger.d('⏱️ Response Time: ${stopwatch.elapsedMilliseconds}ms');
+      AppLogger.d('📊 Status Code: ${response.statusCode}');
+      AppLogger.d('📄 Response Headers: ${response.headers}');
+      AppLogger.d('📝 Response Body: ${response.body}');
       
       final contentType = response.headers['content-type'] ?? '';
       if (!contentType.contains('application/json')) {
-        print('❌ INVALID CONTENT TYPE: $contentType');
+        AppLogger.d('❌ INVALID CONTENT TYPE: $contentType');
         return ApiResponse<T>(
           success: false,
           message: 'Server returned an invalid response (HTML instead of JSON). Status: ${response.statusCode}',
@@ -171,7 +172,7 @@ class ApiService extends GetxService {
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {
-        print('🎉 API SUCCESS');
+        AppLogger.d('🎉 API SUCCESS');
         return ApiResponse<T>(
           success: true,
           message: responseData['message'] ?? 'Success',
@@ -180,9 +181,9 @@ class ApiService extends GetxService {
               : null,
         );
       } else {
-        print('❌ API ERROR');
-        print('❌ Error Message: ${responseData['message']}');
-        print('❌ Error Details: $responseData');
+        AppLogger.d('❌ API ERROR');
+        AppLogger.d('❌ Error Message: ${responseData['message']}');
+        AppLogger.d('❌ Error Details: $responseData');
         
         return ApiResponse<T>(
           success: false,
@@ -192,7 +193,7 @@ class ApiService extends GetxService {
       }
     } on http.ClientException catch (e) {
       stopwatch.stop();
-      print('❌ HTTP CLIENT ERROR: $e');
+      AppLogger.d('❌ HTTP CLIENT ERROR: $e');
       return ApiResponse<T>(
         success: false,
         message: 'Network error: ${e.message}',
@@ -200,7 +201,7 @@ class ApiService extends GetxService {
       );
     } catch (e) {
       stopwatch.stop();
-      print('❌ UNEXPECTED ERROR: $e');
+      AppLogger.d('❌ UNEXPECTED ERROR: $e');
       return ApiResponse<T>(
         success: false,
         message: 'An unexpected error occurred: ${e.toString()}',
@@ -219,11 +220,11 @@ class ApiService extends GetxService {
     final Stopwatch stopwatch = Stopwatch()..start();
     
     try {
-      print('\n🌐 PUT API CALL STARTED');
+      AppLogger.d('\n🌐 PUT API CALL STARTED');
       final String fullUrl = ApiConstants.join(endpoint);
       final url = Uri.parse(fullUrl);
-      print('📡 URL: $fullUrl');
-      print('📦 REQUEST BODY: $body');
+      AppLogger.d('📡 URL: $fullUrl');
+      AppLogger.d('📦 REQUEST BODY: $body');
       
       final defaultHeaders = {
         'Content-Type': 'application/json',
@@ -238,14 +239,14 @@ class ApiService extends GetxService {
 
       stopwatch.stop();
       
-      print('✅ PUT API CALL COMPLETED');
-      print('⏱️ Response Time: ${stopwatch.elapsedMilliseconds}ms');
-      print('📊 Status Code: ${response.statusCode}');
-      print('📝 Response Body: ${response.body}');
+      AppLogger.d('✅ PUT API CALL COMPLETED');
+      AppLogger.d('⏱️ Response Time: ${stopwatch.elapsedMilliseconds}ms');
+      AppLogger.d('📊 Status Code: ${response.statusCode}');
+      AppLogger.d('📝 Response Body: ${response.body}');
       
       final contentType = response.headers['content-type'] ?? '';
       if (!contentType.contains('application/json')) {
-        print('❌ INVALID CONTENT TYPE: $contentType');
+        AppLogger.d('❌ INVALID CONTENT TYPE: $contentType');
         return ApiResponse<T>(
           success: false,
           message: 'Server returned an invalid response (HTML instead of JSON). Status: ${response.statusCode}',
@@ -255,7 +256,7 @@ class ApiService extends GetxService {
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {
-        print('🎉 PUT API SUCCESS');
+        AppLogger.d('🎉 PUT API SUCCESS');
         return ApiResponse<T>(
           success: true,
           message: responseData['message'] ?? 'Success',
@@ -264,8 +265,8 @@ class ApiService extends GetxService {
               : null,
         );
       } else {
-        print('❌ PUT API ERROR');
-        print('❌ Error Message: ${responseData['message']}');
+        AppLogger.d('❌ PUT API ERROR');
+        AppLogger.d('❌ Error Message: ${responseData['message']}');
         
         return ApiResponse<T>(
           success: false,
@@ -275,7 +276,7 @@ class ApiService extends GetxService {
       }
     } catch (e) {
       stopwatch.stop();
-      print('❌ PUT API ERROR: $e');
+      AppLogger.d('❌ PUT API ERROR: $e');
       return ApiResponse<T>(
         success: false,
         message: e.toString(),
@@ -292,10 +293,10 @@ class ApiService extends GetxService {
     final Stopwatch stopwatch = Stopwatch()..start();
     
     try {
-      print('\n🌐 DELETE API CALL STARTED');
+      AppLogger.d('\n🌐 DELETE API CALL STARTED');
       final String fullUrl = ApiConstants.join(endpoint);
       final url = Uri.parse(fullUrl);
-      print('📡 URL: $fullUrl');
+      AppLogger.d('📡 URL: $fullUrl');
       
       final defaultHeaders = {
         'Accept': 'application/json',
@@ -308,14 +309,14 @@ class ApiService extends GetxService {
 
       stopwatch.stop();
       
-      print('✅ DELETE API CALL COMPLETED');
-      print('⏱️ Response Time: ${stopwatch.elapsedMilliseconds}ms');
-      print('📊 Status Code: ${response.statusCode}');
-      print('📝 Response Body: ${response.body}');
+      AppLogger.d('✅ DELETE API CALL COMPLETED');
+      AppLogger.d('⏱️ Response Time: ${stopwatch.elapsedMilliseconds}ms');
+      AppLogger.d('📊 Status Code: ${response.statusCode}');
+      AppLogger.d('📝 Response Body: ${response.body}');
       
       final contentType = response.headers['content-type'] ?? '';
       if (!contentType.contains('application/json')) {
-        print('❌ INVALID CONTENT TYPE: $contentType');
+        AppLogger.d('❌ INVALID CONTENT TYPE: $contentType');
         return ApiResponse<T>(
           success: false,
           message: 'Server returned an invalid response (HTML instead of JSON). Status: ${response.statusCode}',
@@ -325,14 +326,14 @@ class ApiService extends GetxService {
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {
-        print('🎉 DELETE API SUCCESS');
+        AppLogger.d('🎉 DELETE API SUCCESS');
         return ApiResponse<T>(
           success: true,
           message: responseData['message'] ?? 'Success',
         );
       } else {
-        print('❌ DELETE API ERROR');
-        print('❌ Error Message: ${responseData['message']}');
+        AppLogger.d('❌ DELETE API ERROR');
+        AppLogger.d('❌ Error Message: ${responseData['message']}');
         
         return ApiResponse<T>(
           success: false,
@@ -342,7 +343,7 @@ class ApiService extends GetxService {
       }
     } catch (e) {
       stopwatch.stop();
-      print('❌ DELETE API ERROR: $e');
+      AppLogger.d('❌ DELETE API ERROR: $e');
       return ApiResponse<T>(
         success: false,
         message: e.toString(),

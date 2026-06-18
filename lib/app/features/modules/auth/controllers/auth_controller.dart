@@ -1,3 +1,4 @@
+import 'package:carrental/app/core/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -19,15 +20,15 @@ class AuthController extends GetxController {
   
   // Debug method to print all data
   void _printDebugInfo(String operation, dynamic request, api_models.ApiResponse response) {
-    print('\n🔵🔵🔵 AUTH DEBUG INFO 🔵🔵🔵');
-    print('Operation: $operation');
-    print('Time: ${DateTime.now()}');
-    print('Request: $request');
-    print('Response Success: ${response.success}');
-    print('Response Message: ${response.message}');
-    print('Response Data: ${response.data}');
-    print('Response Error: ${response.error}');
-    print('🔵🔵🔵 END DEBUG INFO 🔵🔵🔵\n');
+    AppLogger.d('\n🔵🔵🔵 AUTH DEBUG INFO 🔵🔵🔵');
+    AppLogger.d('Operation: $operation');
+    AppLogger.d('Time: ${DateTime.now()}');
+    AppLogger.d('Request: $request');
+    AppLogger.d('Response Success: ${response.success}');
+    AppLogger.d('Response Message: ${response.message}');
+    AppLogger.d('Response Data: ${response.data}');
+    AppLogger.d('Response Error: ${response.error}');
+    AppLogger.d('🔵🔵🔵 END DEBUG INFO 🔵🔵🔵\n');
   }
 
   // Registration
@@ -48,9 +49,9 @@ class AuthController extends GetxController {
         password: password,
       );
 
-      print('🚀 STARTING REGISTRATION: $email');
-      print('📱 Phone: $phone');
-      print('👤 Name: $fullName');
+      AppLogger.d('🚀 STARTING REGISTRATION: $email');
+      AppLogger.d('📱 Phone: $phone');
+      AppLogger.d('👤 Name: $fullName');
 
       final response = await _authRepository.register(request);
       
@@ -69,12 +70,12 @@ class AuthController extends GetxController {
       } else {
         // Store email for OTP verification
         _storage.write('pending_verification_email', email);
-        print('✅ Email stored for verification: $email');
+        AppLogger.d('✅ Email stored for verification: $email');
       }
       
       return response;
     } catch (e) {
-      print('🔥 REGISTRATION EXCEPTION: $e');
+      AppLogger.d('🔥 REGISTRATION EXCEPTION: $e');
       errorMessage.value = e.toString();
       
       if (e.toString().contains('Timeout') || e.toString().contains('timeout')) {
@@ -115,8 +116,8 @@ class AuthController extends GetxController {
     try {
       final request = LoginRequest(email: email, password: password);
 
-      print('🚀 STARTING LOGIN: $email');
-      print('🔑 Password length: ${password.length}');
+      AppLogger.d('🚀 STARTING LOGIN: $email');
+      AppLogger.d('🔑 Password length: ${password.length}');
 
       final response = await _authRepository.login(request);
       
@@ -129,25 +130,25 @@ class AuthController extends GetxController {
         _storage.write('user_email', email);
         _storage.write('user_data', response.data!.user.toJson());
         
-        print('✅ LOGIN SUCCESSFUL');
-        print('🔐 Token stored: ${response.data!.token.substring(0, 20)}...');
-        print('👤 User: ${response.data!.user.fullName}');
-        print('📞 Phone: ${response.data!.user.phone}');
-        print('🎯 Status: ${response.data!.user.status}');
-        print('✅ Email Verified: ${response.data!.user.emailVerified}');
+        AppLogger.d('✅ LOGIN SUCCESSFUL');
+        AppLogger.d('🔐 Token stored: ${response.data!.token.substring(0, 20)}...');
+        AppLogger.d('👤 User: ${response.data!.user.fullName}');
+        AppLogger.d('📞 Phone: ${response.data!.user.phone}');
+        AppLogger.d('🎯 Status: ${response.data!.user.status}');
+        AppLogger.d('✅ Email Verified: ${response.data!.user.emailVerified}');
         
         // Check if email is verified
         if (!response.data!.user.emailVerified) {
-          print('⚠️ Email not verified, redirecting to verification');
+          AppLogger.d('⚠️ Email not verified, redirecting to verification');
           _storage.write('pending_verification_email', email);
           Get.offNamed('/verify-email', arguments: {'email': email});
         } else {
-          print('✅ Email verified, redirecting to home');
+          AppLogger.d('✅ Email verified, redirecting to home');
           Get.offAllNamed('/main'); 
         }
       } else {
         errorMessage.value = response.message;
-        print('❌ LOGIN FAILED: ${response.message}');
+        AppLogger.d('❌ LOGIN FAILED: ${response.message}');
         Get.snackbar(
           'Login Failed',
           response.message,
@@ -159,7 +160,7 @@ class AuthController extends GetxController {
       
       return response;
     } catch (e) {
-      print('🔥 LOGIN EXCEPTION: $e');
+      AppLogger.d('🔥 LOGIN EXCEPTION: $e');
       errorMessage.value = e.toString();
       
       if (e.toString().contains('Timeout') || e.toString().contains('timeout')) {
@@ -200,8 +201,8 @@ class AuthController extends GetxController {
     try {
       final request = VerifyEmailRequest(email: email, otp: otp);
 
-      print('🚀 STARTING EMAIL VERIFICATION: $email');
-      print('🔢 OTP: $otp');
+      AppLogger.d('🚀 STARTING EMAIL VERIFICATION: $email');
+      AppLogger.d('🔢 OTP: $otp');
 
       final response = await _authRepository.verifyEmail(request);
       
@@ -216,13 +217,13 @@ class AuthController extends GetxController {
         // Clear pending verification
         _storage.remove('pending_verification_email');
         
-        print('✅ EMAIL VERIFICATION SUCCESSFUL');
-        print('🔐 Token stored: ${response.data!.token.substring(0, 20)}...');
+        AppLogger.d('✅ EMAIL VERIFICATION SUCCESSFUL');
+        AppLogger.d('🔐 Token stored: ${response.data!.token.substring(0, 20)}...');
         
         Get.offAllNamed('/main');
       } else {
         errorMessage.value = response.message;
-        print('❌ VERIFICATION FAILED: ${response.message}');
+        AppLogger.d('❌ VERIFICATION FAILED: ${response.message}');
         Get.snackbar(
           'Verification Failed',
           response.message,
@@ -234,7 +235,7 @@ class AuthController extends GetxController {
       
       return response;
     } catch (e) {
-      print('🔥 VERIFICATION EXCEPTION: $e');
+      AppLogger.d('🔥 VERIFICATION EXCEPTION: $e');
       errorMessage.value = e.toString();
       
       Get.snackbar(
@@ -263,12 +264,12 @@ class AuthController extends GetxController {
 
   // Clear auth data
   void logout() {
-    print('🚪 LOGGING OUT USER');
+    AppLogger.d('🚪 LOGGING OUT USER');
     _storage.remove('auth_token');
     _storage.remove('user_email');
     _storage.remove('user_data');
     _storage.remove('pending_verification_email');
-    print('✅ ALL AUTH DATA CLEARED');
+    AppLogger.d('✅ ALL AUTH DATA CLEARED');
     Get.offAllNamed('/login');
   }
 
@@ -287,19 +288,19 @@ class AuthController extends GetxController {
   // Print user role info for debugging
   void printUserRoleInfo() {
     final userData = _storage.read('user_data') ?? {};
-    print('\n👤 ========== USER ROLE INFO ==========');
-    print('👤 User ID: ${userData['_id']}');
-    print('👤 Email: ${userData['email']}');
-    print('👤 Name: ${userData['full_name']}');
-    print('👤 Roles: ${userData['roles']}');
-    print('👤 Status: ${userData['status']}');
+    AppLogger.d('\n👤 ========== USER ROLE INFO ==========');
+    AppLogger.d('👤 User ID: ${userData['_id']}');
+    AppLogger.d('👤 Email: ${userData['email']}');
+    AppLogger.d('👤 Name: ${userData['full_name']}');
+    AppLogger.d('👤 Roles: ${userData['roles']}');
+    AppLogger.d('👤 Status: ${userData['status']}');
     
     final roles = (userData['roles'] as List<dynamic>?) ?? [];
     final isAdminOrManager = roles.any((role) => 
         role.toString().toLowerCase().contains('admin') ||
         role.toString().toLowerCase().contains('manager'));
     
-    print('👤 Is Admin/Manager: $isAdminOrManager');
-    print('👤 =================================\n');
+    AppLogger.d('👤 Is Admin/Manager: $isAdminOrManager');
+    AppLogger.d('👤 =================================\n');
   }
 }

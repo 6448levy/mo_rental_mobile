@@ -37,7 +37,7 @@ class DriverProfileHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -69,7 +69,7 @@ class DriverProfileHeader extends StatelessWidget {
                     Positioned.fill(
                       child: CircleAvatar(
                         radius: 34,
-                        backgroundColor: Colors.white.withOpacity(0.6),
+                        backgroundColor: Colors.white.withValues(alpha: 0.6),
                         child: const SizedBox(
                           width: 20,
                           height: 20,
@@ -155,8 +155,8 @@ class DriverProfileHeader extends StatelessWidget {
                               horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
                             color: isVerified
-                                ? Colors.green.withOpacity(0.1)
-                                : Colors.orange.withOpacity(0.1),
+                                ? Colors.green.withValues(alpha: 0.1)
+                                : Colors.orange.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -265,7 +265,7 @@ class DriverProfileHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(

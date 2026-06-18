@@ -12,7 +12,7 @@ class ProfileScreen extends StatelessWidget {
     final AuthController authController = Get.find<AuthController>();
     final userData = storage.read('user_data') ?? {};
     final theme = Theme.of(context);
-    const yellow = Color(0xFFFFC107);
+    const accent = Color(0xFF047BC1);
     const card = Color(0xFF16213E);
 
     return Scaffold(
@@ -33,10 +33,10 @@ class ProfileScreen extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: yellow, width: 2),
+                      border: Border.all(color: accent, width: 2),
                       boxShadow: [
                         BoxShadow(
-                          color: yellow.withOpacity(0.1),
+                          color: accent.withValues(alpha: 0.1),
                           blurRadius: 20,
                           spreadRadius: 5,
                         ),
@@ -47,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
                       backgroundColor: card,
                       child: Text(
                         userData['full_name'] != null ? userData['full_name'][0].toUpperCase() : 'G',
-                        style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: yellow),
+                        style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: accent),
                       ),
                     ),
                   ),
@@ -57,10 +57,10 @@ class ProfileScreen extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: const BoxDecoration(
-                        color: yellow,
+                        color: accent,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.edit_rounded, size: 16, color: Colors.black),
+                      child: const Icon(Icons.edit_rounded, size: 16, color: Colors.white),
                     ),
                   ),
                 ],
@@ -97,14 +97,14 @@ class ProfileScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: card,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: Colors.white.withOpacity(0.05)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.person_outline_rounded, color: yellow, size: 20),
+                      const Icon(Icons.person_outline_rounded, color: accent, size: 20),
                       const SizedBox(width: 12),
                       Text(
                         'Account Information',
@@ -170,7 +170,7 @@ class ProfileScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: Colors.white.withValues(alpha: 0.05),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, size: 18, color: Colors.white54),
@@ -196,10 +196,10 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: isDestructive ? Colors.redAccent.withOpacity(0.05) : const Color(0xFF16213E).withOpacity(0.5),
+        color: isDestructive ? Colors.redAccent.withValues(alpha: 0.05) : const Color(0xFF16213E).withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDestructive ? Colors.redAccent.withOpacity(0.1) : Colors.white.withOpacity(0.02),
+          color: isDestructive ? Colors.redAccent.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.02),
         ),
       ),
       child: ListTile(
@@ -209,7 +209,7 @@ class ProfileScreen extends StatelessWidget {
           title, 
           style: TextStyle(color: color, fontSize: 15, fontWeight: FontWeight.w500),
         ),
-        trailing: Icon(Icons.chevron_right_rounded, color: color.withOpacity(0.3), size: 18),
+        trailing: Icon(Icons.chevron_right_rounded, color: color.withValues(alpha: 0.3), size: 18),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );

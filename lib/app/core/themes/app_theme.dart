@@ -5,11 +5,39 @@ import 'app_palette.dart';
 
 class AppTheme {
 
-  // ... your light theme
+  // Light Theme (blue accent on light surfaces)
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    primaryColor: AppPalette.primaryBlue,
-    
+    scaffoldBackgroundColor: AppPalette.background,
+    primaryColor: AppPalette.accent,
+    colorScheme: const ColorScheme.light(
+      primary: AppPalette.accent,
+      secondary: AppPalette.accentLight,
+      surface: AppPalette.surface,
+      onPrimary: AppPalette.onAccent,
+      onSecondary: AppPalette.onAccent,
+      onSurface: AppPalette.textPrimary,
+    ),
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      foregroundColor: AppPalette.textPrimary,
+      iconTheme: IconThemeData(color: AppPalette.textPrimary),
+    ),
+    textTheme: GoogleFonts.outfitTextTheme(),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppPalette.accent,
+        foregroundColor: AppPalette.onAccent,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+      ),
+    ),
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: AppPalette.accent,
+    ),
   );
 
 
@@ -17,13 +45,13 @@ class AppTheme {
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppPalette.premiumDark,
-    primaryColor: AppPalette.premiumYellow,
-    colorScheme: ColorScheme.dark(
-      primary: AppPalette.premiumYellow,
-      secondary: AppPalette.premiumYellow,
+    primaryColor: AppPalette.accent,
+    colorScheme: const ColorScheme.dark(
+      primary: AppPalette.accent,
+      secondary: AppPalette.accentLight,
       surface: AppPalette.premiumCard,
-      onPrimary: Colors.black,
-      onSecondary: Colors.black,
+      onPrimary: AppPalette.onAccent,
+      onSecondary: AppPalette.onAccent,
       onSurface: Colors.white,
     ),
 
@@ -56,8 +84,8 @@ class AppTheme {
     // Button Theme
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppPalette.premiumYellow,
-        foregroundColor: Colors.black,
+        backgroundColor: AppPalette.accent,
+        foregroundColor: AppPalette.onAccent,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -84,7 +112,7 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppPalette.premiumYellow, width: 2),
+        borderSide: const BorderSide(color: AppPalette.accent, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -106,21 +134,21 @@ class AppTheme {
     // Bottom Navigation Bar
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: AppPalette.premiumCard,
-      selectedItemColor: AppPalette.premiumYellow,
+      selectedItemColor: AppPalette.accent,
       unselectedItemColor: Colors.white30,
       elevation: 8,
     ),
 
     // Floating Action Button
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: AppPalette.premiumYellow,
-      foregroundColor: Colors.black,
+      backgroundColor: AppPalette.accent,
+      foregroundColor: AppPalette.onAccent,
       elevation: 4,
     ),
 
     // Progress Indicator
     progressIndicatorTheme: const ProgressIndicatorThemeData(
-      color: AppPalette.premiumYellow,
+      color: AppPalette.accent,
     ),
   );
 }
