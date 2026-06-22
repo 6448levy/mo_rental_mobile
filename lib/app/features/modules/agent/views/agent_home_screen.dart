@@ -155,7 +155,7 @@ class _HomeContent extends StatelessWidget {
                       "assets/images/campbell-3ZUsNJhi_Ik-unsplash.jpg", "BMW M4"),
                   carCard(context,
                       "assets/images/joshua-koblin-eqW1MPinEV4-unsplash.jpg",
-                      "Mercedes AMG"),
+                      "Mercedes-AMG GT"),
                   carCard(context,
                       "assets/images/peter-broomfield-m3m-lnR90uM-unsplash.jpg",
                       "Audi R8"),

@@ -1,4 +1,4 @@
-// tool/api_smoke_test.dart
+.// tool/api_smoke_test.dart
 //
 // On-demand integration smoke probe against a LIVE backend. Not part of the
 // `flutter test` suite (which stays offline/fast). Run manually:
